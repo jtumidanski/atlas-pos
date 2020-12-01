@@ -4,11 +4,14 @@ import java.util.Collections;
 import java.util.Optional;
 
 import com.atlas.cos.attribute.CharacterAttributes;
+import com.atlas.csrv.rest.attribute.InstructionAttributes;
+import com.atlas.csrv.rest.builder.InstructionAttributesBuilder;
 import com.atlas.pos.BlockedPortalRegistry;
 import com.atlas.pos.model.Portal;
 import com.atlas.shared.rest.RestService;
 import com.atlas.shared.rest.UriBuilder;
 
+import builder.ResultObjectBuilder;
 import rest.DataBody;
 import rest.DataContainer;
 
@@ -56,6 +59,21 @@ public class PortalPlayerInteraction {
    }
 
    public void showInstruction(String message, int width, int height) {
+      UriBuilder.service(RestService.CHANNEL)
+            .pathParam("worlds", worldId)
+            .pathParam("channels", channelId)
+            .pathParam("characters", characterId)
+            .path("instructions")
+            .getRestClient()
+            .create(new ResultObjectBuilder(InstructionAttributes.class, 0)
+                  .setAttribute(
+                        new InstructionAttributesBuilder()
+                              .setMessage(message)
+                              .setWidth(width)
+                              .setHeight(height)
+                  )
+                  .inputObject()
+            );
    }
 
    /**
