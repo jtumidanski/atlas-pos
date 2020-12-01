@@ -1,13 +1,6 @@
 package com.atlas.pos.script.portal
 
-import scripting.portal.PortalPlayerInteraction
-import server.life.MapleLifeFactory
-import server.maps.MapleMap
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
-
-import java.awt.*
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if (pi.isQuestActive(21739)) {
@@ -23,7 +16,7 @@ boolean enter(PortalPlayerInteraction pi) {
          pi.playPortalSound(); pi.warp(920030000, 2)
          return true
       } else {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("SOMEONE_ALREADY_CHALLENGING"))
+         pi.sendPinkNotice("SOMEONE_ALREADY_CHALLENGING")
          return false
       }
    } else {

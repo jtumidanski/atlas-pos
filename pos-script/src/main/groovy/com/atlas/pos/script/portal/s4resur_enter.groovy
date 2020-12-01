@@ -1,10 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if(pi.isQuestStarted(6134)) {
@@ -13,6 +9,6 @@ boolean enter(PortalPlayerInteraction pi) {
       return true
    }
 
-   MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("MYSTERIOUS_FORCE"))
+   pi.sendPinkNotice("MYSTERIOUS_FORCE")
    return false
 }

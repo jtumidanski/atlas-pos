@@ -1,13 +1,9 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
-   int mapId = pi.getPlayer().getMapId()
+   int mapId = pi.getMapId()
    pi.playPortalSound()
    int map = ((mapId - 270010000) / 100).intValue()
    //pi.getPlayer().dropMessage(5, map + " " + pi.isQuestCompleted(3534));
@@ -23,17 +19,17 @@ boolean enter(PortalPlayerInteraction pi) {
       pi.warp(mapId + 10, "out00")
    } else if (map == 205 && pi.isQuestCompleted(3519)) {
       pi.warp(270040000, "out00")
-   } else if (map == 300 && (pi.haveItem(4032002) || pi.isQuestCompleted(3522))) {
+   } else if (map == 300 && (pi.hasItem(4032002) || pi.isQuestCompleted(3522))) {
       pi.warp(270040100, "out00")
    } else {
       if (map > 200) {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("TIME_QUEST"))
+         pi.sendPinkNotice("TIME_QUEST")
          pi.warp(270030000, "in00")
       } else if (map > 100) {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("TIME_QUEST"))
+         pi.sendPinkNotice("TIME_QUEST")
          pi.warp(270020000, "in00")
       } else {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("TIME_QUEST"))
+         pi.sendPinkNotice("TIME_QUEST")
          pi.warp(270010000, "in00")
       }
    }

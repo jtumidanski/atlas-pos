@@ -1,10 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if (pi.getMap().countMonsters() == 0) {
@@ -14,11 +10,11 @@ boolean enter(PortalPlayerInteraction pi) {
          pi.warp(140010210, 0)
          return true
       } else {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("FREE_SPACE_FOR_COUSE_CLEAR_TOKEN"))
+         pi.sendPinkNotice("FREE_SPACE_FOR_COUSE_CLEAR_TOKEN")
          return false
       }
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("DEFEAT_ALL_WOLVES"))
+      pi.sendPinkNotice("DEFEAT_ALL_WOLVES")
       return false
    }
 }

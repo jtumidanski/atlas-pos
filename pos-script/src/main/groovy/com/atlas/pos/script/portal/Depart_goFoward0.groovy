@@ -1,13 +1,9 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
-   int mapId = pi.getPlayer().getMap().getId()
+   int mapId = pi.getMapId()
 
    if (mapId == 103040410 && pi.isQuestCompleted(2287)) {
       pi.playPortalSound()
@@ -31,7 +27,7 @@ boolean enter(PortalPlayerInteraction pi) {
          pi.warp(mapId + 10, "right00")
          return true
       }
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("CANNOT_ACCESS"))
+      pi.sendPinkNotice("CANNOT_ACCESS")
       return false
    }
 }

@@ -1,10 +1,6 @@
 package com.atlas.pos.script.portal
 
-import scripting.portal.PortalPlayerInteraction
-import server.life.MapleLifeFactory
-import server.maps.MapleMap
-
-import java.awt.*
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    MapleMap map = pi.getWarpMap(104000004)

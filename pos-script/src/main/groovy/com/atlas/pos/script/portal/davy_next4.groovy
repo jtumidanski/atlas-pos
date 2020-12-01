@@ -1,14 +1,6 @@
 package com.atlas.pos.script.portal
 
-import scripting.event.EventInstanceManager
-import scripting.portal.PortalPlayerInteraction
-import server.life.MapleLifeFactory
-import server.life.MapleMonster
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
-
-import java.awt.*
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if (pi.getMap().getReactorByName("sMob1").getState() >= 1 && pi.getMap().getReactorByName("sMob2").getState() >= 1 && pi.getMap().getReactorByName("sMob3").getState() >= 1 && pi.getMap().getReactorByName("sMob4").getState() >= 1 && pi.getMap().getMonsters().size() == 0) {
@@ -40,7 +32,7 @@ boolean enter(PortalPlayerInteraction pi) {
       pi.playPortalSound(); pi.warp(925100500, 0)
       return true
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("PORTAL_NOT_YET_OPENED"))
+      pi.sendPinkNotice("PORTAL_NOT_YET_OPENED")
       return false
    }
 }

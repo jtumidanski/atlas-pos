@@ -1,14 +1,10 @@
 package com.atlas.pos.script.portal
 
-import scripting.event.EventInstanceManager
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if (pi.getMap().countMonster(9300285) > 0) {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("MUST_DEFEAT_PUPPETEER"))
+      pi.sendPinkNotice("MUST_DEFEAT_PUPPETEER")
       return false
    } else {
       EventInstanceManager eim = pi.getEventInstance()

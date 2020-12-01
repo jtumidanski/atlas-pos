@@ -1,10 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if(pi.isQuestStarted(6134)) {
@@ -15,7 +11,7 @@ boolean enter(PortalPlayerInteraction pi) {
 
          return true
       } else {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("MAKE_ROOM_FOR_QUEST_ITEM").with("ETC"))
+         pi.sendPinkNotice("MAKE_ROOM_FOR_QUEST_ITEM", "ETC")
          return false
       }
    } else {

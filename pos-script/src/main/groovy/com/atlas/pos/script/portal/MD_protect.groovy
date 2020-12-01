@@ -1,10 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    int baseId = 240040520
@@ -22,7 +18,7 @@ boolean enter(PortalPlayerInteraction pi) {
                }
             }
          } else {
-            MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("PARTY_LEADER_MUST_ENTER"))
+             pi.sendPinkNotice("PARTY_LEADER_MUST_ENTER")
             return false
          }
       } else {
@@ -34,7 +30,7 @@ boolean enter(PortalPlayerInteraction pi) {
             }
          }
       }
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("ALL_MINI_DUNGEON_IN_USE"))
+       pi.sendPinkNotice("ALL_MINI_DUNGEON_IN_USE")
       return false
    } else {
       pi.playPortalSound()

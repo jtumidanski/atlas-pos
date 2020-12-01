@@ -1,12 +1,13 @@
 package com.atlas.pos.processor;
 
+import java.util.Optional;
+
 import com.atlas.mis.attribute.PortalAttributes;
 import com.atlas.pos.model.Portal;
 import com.atlas.shared.rest.RestService;
 import com.atlas.shared.rest.UriBuilder;
-import rest.DataContainer;
 
-import java.util.Optional;
+import rest.DataContainer;
 
 public class PortalProcessor {
    private static final Object lock = new Object();
@@ -49,14 +50,14 @@ public class PortalProcessor {
             .map(ModelFactory::createPortal);
    }
 
-   public void enterPortal(int characterId, int mapId, int portalId) {
-      getMapPortalById(mapId, portalId).ifPresent(portal -> enterPortal(characterId, portal));
+   public void enterPortal(int worldId, int channelId, int characterId, int mapId, int portalId) {
+      getMapPortalById(mapId, portalId).ifPresent(portal -> enterPortal(worldId, channelId, characterId, mapId, portal));
    }
 
-   protected void enterPortal(int characterId, Portal portal) {
+   protected void enterPortal(int worldId, int channelId, int characterId, int mapId, Portal portal) {
       boolean changed = false;
       if (portal.scriptName() != null) {
-         changed = PortalScriptProcessor.getInstance().executePortalScript(characterId, portal);
+         changed = PortalScriptProcessor.getInstance().executePortalScript(worldId, channelId, characterId, mapId, portal);
       } else if (portal.targetMap() != 999999999) {
          //if (!(chr.getChalkboard() != null && GameConstants.isFreeMarketRoom(getTargetMapId()))) {
          // fallback for missing portals - no real life case anymore - interesting for not implemented areas
@@ -65,7 +66,6 @@ public class PortalProcessor {
 
          // Change character map.
 
-
          changed = true;
          //} else {
          //   MessageBroadcaster.getInstance().sendServerNotice(chr, ServerNoticeType.PINK_TEXT, I18nMessage.from("CANNOT_ENTER_MAP_WITH_CHALKBOARD_OPENED"));
@@ -73,7 +73,7 @@ public class PortalProcessor {
       }
 
       if (!changed) {
-         //PacketCreator.announce(session, new EnableActions());
+         EnableActionsProcessor.getInstance().send(worldId, channelId, characterId);
       }
    }
 }

@@ -1,11 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import server.maps.MapleMap
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    int mapId = 0
@@ -26,11 +21,11 @@ boolean enter(PortalPlayerInteraction pi) {
          pi.warp(mapId, 0)
          return true
       } else {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("SOMEONE_ALREADY_IN_MAP"))
+         pi.sendPinkNotice("SOMEONE_ALREADY_IN_MAP")
          return false
       }
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("KIKUS_ACCLIMATION_TRAINING_REQUIREMENT"))
+      pi.sendPinkNotice("KIKUS_ACCLIMATION_TRAINING_REQUIREMENT")
       return false
    }
 }

@@ -1,15 +1,10 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import server.maps.MapleMap
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if (pi.hasItem(4032125) || pi.hasItem(4032126) || pi.hasItem(4032127) || pi.hasItem(4032128) || pi.hasItem(4032129)) {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("ALREADY_HAVE_PROOF"))
+      pi.sendPinkNotice("ALREADY_HAVE_PROOF")
       return false
    }
 
@@ -23,11 +18,11 @@ boolean enter(PortalPlayerInteraction pi) {
          pi.spawnMonster(9300294, 87, 88)
          return true
       } else {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("SOMEONE_ALREADY_ATTEMPTING_BOSS"))
+         pi.sendPinkNotice("SOMEONE_ALREADY_ATTEMPTING_BOSS")
          return false
       }
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("CANNOT_ACCESS_HALL"))
+      pi.sendPinkNotice("CANNOT_ACCESS_HALL")
       return false
    }
 }

@@ -1,10 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if (pi.getEventInstance().getIntProperty("statusStg1") == 1) {
@@ -12,7 +8,7 @@ boolean enter(PortalPlayerInteraction pi) {
       pi.warp(926100001, 0) //next
       return true
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("PORTAL_NOT_YET_OPENED"))
+      pi.sendPinkNotice("PORTAL_NOT_YET_OPENED")
       return false
    }
 }

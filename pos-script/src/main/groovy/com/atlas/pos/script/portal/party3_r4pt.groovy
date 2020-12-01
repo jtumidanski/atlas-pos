@@ -1,7 +1,6 @@
 package com.atlas.pos.script.portal
 
-import scripting.event.EventInstanceManager
-import scripting.portal.PortalPlayerInteraction
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    EventInstanceManager eim = pi.getEventInstance()
@@ -12,11 +11,11 @@ boolean enter(PortalPlayerInteraction pi) {
       eim.setProperty("stage4_comb", "" + r + s)
    }
 
-   int portalName = (pi.getPortal().getName().substring(4, 6)).toInteger()
+   int portalName = Integer.parseInt(pi.getPortal().name().substring(4, 6))
    int cname = (eim.getProperty("stage4_comb")).toInteger()
 
    boolean secondPt = true
-   if (pi.getPortal().getId() < 14) {
+   if (pi.getPortal().id() < 14) {
       cname = Math.floor(cname / 10).intValue()
       secondPt = false
    }
@@ -26,7 +25,7 @@ boolean enter(PortalPlayerInteraction pi) {
       if (secondPt) {
          nextPortal = 1
       } else {
-         nextPortal = pi.getPortal().getId() + 3
+         nextPortal = pi.getPortal().id() + 3
       }
 
       pi.playPortalSound(); pi.warp(pi.getMapId(), nextPortal)

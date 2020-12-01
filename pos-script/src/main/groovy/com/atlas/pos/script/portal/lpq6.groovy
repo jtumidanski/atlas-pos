@@ -1,8 +1,6 @@
 package com.atlas.pos.script.portal
 
-import scripting.event.EventInstanceManager
-import scripting.portal.PortalPlayerInteraction
-import server.maps.MapleMap
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    EventInstanceManager eim = pi.getPlayer().getEventInstance()

@@ -1,15 +1,11 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    int exit = pi.getEventInstance().getIntProperty("canLeave")
    if (exit == 0) {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("WAIT_TO_LEAVE"))
+      pi.sendPinkNotice("WAIT_TO_LEAVE")
       return false
    } else if (exit == 2) {
       pi.playPortalSound()

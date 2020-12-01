@@ -1,13 +1,6 @@
 package com.atlas.pos.script.portal
 
-import scripting.portal.PortalPlayerInteraction
-import server.maps.MapleMap
-import tools.I18nMessage
-import tools.MasterBroadcaster
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
-import tools.packet.field.effect.PlaySound
-import tools.packet.field.effect.ShowEffect
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 def enterLeverSequence(PortalPlayerInteraction pi) {
    MapleMap map = pi.getMap()
@@ -43,7 +36,7 @@ def enterLeverSequence(PortalPlayerInteraction pi) {
          MasterBroadcaster.getInstance().sendToAllInMap(map, new ShowEffect("quest/party/wrong_kor"))
          MasterBroadcaster.getInstance().sendToAllInMap(map, new PlaySound("Party1/Failed"))
 
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("LEVERS_MISPLACED").with(countMiss))
+         pi.sendPinkNotice("LEVERS_MISPLACED", countMiss)
          return false
       }
 
@@ -61,7 +54,7 @@ def enterNoMobs(PortalPlayerInteraction pi) {
    int mobCount = map.countMonster(9300044)
 
    if (mobCount > 0) {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("DEFEAT_THREATS_WITH_LEVERS"))
+      pi.sendPinkNotice("DEFEAT_THREATS_WITH_LEVERS")
       return false
    } else {
 

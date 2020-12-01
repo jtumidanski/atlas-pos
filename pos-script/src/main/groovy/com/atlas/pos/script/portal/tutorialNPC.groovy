@@ -1,11 +1,10 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
-   if (pi.getPlayer().getLevel() <= 10 && pi.getPlayer().getJob().getId() == 0) {
-      int m = pi.getPlayer().getMap().getId()
+   if (pi.getLevel() <= 10 && pi.getJobId() == 0) {
+      int m = pi.getMapId()
       int npcId = 0
 
       if (m == 120000101) { // Navigation Room, The Nautilus

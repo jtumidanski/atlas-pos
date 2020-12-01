@@ -1,7 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    pi.showInstruction("Press #e#b[Q]#k#n to view the Quest window.", 250, 5)

@@ -1,11 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import server.maps.MapleReactor
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    String name = pi.getPortal().getName().substring(2, 4)
@@ -14,7 +9,7 @@ boolean enter(PortalPlayerInteraction pi) {
       pi.playPortalSound(); pi.warp(670010600, "gt" + name + "PIB")
       return true
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("GATE_NOT_YET_OPEN"))
+      pi.sendPinkNotice("GATE_NOT_YET_OPEN")
       return false
    }
 }

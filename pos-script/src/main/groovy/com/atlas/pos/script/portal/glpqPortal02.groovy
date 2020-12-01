@@ -1,17 +1,14 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if (pi.getPlayer().getJob().getJobNiche() == 2) {
-      pi.playPortalSound(); pi.warp(610030521, 0)
+      pi.playPortalSound()
+      pi.warp(610030521, 0)
       return true
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("MAGICIAN_ONLY"))
+      pi.sendPinkNotice("MAGICIAN_ONLY")
       return false
    }
 }

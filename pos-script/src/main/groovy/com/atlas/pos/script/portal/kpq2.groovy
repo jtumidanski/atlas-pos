@@ -1,11 +1,6 @@
 package com.atlas.pos.script.portal
 
-import scripting.event.EventInstanceManager
-import scripting.portal.PortalPlayerInteraction
-import server.maps.MapleMap
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    EventInstanceManager eim = pi.getPlayer().getEventInstance()
@@ -16,7 +11,7 @@ boolean enter(PortalPlayerInteraction pi) {
       return true
    }
    else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("PORTAL_NOT_YET_OPENED"))
+      pi.sendPinkNotice("PORTAL_NOT_YET_OPENED")
       return false
    }
 }

@@ -1,11 +1,6 @@
 package com.atlas.pos.script.portal
 
-import client.MapleCharacter
-import scripting.portal.PortalPlayerInteraction
-import server.maps.MapleReactor
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    long currentTime = System.currentTimeMillis()

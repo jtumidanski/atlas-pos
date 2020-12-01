@@ -1,10 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if(pi.isQuestStarted(2073)) {
@@ -12,7 +8,7 @@ boolean enter(PortalPlayerInteraction pi) {
       pi.warp(900000000, 0)
       return true
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("PRIVATE_PROPERTY"))
+      pi.sendPinkNotice("PRIVATE_PROPERTY")
       return false
    }
 }

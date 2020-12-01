@@ -1,10 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    long entryTime = pi.getPlayer().getEventInstance().getProperty("entryTimestamp").toLong()
@@ -17,7 +13,7 @@ boolean enter(PortalPlayerInteraction pi) {
       return true
    }
    else { //cannot proceed while allies can still enter
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("PORTAL_OPEN_IN").with(timeLeft))
+      pi.sendPinkNotice("PORTAL_OPEN_IN", timeLeft)
       return false
    }
 }

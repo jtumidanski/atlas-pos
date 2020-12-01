@@ -1,9 +1,8 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
-   pi.openNpc(1052125) //It is actually suppose to open the npc, because it leads to a boss map
+   pi.openNpc(1052125)
    return true
 }

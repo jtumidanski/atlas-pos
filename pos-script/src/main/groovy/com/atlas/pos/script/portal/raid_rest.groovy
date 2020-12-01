@@ -1,16 +1,12 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    int evLevel = ((pi.getMapId() - 1) % 5) + 1
 
    if (pi.getPlayer().getEventInstance().isEventLeader(pi.getPlayer()) && pi.getPlayer().getEventInstance().getPlayerCount() > 1) {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("PARTY_LEADER_CANNOT_LEAVE"))
+      pi.sendPinkNotice("PARTY_LEADER_CANNOT_LEAVE")
       return false
    }
 
@@ -19,7 +15,7 @@ boolean enter(PortalPlayerInteraction pi) {
       pi.warp(970030000)
       return true
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("MAKE_ROOM_AVAILABLE_FOR_PRIZES"))
+      pi.sendPinkNotice("MAKE_ROOM_AVAILABLE_FOR_PRIZES")
       return false
    }
 }

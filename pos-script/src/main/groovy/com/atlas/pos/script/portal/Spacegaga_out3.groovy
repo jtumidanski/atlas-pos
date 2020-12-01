@@ -1,7 +1,6 @@
 package com.atlas.pos.script.portal
 
-import scripting.event.EventInstanceManager
-import scripting.portal.PortalPlayerInteraction
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    EventInstanceManager eim = pi.getPlayer().getEventInstance()
@@ -13,7 +12,7 @@ boolean enter(PortalPlayerInteraction pi) {
    } else {
       eim.setIntProperty("falls", fc + 1)
       pi.playPortalSound()
-      pi.warp(pi.getPlayer().getMapId(), 0)
+      pi.warp(pi.getMapId(), 0)
    }
 
    return true

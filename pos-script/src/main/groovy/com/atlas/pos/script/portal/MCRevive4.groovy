@@ -1,11 +1,10 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    int portal = 0
-   switch (pi.getPlayer().getTeam()) {
+   switch (pi.getTeam()) {
       case 0:
          portal = 4
          break

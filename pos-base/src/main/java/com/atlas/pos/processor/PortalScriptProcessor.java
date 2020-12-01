@@ -45,7 +45,7 @@ public class PortalScriptProcessor {
    protected ScriptEngine eval(ScriptEngine engine, String path) {
       File scriptFile = null;
       if (new File(path).exists()) {
-         scriptFile = new File(path + ".groovy");
+         scriptFile = new File(path);
       }
       if (scriptFile == null) {
          return null;
@@ -89,11 +89,13 @@ public class PortalScriptProcessor {
       return iv;
    }
 
-   public boolean executePortalScript(int characterId, Portal portal) {
+   public boolean executePortalScript(int worldId, int channelId, int characterId, int mapId, Portal portal) {
       try {
          ScriptEngine iv = getPortalScript(portal.scriptName());
          if (iv != null) {
-            return (boolean) ((Invocable) iv).invokeFunction("enter", new PortalPlayerInteraction(characterId, portal));
+            return (boolean) ((Invocable) iv).invokeFunction("enter", new PortalPlayerInteraction(worldId, channelId, characterId,
+                  mapId,
+                  portal));
          }
       } catch (Exception exception) {
          exception.printStackTrace();

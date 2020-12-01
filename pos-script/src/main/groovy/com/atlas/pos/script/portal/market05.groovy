@@ -1,11 +1,10 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
-   if (pi.getPlayer().getMapId() != 910000000) {
-      pi.getPlayer().saveLocation("FREE_MARKET")
+   if (pi.getMapId() != 910000000) {
+      pi.saveLocation("FREE_MARKET")
       pi.playPortalSound()
       pi.warp(910000000, "out00")
       return true

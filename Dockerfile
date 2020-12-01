@@ -17,8 +17,10 @@ COPY pos-script/src pos-script/src
 
 RUN mvn install
 
-FROM openjdk:14-ea-jdk-alpine
+FROM groovy:3.0.5-jdk14
 USER root
+
+WORKDIR /
 
 RUN mkdir service
 

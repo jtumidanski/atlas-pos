@@ -1,10 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    switch (pi.getMapId()) {
@@ -19,13 +15,13 @@ boolean enter(PortalPlayerInteraction pi) {
             pi.warp(930000200, 0)
             return true
          } else {
-            MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("ELIMINATE_MONSTERS"))
+            pi.sendPinkNotice("ELIMINATE_MONSTERS")
             return false
          }
          break
       case 930000200:
          if (pi.getMap().getReactorByName("spine") != null && pi.getMap().getReactorByName("spine").getState() < 4) {
-            MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("SPINE_BLOCKS"))
+            pi.sendPinkNotice("SPINE_BLOCKS")
             return false
          } else {
             pi.playPortalSound()
@@ -35,7 +31,7 @@ boolean enter(PortalPlayerInteraction pi) {
          break
 
       default:
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("UNBOUND_PATH"))
+         pi.sendPinkNotice("UNBOUND_PATH")
          return false
    }
 }

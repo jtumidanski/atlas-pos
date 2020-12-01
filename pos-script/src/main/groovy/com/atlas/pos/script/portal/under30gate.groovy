@@ -1,18 +1,14 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
-   if (pi.getPlayer().getLevel() <= 30) {
+   if (pi.getLevel() <= 30) {
       pi.playPortalSound()
       pi.warp(990000640, 1)
       return true
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("CANNOT_PROCEED_PAST_POINT"))
+      pi.sendPinkNotice("CANNOT_PROCEED_PAST_POINT")
       return false
    }
 }

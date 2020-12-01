@@ -1,10 +1,6 @@
 package com.atlas.pos.script.portal
 
-import scripting.event.EventInstanceManager
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if (pi.isEventLeader()) {
@@ -16,7 +12,7 @@ boolean enter(PortalPlayerInteraction pi) {
       } else if (theWay == (byte) 3) {
          target = 240050310 //dark
       } else {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("HORNTAIL_HIT_LIGHT_BULB"))
+         pi.sendPinkNotice("HORNTAIL_HIT_LIGHT_BULB")
          return false
       }
 

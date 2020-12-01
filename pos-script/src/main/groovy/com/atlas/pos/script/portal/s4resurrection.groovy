@@ -1,13 +1,9 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
-   if(pi.haveItem(4001108)) {
+   if(pi.hasItem(4001108)) {
       if(pi.getWarpMap(923000100).countPlayers() == 0) {
          pi.resetMapObjects(923000100)
          pi.playPortalSound()
@@ -15,11 +11,11 @@ boolean enter(PortalPlayerInteraction pi) {
 
          return true
       } else {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("OTHER_PLAYER_INSIDE"))
+         pi.sendPinkNotice("OTHER_PLAYER_INSIDE")
          return false
       }
    }
 
-   MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("MYSTERIOUS_FORCE"))
+   pi.sendPinkNotice("MYSTERIOUS_FORCE")
    return false
 }

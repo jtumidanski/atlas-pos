@@ -1,11 +1,9 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import server.maps.MapleMap
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
-   int returnMap = pi.getPlayer().getSavedLocation("MONSTER_CARNIVAL")
+   int returnMap = pi.getSavedLocation("MONSTER_CARNIVAL")
    if (returnMap < 0) {
       returnMap = 102000000 // Just in case there is no saved location.
    }

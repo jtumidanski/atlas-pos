@@ -1,12 +1,6 @@
 package com.atlas.pos.script.portal
 
-import scripting.event.EventInstanceManager
-import scripting.portal.PortalPlayerInteraction
-import server.maps.MaplePortal
-import server.maps.MapleMap
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    int nextMap = 922010600
@@ -17,7 +11,7 @@ boolean enter(PortalPlayerInteraction pi) {
    String avail = eim.getProperty("5stageclear")
    if (avail == null) {
       // can't go thru eh?
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("SEAL_BLOCKING_DOOR"))
+      pi.sendPinkNotice("SEAL_BLOCKING_DOOR")
       return false
    } else {
       pi.playPortalSound()

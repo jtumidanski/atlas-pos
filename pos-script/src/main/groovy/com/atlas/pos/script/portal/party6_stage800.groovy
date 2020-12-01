@@ -1,11 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import server.maps.MapleReactor
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    pi.removeAll(4001162)
@@ -17,7 +12,7 @@ boolean enter(PortalPlayerInteraction pi) {
    MapleReactor spring = pi.getMap().getReactorById(3008000)
    if (spring != null && spring.getState() > 0) {
       if (!pi.canHold(4001198, 1)) {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("INVENTORY_FULL").with("ETC"))
+         pi.sendPinkNotice("INVENTORY_FULL", "ETC")
          return false
       }
 

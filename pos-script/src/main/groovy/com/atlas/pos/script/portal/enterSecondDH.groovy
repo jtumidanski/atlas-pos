@@ -1,7 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    int[] maps = [108000600, 108000601, 108000602]
@@ -13,7 +12,8 @@ boolean enter(PortalPlayerInteraction pi) {
       pi.removeAll(4032100)
 
       int rand = Math.floor(Math.random() * maps.length).toInteger()
-      pi.playPortalSound(); pi.warp(maps[rand], 0)
+      pi.playPortalSound()
+      pi.warp(maps[rand], 0)
       return true
    } else {
       return false

@@ -1,10 +1,9 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
-   if (pi.getPlayer().getJob().getId() == 2000) {
+   if (pi.getJobId() == 2000) {
       if (pi.isQuestStarted(21015)) {
          pi.showInfoText("You must exit to the right in order to find Murupas.")
          return false

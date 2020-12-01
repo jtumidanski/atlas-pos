@@ -1,22 +1,14 @@
 package com.atlas.pos.script.portal
 
-import client.MapleBuffStat
-import client.MapleCharacter
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
-
-static def isTigunMorphed(MapleCharacter ch) {
-   return ch.getBuffSource(MapleBuffStat.MORPH) == 2210005
-}
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
-   if(isTigunMorphed(pi.getPlayer())) {
+   if(pi.isMorphed(221005)) {
       return false
    } else {
-      pi.playPortalSound(); pi.warp(260000300, 7)
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("PALACE_INTRUDER"))
+      pi.playPortalSound()
+      pi.warp(260000300, 7)
+      pi.sendPinkNotice("PALACE_INTRUDER")
       return true
    }
 }

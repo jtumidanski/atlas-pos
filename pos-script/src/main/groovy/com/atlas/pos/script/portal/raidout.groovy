@@ -1,11 +1,9 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import server.maps.SavedLocationType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
-   int map = pi.getPlayer().getSavedLocation(SavedLocationType.BOSS_PQ.toString())
+   int map = pi.getSavedLocation(SavedLocationType.BOSS_PQ.toString())
    if (map == -1) {
       map = 100000000
    }

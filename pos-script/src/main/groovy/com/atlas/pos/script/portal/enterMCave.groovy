@@ -1,13 +1,6 @@
 package com.atlas.pos.script.portal
 
-import scripting.portal.PortalPlayerInteraction
-import server.life.MapleLifeFactory
-import server.maps.MapleMap
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
-
-import java.awt.*
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if (pi.isQuestStarted(21201)) { // Second Job
@@ -21,11 +14,11 @@ boolean enter(PortalPlayerInteraction pi) {
          pi.setQuestProgress(21202, 21203, 0)
          return true
       }
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("MIRROR_IS_BLANK"))
+      pi.sendPinkNotice("MIRROR_IS_BLANK")
       return false
    } else if (pi.isQuestStarted(21302) && !pi.isQuestCompleted(21303)) { // Third Job
       if (pi.getPlayerCount(108010701) > 0 || pi.getPlayerCount(108010702) > 0) {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("MIRROR_IS_BLANK"))
+         pi.sendPinkNotice("MIRROR_IS_BLANK")
          return false
       } else {
          MapleMap map = pi.getClient().getChannelServer().getMapFactory().getMap(108010702)
@@ -37,7 +30,7 @@ boolean enter(PortalPlayerInteraction pi) {
          return true
       }
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("MIRROR_ALREADY_PASSED"))
+      pi.sendPinkNotice("MIRROR_ALREADY_PASSED")
       return false
    }
 }

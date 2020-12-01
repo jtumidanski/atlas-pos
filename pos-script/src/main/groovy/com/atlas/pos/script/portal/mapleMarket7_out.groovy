@@ -1,10 +1,9 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    pi.playPortalSound()
-   pi.warp(pi.getPlayer().getSavedLocation("EVENT"))
+   pi.warp(pi.getSavedLocation("EVENT"))
    return true
 }

@@ -1,10 +1,6 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    int gender = pi.getPlayer().getGender()
@@ -13,7 +9,7 @@ boolean enter(PortalPlayerInteraction pi) {
       pi.warp(670010200, 3)
       return true
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("CANNOT_PROCEED"))
+      pi.sendPinkNotice("CANNOT_PROCEED")
       return false
    }
 }

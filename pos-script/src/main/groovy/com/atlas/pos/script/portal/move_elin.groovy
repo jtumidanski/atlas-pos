@@ -1,14 +1,10 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    pi.playPortalSound()
    pi.warp(300000100, "out00")
-   MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("PASSING_TIME_GATE"))
+   pi.sendPinkNotice("PASSING_TIME_GATE")
    return true
 }

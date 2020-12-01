@@ -1,12 +1,11 @@
 package com.atlas.pos.script.portal
 
-
-import scripting.portal.PortalPlayerInteraction
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    pi.playPortalSound()
 
-   switch (pi.getPlayer().getMapId()) {
+   switch (pi.getMapId()) {
       case 130000000:
          pi.warp(130000100, 5) //or 130000101
          break

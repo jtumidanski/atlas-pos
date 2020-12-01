@@ -1,12 +1,6 @@
 package com.atlas.pos.script.portal
 
-import net.server.world.MapleParty
-import net.server.world.MaplePartyCharacter
-import scripting.event.EventManager
-import scripting.portal.PortalPlayerInteraction
-import tools.I18nMessage
-import tools.MessageBroadcaster
-import tools.ServerNoticeType
+import com.atlas.pos.processor.PortalPlayerInteraction
 
 boolean enter(PortalPlayerInteraction pi) {
    if (pi.isQuestCompleted(2331)) {
@@ -15,11 +9,11 @@ boolean enter(PortalPlayerInteraction pi) {
    }
 
    if (pi.isQuestCompleted(2333) && pi.isQuestStarted(2331) && !pi.hasItem(4001318)) {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("LOST_SEAL"))
+      pi.sendPinkNotice("LOST_SEAL")
       if (pi.canHold(4001318)) {
          pi.gainItem(4001318, (short) 1)
       } else {
-         MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("SEAL_INVENTORY_FULL"))
+         pi.sendPinkNotice("SEAL_INVENTORY_FULL")
       }
    }
 
@@ -29,8 +23,8 @@ boolean enter(PortalPlayerInteraction pi) {
       return true
    } else if (pi.isQuestStarted(2332) && pi.hasItem(4032388)) {
       pi.forceCompleteQuest(2332, 1300002)
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("FOUND_PRINCESS"))
-      pi.giveCharacterExp(4400, pi.getPlayer())
+      pi.sendPinkNotice("FOUND_PRINCESS")
+      pi.giveCharacterExp(4400)
 
       EventManager em = pi.getEventManager("MK_PrimeMinister")
       Optional<MapleParty> party = pi.getPlayer().getParty()
@@ -41,7 +35,7 @@ boolean enter(PortalPlayerInteraction pi) {
                pi.playPortalSound()
                return true
             } else {
-               MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("BOSS_ANOTHER_PARTY_CHALLENGING_IN_CHANNEL"))
+               pi.sendPinkNotice("BOSS_ANOTHER_PARTY_CHALLENGING_IN_CHANNEL")
                return false
             }
          }
@@ -50,7 +44,7 @@ boolean enter(PortalPlayerInteraction pi) {
             pi.playPortalSound()
             return true
          } else {
-            MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("BOSS_ANOTHER_PARTY_CHALLENGING_IN_CHANNEL"))
+            pi.sendPinkNotice("BOSS_ANOTHER_PARTY_CHALLENGING_IN_CHANNEL")
             return false
          }
       }
@@ -65,7 +59,7 @@ boolean enter(PortalPlayerInteraction pi) {
                pi.playPortalSound()
                return true
             } else {
-               MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("BOSS_ANOTHER_PARTY_CHALLENGING_IN_CHANNEL"))
+               pi.sendPinkNotice("BOSS_ANOTHER_PARTY_CHALLENGING_IN_CHANNEL")
                return false
             }
          }
@@ -74,12 +68,12 @@ boolean enter(PortalPlayerInteraction pi) {
             pi.playPortalSound()
             return true
          } else {
-            MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("BOSS_ANOTHER_PARTY_CHALLENGING_IN_CHANNEL"))
+            pi.sendPinkNotice("BOSS_ANOTHER_PARTY_CHALLENGING_IN_CHANNEL")
             return false
          }
       }
    } else {
-      MessageBroadcaster.getInstance().sendServerNotice(pi.getPlayer(), ServerNoticeType.PINK_TEXT, I18nMessage.from("SEEMS_TO_BE_LOCKED_LONG"))
+      pi.sendPinkNotice("SEEMS_TO_BE_LOCKED_LONG")
       return false
    }
 }
