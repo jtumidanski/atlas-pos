@@ -6,12 +6,14 @@ COPY pom.xml pom.xml
 COPY pos-api/pom.xml pos-api/pom.xml
 COPY pos-model/pom.xml pos-model/pom.xml
 COPY pos-base/pom.xml pos-base/pom.xml
+COPY pos-script/pom.xml pos-script/pom.xml
 
 RUN mvn dependency:go-offline package -B
 
 COPY pos-api/src pos-api/src
 COPY pos-model/src pos-model/src
 COPY pos-base/src pos-base/src
+COPY pos-script/src pos-script/src
 
 RUN mvn install
 
