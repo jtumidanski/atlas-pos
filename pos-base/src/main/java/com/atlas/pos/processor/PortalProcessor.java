@@ -31,6 +31,7 @@ public class PortalProcessor {
    public Optional<Portal> getMapPortalByName(int mapId, String name) {
       return UriBuilder.service(RestService.MAP_INFORMATION)
             .pathParam("maps", mapId)
+            .path("portals")
             .queryParam("name", name)
             .getRestClient(PortalAttributes.class)
             .getWithResponse()
@@ -64,7 +65,7 @@ public class PortalProcessor {
          Portal toPortal = getMapPortalByName(portal.targetMap(), portal.target())
                .orElse(getMapPortalById(portal.targetMap(), 0).orElseThrow());
 
-         // Change character map.
+         ChangeMapProcessor.getInstance().changeMap(worldId, channelId, characterId, portal.targetMap(), toPortal.id());
 
          changed = true;
          //} else {
