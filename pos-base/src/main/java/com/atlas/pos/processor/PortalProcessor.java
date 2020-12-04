@@ -3,6 +3,7 @@ package com.atlas.pos.processor;
 import java.util.Optional;
 
 import com.atlas.mis.attribute.PortalAttributes;
+import com.atlas.pos.BlockedPortalRegistry;
 import com.atlas.pos.model.Portal;
 import com.atlas.shared.rest.RestService;
 import com.atlas.shared.rest.UriBuilder;
@@ -56,6 +57,11 @@ public class PortalProcessor {
    }
 
    protected void enterPortal(int worldId, int channelId, int characterId, int mapId, Portal portal) {
+      if (BlockedPortalRegistry.getInstance().isBlocked(characterId, portal.scriptName())) {
+         EnableActionsProcessor.getInstance().send(worldId, channelId, characterId);
+         return;
+      }
+
       boolean changed = false;
       if (portal.scriptName() != null) {
          changed = PortalScriptProcessor.getInstance().executePortalScript(worldId, channelId, characterId, mapId, portal);
