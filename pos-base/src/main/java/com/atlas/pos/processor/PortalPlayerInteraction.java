@@ -7,6 +7,7 @@ import com.atlas.cos.attribute.CharacterAttributes;
 import com.atlas.csrv.rest.attribute.InstructionAttributes;
 import com.atlas.csrv.rest.builder.InstructionAttributesBuilder;
 import com.atlas.pos.BlockedPortalRegistry;
+import com.atlas.pos.event.producer.EnableActionsCommandProducer;
 import com.atlas.pos.model.Portal;
 import com.atlas.shared.rest.RestService;
 import com.atlas.shared.rest.UriBuilder;
@@ -100,7 +101,7 @@ public class PortalPlayerInteraction {
    public void blockPortal() {
       if (portal.scriptName() != null && !BlockedPortalRegistry.getInstance().isBlocked(characterId, portal.scriptName())) {
          BlockedPortalRegistry.getInstance().addBlockedPortal(characterId, portal.scriptName());
-         EnableActionsProcessor.getInstance().send(worldId, channelId, characterId);
+         EnableActionsCommandProducer.getInstance().send(worldId, channelId, characterId);
       }
    }
 

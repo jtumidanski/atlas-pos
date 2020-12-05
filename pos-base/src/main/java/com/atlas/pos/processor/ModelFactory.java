@@ -4,7 +4,7 @@ import com.atlas.mis.attribute.PortalAttributes;
 import com.atlas.pos.model.Portal;
 import rest.DataBody;
 
-public class ModelFactory {
+public final class ModelFactory {
    private ModelFactory() {
    }
 

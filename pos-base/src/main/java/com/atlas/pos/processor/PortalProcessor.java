@@ -4,6 +4,8 @@ import java.util.Optional;
 
 import com.atlas.mis.attribute.PortalAttributes;
 import com.atlas.pos.BlockedPortalRegistry;
+import com.atlas.pos.event.producer.ChangeMapCommandProducer;
+import com.atlas.pos.event.producer.EnableActionsCommandProducer;
 import com.atlas.pos.model.Portal;
 import com.atlas.shared.rest.RestService;
 import com.atlas.shared.rest.UriBuilder;
@@ -58,7 +60,7 @@ public class PortalProcessor {
 
    protected void enterPortal(int worldId, int channelId, int characterId, int mapId, Portal portal) {
       if (BlockedPortalRegistry.getInstance().isBlocked(characterId, portal.scriptName())) {
-         EnableActionsProcessor.getInstance().send(worldId, channelId, characterId);
+         EnableActionsCommandProducer.getInstance().send(worldId, channelId, characterId);
          return;
       }
 
@@ -71,7 +73,7 @@ public class PortalProcessor {
          Portal toPortal = getMapPortalByName(portal.targetMap(), portal.target())
                .orElse(getMapPortalById(portal.targetMap(), 0).orElseThrow());
 
-         ChangeMapProcessor.getInstance().changeMap(worldId, channelId, characterId, portal.targetMap(), toPortal.id());
+         ChangeMapCommandProducer.getInstance().changeMap(worldId, channelId, characterId, portal.targetMap(), toPortal.id());
 
          changed = true;
          //} else {
@@ -80,7 +82,7 @@ public class PortalProcessor {
       }
 
       if (!changed) {
-         EnableActionsProcessor.getInstance().send(worldId, channelId, characterId);
+         EnableActionsCommandProducer.getInstance().send(worldId, channelId, characterId);
       }
    }
 }

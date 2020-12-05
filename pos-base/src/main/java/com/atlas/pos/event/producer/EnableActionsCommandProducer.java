@@ -1,4 +1,4 @@
-package com.atlas.pos.processor;
+package com.atlas.pos.event.producer;
 
 import com.atlas.csrv.command.EnableActionsCommand;
 import com.atlas.csrv.constant.EventConstants;
@@ -6,20 +6,20 @@ import com.atlas.kafka.KafkaProducerFactory;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 
-public class EnableActionsProcessor {
+public class EnableActionsCommandProducer {
    private static final Object lock = new Object();
 
-   private static volatile EnableActionsProcessor instance;
+   private static volatile EnableActionsCommandProducer instance;
 
    private final Producer<Long, EnableActionsCommand> producer;
 
-   public static EnableActionsProcessor getInstance() {
-      EnableActionsProcessor result = instance;
+   public static EnableActionsCommandProducer getInstance() {
+      EnableActionsCommandProducer result = instance;
       if (result == null) {
          synchronized (lock) {
             result = instance;
             if (result == null) {
-               result = new EnableActionsProcessor();
+               result = new EnableActionsCommandProducer();
                instance = result;
             }
          }
@@ -27,7 +27,7 @@ public class EnableActionsProcessor {
       return result;
    }
 
-   public EnableActionsProcessor() {
+   public EnableActionsCommandProducer() {
       producer = KafkaProducerFactory.createProducer("Portal Service", System.getenv("BOOTSTRAP_SERVERS"));
    }
 
