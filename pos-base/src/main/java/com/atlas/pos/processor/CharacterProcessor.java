@@ -29,7 +29,6 @@ public final class CharacterProcessor {
    }
 
    public static void saveLocation(int characterId, String type, int mapId, int portalId) {
-      LocationType locationType = LocationType.valueOf(type);
       UriBuilder.service(RestService.CHARACTER)
             .pathParam("characters", characterId)
             .path("locations")
@@ -37,7 +36,7 @@ public final class CharacterProcessor {
             .create(new ResultObjectBuilder(LocationAttributes.class, 0)
                   .setAttribute(
                         new LocationAttributesBuilder()
-                              .setType(locationType)
+                              .setType(LocationType.valueOf(type))
                               .setMapId(mapId)
                               .setPortalId(portalId)
                   )

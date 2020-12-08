@@ -24,6 +24,9 @@ public final class ModelFactory {
    }
 
    public static Character createCharacter(DataBody<CharacterAttributes> body) {
-      return new Character(Integer.parseInt(body.getId()), body.getAttributes().x(), body.getAttributes().y());
+      return new Character(Integer.parseInt(body.getId()),
+            body.getAttributes().level(),
+            body.getAttributes().x(),
+            body.getAttributes().y());
    }
 }

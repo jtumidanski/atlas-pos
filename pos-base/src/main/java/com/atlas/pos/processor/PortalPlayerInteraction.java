@@ -10,6 +10,7 @@ import com.atlas.csrv.rest.builder.InstructionAttributesBuilder;
 import com.atlas.pos.BlockedPortalRegistry;
 import com.atlas.pos.event.producer.ChangeMapCommandProducer;
 import com.atlas.pos.event.producer.EnableActionsCommandProducer;
+import com.atlas.pos.model.Character;
 import com.atlas.pos.model.Portal;
 import com.atlas.shared.rest.RestService;
 import com.atlas.shared.rest.UriBuilder;
@@ -37,14 +38,29 @@ public class PortalPlayerInteraction {
       this.portal = portal;
    }
 
+   /**
+    * Gets the character id interacting with the portal.
+    *
+    * @return the character identifier
+    */
    public int getCharacterId() {
       return characterId;
    }
 
+   /**
+    * Gets the map id the portal resides in.
+    *
+    * @return the map identifier
+    */
    public int getMapId() {
       return mapId;
    }
 
+   /**
+    * Gets the portal being interacted with.
+    *
+    * @return the portal
+    */
    public Portal getPortal() {
       return portal;
    }
@@ -52,19 +68,43 @@ public class PortalPlayerInteraction {
    public void playPortalSound() {
    }
 
+   /**
+    * Warps the character to the provided map, to the first portal.
+    *
+    * @param mapId the map identifier
+    */
    public void warp(int mapId) {
       warp(mapId, 0);
    }
 
+   /**
+    * Warps the character to the provided map, to the portal specified.
+    *
+    * @param mapId    the map identifier
+    * @param portalId the portal identifier
+    */
    public void warp(int mapId, int portalId) {
       ChangeMapCommandProducer.getInstance().changeMap(worldId, channelId, characterId, mapId, portalId);
    }
 
+   /**
+    * Warps the character to the provided map, to the portal specified.
+    *
+    * @param mapId      the map identifier
+    * @param portalName the portal name
+    */
    public void warp(int mapId, String portalName) {
       PortalProcessor.getMapPortalByName(mapId, portalName)
             .ifPresentOrElse(toPortal -> warp(mapId, toPortal.id()), () -> warp(mapId, 0));
    }
 
+   /**
+    * Shows an instruction to the character
+    *
+    * @param message the message
+    * @param width   the width of the instruction
+    * @param height  the height of the instruction
+    */
    public void showInstruction(String message, int width, int height) {
       UriBuilder.service(RestService.CHANNEL)
             .pathParam("worlds", worldId)
@@ -93,17 +133,15 @@ public class PortalPlayerInteraction {
       return CharacterProcessor.getSavedLocation(characterId, type);
    }
 
-   /**
-    * Sends a pink notice to the character
-    *
-    * @param token
-    */
    public void sendPinkNotice(String token) {
    }
 
    public void sendPinkNotice(String token, Object... args) {
    }
 
+   /**
+    * Marks a portal as blocked to prevent handling again.
+    */
    public void blockPortal() {
       if (portal.scriptName() != null && !BlockedPortalRegistry.getInstance().isBlocked(characterId, portal.scriptName())) {
          BlockedPortalRegistry.getInstance().addBlockedPortal(characterId, portal.scriptName());
@@ -232,6 +270,7 @@ public class PortalPlayerInteraction {
 
    /**
     * Saves a location of interest for the character.
+    *
     * @param type the type of location
     */
    public void saveLocation(String type) {
@@ -249,6 +288,15 @@ public class PortalPlayerInteraction {
       CharacterProcessor.saveLocation(characterId, type, mapId, portalId);
    }
 
+   /**
+    * Compares the distance between the two points, from a point of interest.
+    *
+    * @param from the point of interest
+    * @param o1   the first point
+    * @param o2   the second point
+    * @return the value 0 if o1 is equal distance to the point of interest as d2; a value less than 0 if o1 is closer
+    * than o2 to the point of interest; and a value greater than 0 if o1 is further than d2 from the point of interest.
+    */
    protected static int compareDistanceFromPoint(Point from, Portal o1, Portal o2) {
       double o1Distance = new Point(o1.x(), o1.y()).distanceSq(from);
       double o2Distance = new Point(o2.x(), o2.y()).distanceSq(from);
@@ -285,12 +333,6 @@ public class PortalPlayerInteraction {
    public void showInfoText(String s) {
    }
 
-   /**
-    * Counts items for character.
-    *
-    * @param itemId
-    * @return
-    */
    public int countItem(int itemId) {
       return 0;
    }
@@ -298,6 +340,11 @@ public class PortalPlayerInteraction {
    public void cancelItem(Integer integer) {
    }
 
+   /**
+    * Determines if the account interacting with the portal, has a level 30 character.
+    *
+    * @return true if a level 30 character or greater exists for the account
+    */
    public boolean hasLevel30Character() {
       CharacterAttributes attributes = UriBuilder.service(RestService.CHARACTER)
             .pathParam("characters", characterId)
@@ -324,12 +371,14 @@ public class PortalPlayerInteraction {
    }
 
    /**
-    * Gets the players level.
+    * Gets the level of the character interacting with the portal.
     *
-    * @return
+    * @return the level of the character
     */
    public int getLevel() {
-      return 1;
+      return CharacterProcessor.getCharacter(characterId)
+            .map(Character::level)
+            .orElse(1);
    }
 
    public void guideHint(Integer integer) {
