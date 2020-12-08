@@ -8,7 +8,7 @@ import com.atlas.pos.processor.PortalProcessor;
 public class PortalEnterCommandConsumer implements SimpleEventHandler<PortalEnterCommand> {
    @Override
    public void handle(Long key, PortalEnterCommand command) {
-      PortalProcessor.getInstance().enterPortal(command.worldId(), command.channelId(), command.characterId(), command.mapId(),
+      PortalProcessor.enterPortal(command.worldId(), command.channelId(), command.characterId(), command.mapId(),
             command.portalId());
    }
 

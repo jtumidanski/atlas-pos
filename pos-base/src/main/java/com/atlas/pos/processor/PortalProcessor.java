@@ -1,6 +1,9 @@
 package com.atlas.pos.processor;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.atlas.mis.attribute.PortalAttributes;
 import com.atlas.pos.BlockedPortalRegistry;
@@ -12,26 +15,25 @@ import com.atlas.shared.rest.UriBuilder;
 
 import rest.DataContainer;
 
-public class PortalProcessor {
-   private static final Object lock = new Object();
-
-   private static volatile PortalProcessor instance;
-
-   public static PortalProcessor getInstance() {
-      PortalProcessor result = instance;
-      if (result == null) {
-         synchronized (lock) {
-            result = instance;
-            if (result == null) {
-               result = new PortalProcessor();
-               instance = result;
-            }
-         }
-      }
-      return result;
+public final class PortalProcessor {
+   private PortalProcessor() {
    }
 
-   public Optional<Portal> getMapPortalByName(int mapId, String name) {
+   public static List<Portal> getMapPortals(int mapId) {
+      return UriBuilder.service(RestService.MAP_INFORMATION)
+            .pathParam("maps", mapId)
+            .path("portals")
+            .getRestClient(PortalAttributes.class)
+            .getWithResponse()
+            .result()
+            .map(DataContainer::getDataAsList)
+            .orElse(Collections.emptyList())
+            .stream()
+            .map(ModelFactory::createPortal)
+            .collect(Collectors.toList());
+   }
+
+   public static Optional<Portal> getMapPortalByName(int mapId, String name) {
       return UriBuilder.service(RestService.MAP_INFORMATION)
             .pathParam("maps", mapId)
             .path("portals")
@@ -43,7 +45,7 @@ public class PortalProcessor {
             .map(ModelFactory::createPortal);
    }
 
-   public Optional<Portal> getMapPortalById(int mapId, int portalId) {
+   public static Optional<Portal> getMapPortalById(int mapId, int portalId) {
       return UriBuilder.service(RestService.MAP_INFORMATION)
             .pathParam("maps", mapId)
             .pathParam("portals", portalId)
@@ -54,11 +56,15 @@ public class PortalProcessor {
             .map(ModelFactory::createPortal);
    }
 
-   public void enterPortal(int worldId, int channelId, int characterId, int mapId, int portalId) {
+   public static void enterPortal(int worldId, int channelId, int characterId, int mapId, int portalId) {
       getMapPortalById(mapId, portalId).ifPresent(portal -> enterPortal(worldId, channelId, characterId, mapId, portal));
    }
 
-   protected void enterPortal(int worldId, int channelId, int characterId, int mapId, Portal portal) {
+   protected static boolean isSpawnPoint(Portal portal) {
+      return (portal.type() == 0 || portal.type() == 1) && portal.targetMap() == 999999999;
+   }
+
+   protected static void enterPortal(int worldId, int channelId, int characterId, int mapId, Portal portal) {
       if (BlockedPortalRegistry.getInstance().isBlocked(characterId, portal.scriptName())) {
          EnableActionsCommandProducer.getInstance().send(worldId, channelId, characterId);
          return;

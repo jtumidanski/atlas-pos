@@ -1,7 +1,10 @@
 package com.atlas.pos.processor;
 
+import com.atlas.cos.attribute.CharacterAttributes;
 import com.atlas.mis.attribute.PortalAttributes;
+import com.atlas.pos.model.Character;
 import com.atlas.pos.model.Portal;
+
 import rest.DataBody;
 
 public final class ModelFactory {
@@ -18,5 +21,9 @@ public final class ModelFactory {
             body.getAttributes().targetMap(),
             body.getAttributes().scriptName()
       );
+   }
+
+   public static Character createCharacter(DataBody<CharacterAttributes> body) {
+      return new Character(Integer.parseInt(body.getId()), body.getAttributes().x(), body.getAttributes().y());
    }
 }

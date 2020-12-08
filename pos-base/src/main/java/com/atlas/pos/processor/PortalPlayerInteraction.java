@@ -1,5 +1,6 @@
 package com.atlas.pos.processor;
 
+import java.awt.*;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -7,6 +8,7 @@ import com.atlas.cos.attribute.CharacterAttributes;
 import com.atlas.csrv.rest.attribute.InstructionAttributes;
 import com.atlas.csrv.rest.builder.InstructionAttributesBuilder;
 import com.atlas.pos.BlockedPortalRegistry;
+import com.atlas.pos.event.producer.ChangeMapCommandProducer;
 import com.atlas.pos.event.producer.EnableActionsCommandProducer;
 import com.atlas.pos.model.Portal;
 import com.atlas.shared.rest.RestService;
@@ -51,12 +53,16 @@ public class PortalPlayerInteraction {
    }
 
    public void warp(int mapId) {
+      warp(mapId, 0);
    }
 
    public void warp(int mapId, int portalId) {
+      ChangeMapCommandProducer.getInstance().changeMap(worldId, channelId, characterId, mapId, portalId);
    }
 
    public void warp(int mapId, String portalName) {
+      PortalProcessor.getMapPortalByName(mapId, portalName)
+            .ifPresentOrElse(toPortal -> warp(mapId, toPortal.id()), () -> warp(mapId, 0));
    }
 
    public void showInstruction(String message, int width, int height) {
@@ -80,11 +86,11 @@ public class PortalPlayerInteraction {
    /**
     * Returns the mapId for the saved location.
     *
-    * @param id
-    * @return
+    * @param type the type of location to retrieve.
+    * @return the map identifier
     */
-   public int getSavedLocation(String id) {
-      return 0;
+   public int getSavedLocation(String type) {
+      return CharacterProcessor.getSavedLocation(characterId, type);
    }
 
    /**
@@ -224,7 +230,29 @@ public class PortalPlayerInteraction {
       return 0;
    }
 
-   public void saveLocation(String id) {
+   /**
+    * Saves a location of interest for the character.
+    * @param type the type of location
+    */
+   public void saveLocation(String type) {
+      Point from = CharacterProcessor.getCharacter(characterId)
+            .map(character -> new Point(character.x(), character.y()))
+            .orElse(new Point(0, 0));
+
+      int portalId = PortalProcessor.getMapPortals(mapId)
+            .stream()
+            .filter(PortalProcessor::isSpawnPoint)
+            .min((o1, o2) -> compareDistanceFromPoint(from, o1, o2))
+            .map(Portal::id)
+            .orElse(0);
+
+      CharacterProcessor.saveLocation(characterId, type, mapId, portalId);
+   }
+
+   protected static int compareDistanceFromPoint(Point from, Portal o1, Portal o2) {
+      double o1Distance = new Point(o1.x(), o1.y()).distanceSq(from);
+      double o2Distance = new Point(o2.x(), o2.y()).distanceSq(from);
+      return Double.compare(o1Distance, o2Distance);
    }
 
    public int getTeam() {
