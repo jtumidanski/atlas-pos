@@ -65,7 +65,7 @@ public class PortalProcessor {
       }
 
       boolean changed = false;
-      if (portal.scriptName() != null) {
+      if (portal.scriptName() != null && !portal.scriptName().equals("")) {
          changed = PortalScriptProcessor.getInstance().executePortalScript(worldId, channelId, characterId, mapId, portal);
       } else if (portal.targetMap() != 999999999) {
          //if (!(chr.getChalkboard() != null && GameConstants.isFreeMarketRoom(getTargetMapId()))) {
