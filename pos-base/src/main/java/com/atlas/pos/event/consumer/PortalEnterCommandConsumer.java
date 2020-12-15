@@ -4,6 +4,7 @@ import com.atlas.kafka.consumer.SimpleEventHandler;
 import com.atlas.pos.command.PortalEnterCommand;
 import com.atlas.pos.constant.EventConstants;
 import com.atlas.pos.processor.PortalProcessor;
+import com.atlas.pos.processor.TopicDiscoveryProcessor;
 
 public class PortalEnterCommandConsumer implements SimpleEventHandler<PortalEnterCommand> {
    @Override
@@ -29,6 +30,6 @@ public class PortalEnterCommandConsumer implements SimpleEventHandler<PortalEnte
 
    @Override
    public String getTopic() {
-      return System.getenv(EventConstants.TOPIC_ENTER_PORTAL);
+      return TopicDiscoveryProcessor.getTopic(EventConstants.TOPIC_ENTER_PORTAL);
    }
 }

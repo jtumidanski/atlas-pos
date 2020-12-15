@@ -66,7 +66,7 @@ public final class PortalProcessor {
 
    protected static void enterPortal(int worldId, int channelId, int characterId, int mapId, Portal portal) {
       if (BlockedPortalRegistry.getInstance().isBlocked(characterId, portal.scriptName())) {
-         EnableActionsCommandProducer.getInstance().send(worldId, channelId, characterId);
+         EnableActionsCommandProducer.send(worldId, channelId, characterId);
          return;
       }
 
@@ -79,7 +79,7 @@ public final class PortalProcessor {
          Portal toPortal = getMapPortalByName(portal.targetMap(), portal.target())
                .orElse(getMapPortalById(portal.targetMap(), 0).orElseThrow());
 
-         ChangeMapCommandProducer.getInstance().changeMap(worldId, channelId, characterId, portal.targetMap(), toPortal.id());
+         ChangeMapCommandProducer.changeMap(worldId, channelId, characterId, portal.targetMap(), toPortal.id());
 
          changed = true;
          //} else {
@@ -88,7 +88,7 @@ public final class PortalProcessor {
       }
 
       if (!changed) {
-         EnableActionsCommandProducer.getInstance().send(worldId, channelId, characterId);
+         EnableActionsCommandProducer.send(worldId, channelId, characterId);
       }
    }
 }

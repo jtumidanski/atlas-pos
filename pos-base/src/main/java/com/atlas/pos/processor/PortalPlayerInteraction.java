@@ -84,7 +84,7 @@ public class PortalPlayerInteraction {
     * @param portalId the portal identifier
     */
    public void warp(int mapId, int portalId) {
-      ChangeMapCommandProducer.getInstance().changeMap(worldId, channelId, characterId, mapId, portalId);
+      ChangeMapCommandProducer.changeMap(worldId, channelId, characterId, mapId, portalId);
    }
 
    /**
@@ -145,7 +145,7 @@ public class PortalPlayerInteraction {
    public void blockPortal() {
       if (portal.scriptName() != null && !BlockedPortalRegistry.getInstance().isBlocked(characterId, portal.scriptName())) {
          BlockedPortalRegistry.getInstance().addBlockedPortal(characterId, portal.scriptName());
-         EnableActionsCommandProducer.getInstance().send(worldId, channelId, characterId);
+         EnableActionsCommandProducer.send(worldId, channelId, characterId);
       }
    }
 
