@@ -351,7 +351,7 @@ public class PortalPlayerInteraction {
             .getRestClient(CharacterAttributes.class)
             .getWithResponse()
             .result()
-            .map(DataContainer::getData)
+            .flatMap(DataContainer::data)
             .map(DataBody::getAttributes)
             .orElseThrow();
       return UriBuilder.service(RestService.CHARACTER)
@@ -361,7 +361,7 @@ public class PortalPlayerInteraction {
             .getRestClient(CharacterAttributes.class)
             .getWithResponse()
             .result()
-            .map(DataContainer::getDataAsList)
+            .map(DataContainer::dataList)
             .orElse(Collections.emptyList())
             .stream()
             .anyMatch(body -> body.getAttributes().level() >= 30);

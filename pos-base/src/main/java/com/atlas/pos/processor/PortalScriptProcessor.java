@@ -14,7 +14,7 @@ public class PortalScriptProcessor {
 
    private static volatile PortalScriptProcessor instance;
 
-   private Map<String, ScriptEngine> scripts = new HashMap<>();
+   private final Map<String, ScriptEngine> scripts = new HashMap<>();
 
    private final ScriptEngineFactory sef;
 

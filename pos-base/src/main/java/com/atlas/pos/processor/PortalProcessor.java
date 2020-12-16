@@ -26,7 +26,7 @@ public final class PortalProcessor {
             .getRestClient(PortalAttributes.class)
             .getWithResponse()
             .result()
-            .map(DataContainer::getDataAsList)
+            .map(DataContainer::dataList)
             .orElse(Collections.emptyList())
             .stream()
             .map(ModelFactory::createPortal)
@@ -41,7 +41,7 @@ public final class PortalProcessor {
             .getRestClient(PortalAttributes.class)
             .getWithResponse()
             .result()
-            .map(DataContainer::getData)
+            .flatMap(DataContainer::data)
             .map(ModelFactory::createPortal);
    }
 
@@ -52,7 +52,7 @@ public final class PortalProcessor {
             .getRestClient(PortalAttributes.class)
             .getWithResponse()
             .result()
-            .map(DataContainer::getData)
+            .flatMap(DataContainer::data)
             .map(ModelFactory::createPortal);
    }
 

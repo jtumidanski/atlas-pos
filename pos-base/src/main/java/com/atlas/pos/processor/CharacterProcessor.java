@@ -24,7 +24,7 @@ public final class CharacterProcessor {
             .getRestClient(com.atlas.cos.attribute.CharacterAttributes.class)
             .getWithResponse()
             .result()
-            .map(DataContainer::getData)
+            .flatMap(DataContainer::data)
             .map(ModelFactory::createCharacter);
    }
 
@@ -52,7 +52,7 @@ public final class CharacterProcessor {
             .getRestClient(LocationAttributes.class)
             .getWithResponse()
             .result()
-            .map(DataContainer::getDataAsList)
+            .map(DataContainer::dataList)
             .orElse(Collections.emptyList())
             .stream()
             .findFirst()
