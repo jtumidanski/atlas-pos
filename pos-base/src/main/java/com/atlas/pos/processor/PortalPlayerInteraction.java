@@ -279,7 +279,6 @@ public class PortalPlayerInteraction {
             .orElse(new Point(0, 0));
 
       int portalId = PortalProcessor.getMapPortals(mapId)
-            .stream()
             .filter(PortalProcessor::isSpawnPoint)
             .min((o1, o2) -> compareDistanceFromPoint(from, o1, o2))
             .map(Portal::id)

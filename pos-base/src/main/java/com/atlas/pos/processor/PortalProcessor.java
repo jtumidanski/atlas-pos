@@ -1,9 +1,8 @@
 package com.atlas.pos.processor;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.atlas.mis.attribute.PortalAttributes;
 import com.atlas.pos.BlockedPortalRegistry;
@@ -19,7 +18,7 @@ public final class PortalProcessor {
    private PortalProcessor() {
    }
 
-   public static List<Portal> getMapPortals(int mapId) {
+   public static Stream<Portal> getMapPortals(int mapId) {
       return UriBuilder.service(RestService.MAP_INFORMATION)
             .pathParam("maps", mapId)
             .path("portals")
@@ -29,8 +28,7 @@ public final class PortalProcessor {
             .map(DataContainer::dataList)
             .orElse(Collections.emptyList())
             .stream()
-            .map(ModelFactory::createPortal)
-            .collect(Collectors.toList());
+            .map(ModelFactory::createPortal);
    }
 
    public static Optional<Portal> getMapPortalByName(int mapId, String name) {
