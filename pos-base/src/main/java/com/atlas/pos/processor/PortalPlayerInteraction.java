@@ -1,9 +1,7 @@
 package com.atlas.pos.processor;
 
-import java.awt.*;
-import java.util.Collections;
-import java.util.Optional;
-
+import builder.ResultObjectBuilder;
+import com.app.rest.util.RestResponseUtil;
 import com.atlas.cos.attribute.CharacterAttributes;
 import com.atlas.csrv.rest.attribute.InstructionAttributes;
 import com.atlas.csrv.rest.builder.InstructionAttributesBuilder;
@@ -14,10 +12,13 @@ import com.atlas.pos.model.Character;
 import com.atlas.pos.model.Portal;
 import com.atlas.shared.rest.RestService;
 import com.atlas.shared.rest.UriBuilder;
-
-import builder.ResultObjectBuilder;
 import rest.DataBody;
 import rest.DataContainer;
+
+import java.awt.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class PortalPlayerInteraction {
    private final int worldId;
@@ -95,7 +96,9 @@ public class PortalPlayerInteraction {
     */
    public void warp(int mapId, String portalName) {
       PortalProcessor.getMapPortalByName(mapId, portalName)
-            .ifPresentOrElse(toPortal -> warp(mapId, toPortal.id()), () -> warp(mapId, 0));
+            .thenApply(Portal::id)
+            .exceptionally(fn -> 0)
+            .thenAccept(id -> warp(mapId, id));
    }
 
    /**
@@ -111,7 +114,7 @@ public class PortalPlayerInteraction {
             .pathParam("channels", channelId)
             .pathParam("characters", characterId)
             .path("instructions")
-            .getRestClient()
+            .getAsyncRestClient(InstructionAttributes.class)
             .create(new ResultObjectBuilder(InstructionAttributes.class, 0)
                   .setAttribute(
                         new InstructionAttributesBuilder()
@@ -244,15 +247,29 @@ public class PortalPlayerInteraction {
       return false;
    }
 
+   /**
+    * Gets the job of the character.
+    *
+    * @return the job id
+    */
    public Integer getJobId() {
-      return 0;
+      return CharacterProcessor.getCharacter(characterId)
+            .thenApply(Character::jobId)
+            .join();
    }
 
    public void removeAll(int itemId) {
    }
 
+   /**
+    * Gets the gender of the character.
+    *
+    * @return 0 if male, 1 if female
+    */
    public int getGender() {
-      return 0;
+      return CharacterProcessor.getCharacter(characterId)
+            .thenApply(Character::gender)
+            .join();
    }
 
    public void forceStartQuest(int questId) {
@@ -274,18 +291,29 @@ public class PortalPlayerInteraction {
     * @param type the type of location
     */
    public void saveLocation(String type) {
-      Point from = CharacterProcessor.getCharacter(characterId)
-            .map(character -> new Point(character.x(), character.y()))
-            .orElse(new Point(0, 0));
+      CompletableFuture<Point> fromFuture = CharacterProcessor.getCharacter(characterId)
+            .thenApply(character -> new Point(character.x(), character.y()))
+            .exceptionally(fn -> new Point(0, 0));
+      CompletableFuture<List<Portal>> portalsFuture = PortalProcessor.getMapPortals(mapId);
 
-      int portalId = PortalProcessor.getMapPortals(mapId)
-            .stream()
+      fromFuture.thenCombine(portalsFuture, this::findClosest)
+            .thenApply(Optional::get)
+            .thenApply(Portal::id)
+            .exceptionally(fn -> 0)
+            .thenAccept(id -> CharacterProcessor.saveLocation(characterId, type, mapId, id));
+   }
+
+   /**
+    * Finds the portal closest to the reference point.
+    *
+    * @param from    the reference point
+    * @param portals the portals to consider
+    * @return the closest portal (if one exists).
+    */
+   protected Optional<Portal> findClosest(Point from, List<Portal> portals) {
+      return portals.stream()
             .filter(PortalProcessor::isSpawnPoint)
-            .min((o1, o2) -> compareDistanceFromPoint(from, o1, o2))
-            .map(Portal::id)
-            .orElse(0);
-
-      CharacterProcessor.saveLocation(characterId, type, mapId, portalId);
+            .min((o1, o2) -> compareDistanceFromPoint(from, o1, o2));
    }
 
    /**
@@ -346,25 +374,35 @@ public class PortalPlayerInteraction {
     * @return true if a level 30 character or greater exists for the account
     */
    public boolean hasLevel30Character() {
-      CharacterAttributes attributes = UriBuilder.service(RestService.CHARACTER)
+      return UriBuilder.service(RestService.CHARACTER)
             .pathParam("characters", characterId)
-            .getRestClient(CharacterAttributes.class)
-            .getWithResponse()
-            .result()
-            .flatMap(DataContainer::data)
+            .getAsyncRestClient(CharacterAttributes.class)
+            .get()
+            .thenApply(RestResponseUtil::result)
+            .thenApply(DataContainer::data)
+            .thenApply(Optional::get)
+            .thenApply(DataBody::getAttributes)
+            .thenCompose(attributes -> getAccountCharacters(attributes.accountId(), attributes.worldId()))
+            .thenApply(this::hasLevelThirtyCharacter)
+            .join();
+   }
+
+   protected boolean hasLevelThirtyCharacter(List<DataBody<CharacterAttributes>> characters) {
+      return characters.stream()
             .map(DataBody::getAttributes)
-            .orElseThrow();
+            .map(CharacterAttributes::level)
+            .anyMatch(level -> level >= 30);
+   }
+
+   protected CompletableFuture<List<DataBody<CharacterAttributes>>> getAccountCharacters(int accountId, int worldId) {
       return UriBuilder.service(RestService.CHARACTER)
             .path("characters")
-            .queryParam("accountId", attributes.accountId())
-            .queryParam("worldId", attributes.worldId())
-            .getRestClient(CharacterAttributes.class)
-            .getWithResponse()
-            .result()
-            .map(DataContainer::dataList)
-            .orElse(Collections.emptyList())
-            .stream()
-            .anyMatch(body -> body.getAttributes().level() >= 30);
+            .queryParam("accountId", accountId)
+            .queryParam("worldId", worldId)
+            .getAsyncRestClient(CharacterAttributes.class)
+            .get()
+            .thenApply(RestResponseUtil::result)
+            .thenApply(DataContainer::dataList);
    }
 
    public void spawnGuide() {
@@ -377,8 +415,9 @@ public class PortalPlayerInteraction {
     */
    public int getLevel() {
       return CharacterProcessor.getCharacter(characterId)
-            .map(Character::level)
-            .orElse(1);
+            .thenApply(Character::level)
+            .exceptionally(fn -> 1)
+            .join();
    }
 
    public void guideHint(Integer integer) {

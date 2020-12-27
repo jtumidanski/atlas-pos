@@ -27,6 +27,8 @@ public final class ModelFactory {
       return new Character(Integer.parseInt(body.getId()),
             body.getAttributes().level(),
             body.getAttributes().x(),
-            body.getAttributes().y());
+            body.getAttributes().y(),
+            body.getAttributes().gender(),
+            body.getAttributes().jobId());
    }
 }

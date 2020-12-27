@@ -2,7 +2,9 @@ package com.atlas.pos.processor;
 
 import java.util.Collections;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
+import com.app.rest.util.RestResponseUtil;
 import com.atlas.cos.attribute.LocationAttributes;
 import com.atlas.cos.attribute.LocationType;
 import com.atlas.cos.builder.LocationAttributesBuilder;
@@ -18,14 +20,15 @@ public final class CharacterProcessor {
    private CharacterProcessor() {
    }
 
-   public static Optional<Character> getCharacter(int characterId) {
+   public static CompletableFuture<Character> getCharacter(int characterId) {
       return UriBuilder.service(RestService.CHARACTER)
             .pathParam("characters", characterId)
-            .getRestClient(com.atlas.cos.attribute.CharacterAttributes.class)
-            .getWithResponse()
-            .result()
-            .flatMap(DataContainer::data)
-            .map(ModelFactory::createCharacter);
+            .getAsyncRestClient(com.atlas.cos.attribute.CharacterAttributes.class)
+            .get()
+            .thenApply(RestResponseUtil::result)
+            .thenApply(DataContainer::data)
+            .thenApply(Optional::get)
+            .thenApply(ModelFactory::createCharacter);
    }
 
    public static void saveLocation(int characterId, String type, int mapId, int portalId) {

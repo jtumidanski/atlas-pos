@@ -1,10 +1,6 @@
 package com.atlas.pos.processor;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import com.app.rest.util.RestResponseUtil;
 import com.atlas.mis.attribute.PortalAttributes;
 import com.atlas.pos.BlockedPortalRegistry;
 import com.atlas.pos.event.producer.ChangeMapCommandProducer;
@@ -12,52 +8,59 @@ import com.atlas.pos.event.producer.EnableActionsCommandProducer;
 import com.atlas.pos.model.Portal;
 import com.atlas.shared.rest.RestService;
 import com.atlas.shared.rest.UriBuilder;
-
 import rest.DataContainer;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public final class PortalProcessor {
    private PortalProcessor() {
    }
 
-   public static List<Portal> getMapPortals(int mapId) {
+   public static CompletableFuture<List<Portal>> getMapPortals(int mapId) {
       return UriBuilder.service(RestService.MAP_INFORMATION)
             .pathParam("maps", mapId)
             .path("portals")
-            .getRestClient(PortalAttributes.class)
-            .getWithResponse()
-            .result()
-            .map(DataContainer::dataList)
-            .orElse(Collections.emptyList())
-            .stream()
-            .map(ModelFactory::createPortal)
-            .collect(Collectors.toList());
+            .getAsyncRestClient(PortalAttributes.class)
+            .get()
+            .thenApply(RestResponseUtil::result)
+            .thenApply(DataContainer::dataList)
+            .thenApply(Collection::stream)
+            .thenApply(stream -> stream.map(ModelFactory::createPortal))
+            .thenApply(stream -> stream.collect(Collectors.toList()));
    }
 
-   public static Optional<Portal> getMapPortalByName(int mapId, String name) {
+   public static CompletableFuture<Portal> getMapPortalByName(int mapId, String name) {
       return UriBuilder.service(RestService.MAP_INFORMATION)
             .pathParam("maps", mapId)
             .path("portals")
             .queryParam("name", name)
-            .getRestClient(PortalAttributes.class)
-            .getWithResponse()
-            .result()
-            .flatMap(DataContainer::data)
-            .map(ModelFactory::createPortal);
+            .getAsyncRestClient(PortalAttributes.class)
+            .get()
+            .thenApply(RestResponseUtil::result)
+            .thenApply(DataContainer::data)
+            .thenApply(Optional::get)
+            .thenApply(ModelFactory::createPortal);
    }
 
-   public static Optional<Portal> getMapPortalById(int mapId, int portalId) {
+   public static CompletableFuture<Portal> getMapPortalById(int mapId, int portalId) {
       return UriBuilder.service(RestService.MAP_INFORMATION)
             .pathParam("maps", mapId)
             .pathParam("portals", portalId)
-            .getRestClient(PortalAttributes.class)
-            .getWithResponse()
-            .result()
-            .flatMap(DataContainer::data)
-            .map(ModelFactory::createPortal);
+            .getAsyncRestClient(PortalAttributes.class)
+            .get()
+            .thenApply(RestResponseUtil::result)
+            .thenApply(DataContainer::data)
+            .thenApply(Optional::get)
+            .thenApply(ModelFactory::createPortal);
    }
 
    public static void enterPortal(int worldId, int channelId, int characterId, int mapId, int portalId) {
-      getMapPortalById(mapId, portalId).ifPresent(portal -> enterPortal(worldId, channelId, characterId, mapId, portal));
+      getMapPortalById(mapId, portalId)
+            .thenAccept(portal -> enterPortal(worldId, channelId, characterId, mapId, portal));
    }
 
    protected static boolean isSpawnPoint(Portal portal) {
@@ -77,7 +80,8 @@ public final class PortalProcessor {
          //if (!(chr.getChalkboard() != null && GameConstants.isFreeMarketRoom(getTargetMapId()))) {
          // fallback for missing portals - no real life case anymore - interesting for not implemented areas
          Portal toPortal = getMapPortalByName(portal.targetMap(), portal.target())
-               .orElse(getMapPortalById(portal.targetMap(), 0).orElseThrow());
+               .exceptionally(fn -> getMapPortalById(portal.targetMap(), 0).join())
+               .join();
 
          ChangeMapCommandProducer.changeMap(worldId, channelId, characterId, portal.targetMap(), toPortal.id());
 
