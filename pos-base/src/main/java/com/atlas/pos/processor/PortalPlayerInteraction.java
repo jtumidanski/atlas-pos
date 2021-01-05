@@ -237,6 +237,7 @@ public class PortalPlayerInteraction {
    }
 
    public void enableActions() {
+      EnableActionsCommandProducer.send(worldId, channelId, characterId);
    }
 
    public void forceCompleteQuest(Integer integer) {
