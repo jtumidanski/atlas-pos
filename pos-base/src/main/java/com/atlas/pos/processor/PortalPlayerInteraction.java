@@ -133,7 +133,9 @@ public class PortalPlayerInteraction {
     * @return the map identifier
     */
    public int getSavedLocation(String type) {
-      return CharacterProcessor.getSavedLocation(characterId, type);
+      int location = CharacterProcessor.getSavedLocation(characterId, type);
+      CharacterProcessor.saveLocation(characterId, type, 0, 0);
+      return location;
    }
 
    public void sendPinkNotice(String token) {
