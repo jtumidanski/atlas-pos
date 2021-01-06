@@ -150,7 +150,7 @@ public class PortalPlayerInteraction {
    public void blockPortal() {
       if (portal.scriptName() != null && !BlockedPortalRegistry.getInstance().isBlocked(characterId, portal.scriptName())) {
          BlockedPortalRegistry.getInstance().addBlockedPortal(characterId, portal.scriptName());
-         EnableActionsCommandProducer.send(worldId, channelId, characterId);
+         EnableActionsCommandProducer.send(characterId);
       }
    }
 
@@ -237,7 +237,7 @@ public class PortalPlayerInteraction {
    }
 
    public void enableActions() {
-      EnableActionsCommandProducer.send(worldId, channelId, characterId);
+      EnableActionsCommandProducer.send(characterId);
    }
 
    public void forceCompleteQuest(Integer integer) {

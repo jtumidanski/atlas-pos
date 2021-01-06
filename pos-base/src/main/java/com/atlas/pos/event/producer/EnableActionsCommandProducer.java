@@ -8,9 +8,8 @@ public final class EnableActionsCommandProducer {
    private EnableActionsCommandProducer() {
    }
 
-   public static void send(int worldId, int channelId, int characterId) {
-      EventProducerRegistry.getInstance().send(EnableActionsCommand.class,
-            EventConstants.TOPIC_ENABLE_ACTIONS, worldId, channelId,
+   public static void send(int characterId) {
+      EventProducerRegistry.getInstance().send(EventConstants.TOPIC_ENABLE_ACTIONS, characterId,
             new EnableActionsCommand(characterId));
    }
 }

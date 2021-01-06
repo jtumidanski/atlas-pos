@@ -69,7 +69,7 @@ public final class PortalProcessor {
 
    protected static void enterPortal(int worldId, int channelId, int characterId, int mapId, Portal portal) {
       if (BlockedPortalRegistry.getInstance().isBlocked(characterId, portal.scriptName())) {
-         EnableActionsCommandProducer.send(worldId, channelId, characterId);
+         EnableActionsCommandProducer.send(characterId);
          return;
       }
 
@@ -92,7 +92,7 @@ public final class PortalProcessor {
       }
 
       if (!changed) {
-         EnableActionsCommandProducer.send(worldId, channelId, characterId);
+         EnableActionsCommandProducer.send(characterId);
       }
    }
 }
