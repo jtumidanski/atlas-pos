@@ -1,8 +1,13 @@
 package com.atlas.pos.processor;
 
-import builder.ResultObjectBuilder;
+import java.awt.*;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+
 import com.app.rest.util.RestResponseUtil;
 import com.atlas.cos.attribute.CharacterAttributes;
+import com.atlas.csrv.constant.RestConstants;
 import com.atlas.csrv.rest.attribute.InstructionAttributes;
 import com.atlas.csrv.rest.builder.InstructionAttributesBuilder;
 import com.atlas.pos.BlockedPortalRegistry;
@@ -10,15 +15,11 @@ import com.atlas.pos.event.producer.ChangeMapCommandProducer;
 import com.atlas.pos.event.producer.EnableActionsCommandProducer;
 import com.atlas.pos.model.Character;
 import com.atlas.pos.model.Portal;
-import com.atlas.shared.rest.RestService;
 import com.atlas.shared.rest.UriBuilder;
+
+import builder.ResultObjectBuilder;
 import rest.DataBody;
 import rest.DataContainer;
-
-import java.awt.*;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 public class PortalPlayerInteraction {
    private final int worldId;
@@ -109,7 +110,7 @@ public class PortalPlayerInteraction {
     * @param height  the height of the instruction
     */
    public void showInstruction(String message, int width, int height) {
-      UriBuilder.service(RestService.CHANNEL)
+      UriBuilder.service(RestConstants.SERVICE)
             .pathParam("worlds", worldId)
             .pathParam("channels", channelId)
             .pathParam("characters", characterId)
@@ -377,7 +378,7 @@ public class PortalPlayerInteraction {
     * @return true if a level 30 character or greater exists for the account
     */
    public boolean hasLevel30Character() {
-      return UriBuilder.service(RestService.CHARACTER)
+      return UriBuilder.service(com.atlas.cos.constant.RestConstants.SERVICE)
             .pathParam("characters", characterId)
             .getAsyncRestClient(CharacterAttributes.class)
             .get()
@@ -398,7 +399,7 @@ public class PortalPlayerInteraction {
    }
 
    protected CompletableFuture<List<DataBody<CharacterAttributes>>> getAccountCharacters(int accountId, int worldId) {
-      return UriBuilder.service(RestService.CHARACTER)
+      return UriBuilder.service(com.atlas.cos.constant.RestConstants.SERVICE)
             .path("characters")
             .queryParam("accountId", accountId)
             .queryParam("worldId", worldId)
