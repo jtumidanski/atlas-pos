@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import com.app.rest.util.RestResponseUtil;
-import com.atlas.cos.attribute.CharacterAttributes;
+import com.atlas.cos.rest.attribute.CharacterAttributes;
 import com.atlas.csrv.constant.RestConstants;
 import com.atlas.csrv.rest.attribute.InstructionAttributes;
 import com.atlas.csrv.rest.builder.InstructionAttributesBuilder;

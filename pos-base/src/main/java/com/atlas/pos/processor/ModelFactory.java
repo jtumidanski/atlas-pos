@@ -1,6 +1,6 @@
 package com.atlas.pos.processor;
 
-import com.atlas.cos.attribute.CharacterAttributes;
+import com.atlas.cos.rest.attribute.CharacterAttributes;
 import com.atlas.mis.attribute.PortalAttributes;
 import com.atlas.pos.model.Character;
 import com.atlas.pos.model.Portal;
