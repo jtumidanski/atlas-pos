@@ -4,6 +4,7 @@ import com.app.rest.util.RestResponseUtil;
 import com.atlas.mis.attribute.PortalAttributes;
 import com.atlas.mis.constant.RestConstants;
 import com.atlas.pos.BlockedPortalRegistry;
+import com.atlas.pos.PortalScriptRegistry;
 import com.atlas.pos.event.producer.ChangeMapCommandProducer;
 import com.atlas.pos.event.producer.EnableActionsCommandProducer;
 import com.atlas.pos.model.Portal;
@@ -76,7 +77,7 @@ public final class PortalProcessor {
 
       boolean changed = false;
       if (portal.scriptName() != null && !portal.scriptName().equals("")) {
-         changed = PortalScriptProcessor.getInstance().executePortalScript(worldId, channelId, characterId, mapId, portal);
+         changed = PortalScriptRegistry.getInstance().executePortalScript(worldId, channelId, characterId, mapId, portal);
       } else if (portal.targetMap() != 999999999) {
          //if (!(chr.getChalkboard() != null && GameConstants.isFreeMarketRoom(getTargetMapId()))) {
          // fallback for missing portals - no real life case anymore - interesting for not implemented areas

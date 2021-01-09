@@ -15,7 +15,7 @@ COPY pos-model/src pos-model/src
 COPY pos-base/src pos-base/src
 COPY pos-script/src pos-script/src
 
-RUN mvn install
+RUN mvn install -Prunnable
 
 FROM groovy:3.0.5-jdk14
 USER root

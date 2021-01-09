@@ -1,6 +1,7 @@
-package com.atlas.pos.processor;
+package com.atlas.pos;
 
 import com.atlas.pos.model.Portal;
+import com.atlas.pos.processor.PortalPlayerInteraction;
 
 import javax.script.*;
 import java.io.File;
@@ -9,22 +10,22 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PortalScriptProcessor {
+public class PortalScriptRegistry {
    private static final Object lock = new Object();
 
-   private static volatile PortalScriptProcessor instance;
+   private static volatile PortalScriptRegistry instance;
 
    private final Map<String, ScriptEngine> scripts = new HashMap<>();
 
    private final ScriptEngineFactory sef;
 
-   public static PortalScriptProcessor getInstance() {
-      PortalScriptProcessor result = instance;
+   public static PortalScriptRegistry getInstance() {
+      PortalScriptRegistry result = instance;
       if (result == null) {
          synchronized (lock) {
             result = instance;
             if (result == null) {
-               result = new PortalScriptProcessor();
+               result = new PortalScriptRegistry();
                instance = result;
             }
          }
@@ -32,7 +33,7 @@ public class PortalScriptProcessor {
       return result;
    }
 
-   private PortalScriptProcessor() {
+   private PortalScriptRegistry() {
       sef = new ScriptEngineManager().getEngineByName("groovy").getFactory();
    }
 
