@@ -1,3 +1,4 @@
 @ECHO OFF
-IF "%1"=="NO-CACHE" docker build --no-cache --tag atlas-pos:latest .
-IF NOT "%1"=="NO-CACHE" docker build --tag atlas-pos:latest .
+FOR %%a IN ("%~dp0\.") DO SET "parent=%%~nxa"
+IF "%1"=="NO-CACHE" (docker build --no-cache -f Dockerfile.dev --tag %parent%:latest .)
+IF NOT "%1"=="NO-CACHE" (docker build -f Dockerfile.dev --tag %parent%:latest .)
