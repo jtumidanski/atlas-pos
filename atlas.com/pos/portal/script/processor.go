@@ -3,6 +3,9 @@ package script
 import (
 	"atlas-pos/character"
 	"atlas-pos/domain"
+	"atlas-pos/kafka/producers"
+	"atlas-pos/portal/blocked"
+	"context"
 	"errors"
 	"log"
 )
@@ -60,7 +63,8 @@ func (p *Interaction) OpenNPCWithScript(npcId uint32, script string) {
 
 func (p *Interaction) BlockPortal() {
 	p.l.Printf("[INFO] call to unhandled BlockPortal from character %d.", p.c.CharacterId())
-	//TODO
+	blocked.GetCache().AddBlockedPortal(p.c.characterId, p.c.portal.ScriptName())
+	producers.EnableActions(p.l, context.Background()).Emit(p.c.characterId)
 }
 
 func (p *Interaction) QuestStarted(questId uint32) bool {

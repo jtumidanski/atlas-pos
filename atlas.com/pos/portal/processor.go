@@ -3,6 +3,7 @@ package portal
 import (
 	"atlas-pos/domain"
 	"atlas-pos/kafka/producers"
+	"atlas-pos/portal/blocked"
 	"atlas-pos/portal/script"
 	"atlas-pos/rest/attributes"
 	"atlas-pos/rest/requests"
@@ -61,10 +62,10 @@ func (p *Processor) getMapPortalByName(mapId uint32, portalName string) (*domain
 }
 
 func (p *Processor) enterPortal(worldId byte, channelId byte, characterId uint32, mapId uint32, portal *domain.PortalModel) {
-	// check if blocked
-	blocked := false
-	if blocked {
+	// TODO check portal delay
+	if portal == nil || blocked.GetCache().Blocked(characterId, portal.ScriptName()) {
 		producers.EnableActions(p.l, context.Background()).Emit(characterId)
+		return
 	}
 
 	changed := false
