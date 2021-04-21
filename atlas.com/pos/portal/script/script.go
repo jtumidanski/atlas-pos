@@ -2,7 +2,7 @@ package script
 
 import (
 	"atlas-pos/domain"
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type Context struct {
@@ -45,7 +45,7 @@ func NewContext(worldId byte, channelId byte, characterId uint32, mapId uint32, 
 
 type Script interface {
 	Name() string
-	AsPortalScript(l *log.Logger, c Context) (*PortalScriptImpl, bool)
+	AsPortalScript(l logrus.FieldLogger, c Context) (*PortalScriptImpl, bool)
 }
 
 type ScriptImpl struct {
@@ -63,7 +63,7 @@ func (s ScriptImpl) Name() string {
 	return ""
 }
 
-func (s ScriptImpl) AsPortalScript(l *log.Logger, c Context) (*PortalScriptImpl, bool) {
+func (s ScriptImpl) AsPortalScript(l logrus.FieldLogger, c Context) (*PortalScriptImpl, bool) {
 	if val, ok := s.si.(PortalScript); ok {
 		return &PortalScriptImpl{
 			l:     l,
@@ -76,10 +76,10 @@ func (s ScriptImpl) AsPortalScript(l *log.Logger, c Context) (*PortalScriptImpl,
 }
 
 type PortalScriptImpl struct {
-	l     *log.Logger
+	l     logrus.FieldLogger
 	c     Context
 	name  func() string
-	enter func(l *log.Logger, c Context) bool
+	enter func(l logrus.FieldLogger, c Context) bool
 }
 
 func (p PortalScriptImpl) Name() string {
@@ -92,9 +92,9 @@ func (p PortalScriptImpl) Enter() bool {
 
 type PortalScript interface {
 	Name() string
-	Enter(l *log.Logger, c Context) bool
+	Enter(l logrus.FieldLogger, c Context) bool
 }
 
 type PortalScriptName func() string
 
-type PortalScriptEnter func(l *log.Logger, c Context) bool
+type PortalScriptEnter func(l logrus.FieldLogger, c Context) bool

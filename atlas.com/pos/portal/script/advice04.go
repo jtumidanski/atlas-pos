@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type advice04 struct {
@@ -15,7 +15,7 @@ func (a advice04) Name() string {
 	return "advice04"
 }
 
-func (a advice04) Enter(l *log.Logger, context Context) bool {
+func (a advice04) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	p.ShowInstruction("Click \r\\#b<Sera>", 100, 5)
 	return true

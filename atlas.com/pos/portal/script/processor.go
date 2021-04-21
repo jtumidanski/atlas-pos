@@ -7,15 +7,15 @@ import (
 	"atlas-pos/portal/blocked"
 	"context"
 	"errors"
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type Interaction struct {
-	l *log.Logger
+	l logrus.FieldLogger
 	c Context
 }
 
-var Processor = func(l *log.Logger, c Context) *Interaction {
+var Processor = func(l logrus.FieldLogger, c Context) *Interaction {
 	return &Interaction{l, c}
 }
 

@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type glTutoMsg0 struct {
@@ -15,7 +15,7 @@ func (c glTutoMsg0) Name() string {
 	return "glTutoMsg0"
 }
 
-func (c glTutoMsg0) Enter(l *log.Logger, context Context) bool {
+func (c glTutoMsg0) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	p.ShowInstruction("Once you leave this area you won't be able to return.", 150, 5)
 	return true

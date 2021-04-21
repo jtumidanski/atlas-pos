@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type apqDoor struct {
@@ -15,7 +15,7 @@ func (a apqDoor) Name() string {
 	return "apqDoor"
 }
 
-func (a apqDoor) Enter(l *log.Logger, context Context) bool {
+func (a apqDoor) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 
 	name := context.Portal().Name()

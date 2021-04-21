@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type aranTutorGuide1 struct {
@@ -15,7 +15,7 @@ func (a aranTutorGuide1) Name() string {
 	return "aranTutorGuide1"
 }
 
-func (a aranTutorGuide1) Enter(l *log.Logger, context Context) bool {
+func (a aranTutorGuide1) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	p.BlockPortal()
 	if p.ContainsAreaInfo(21002, "chain=o") {

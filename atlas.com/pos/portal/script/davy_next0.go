@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type davyNext0 struct {
@@ -15,7 +15,7 @@ func (a davyNext0) Name() string {
 	return "davy_next0"
 }
 
-func (a davyNext0) Enter(l *log.Logger, context Context) bool {
+func (a davyNext0) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	if p.MapMonsterCount(context.MapId()) == 0 && a.passedGrindMode(context.MapId()) {
 		p.PlayPortalSound()

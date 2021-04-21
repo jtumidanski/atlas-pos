@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type davyNext1 struct {
@@ -15,7 +15,7 @@ func (a davyNext1) Name() string {
 	return "davy_next1"
 }
 
-func (a davyNext1) Enter(l *log.Logger, context Context) bool {
+func (a davyNext1) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	if p.GetEventProperty("stage2") == "3" {
 		p.PlayPortalSound()

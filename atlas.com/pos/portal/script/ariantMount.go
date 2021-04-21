@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type ariantMount struct {
@@ -15,7 +15,7 @@ func (a ariantMount) Name() string {
 	return "ariantMount"
 }
 
-func (a ariantMount) Enter(l *log.Logger, context Context) bool {
+func (a ariantMount) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	p.PlayPortalSound()
 	p.WarpById(980010020, 0)

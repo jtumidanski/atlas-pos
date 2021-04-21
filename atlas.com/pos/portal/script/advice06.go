@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type advice06 struct {
@@ -15,7 +15,7 @@ func (a advice06) Name() string {
 	return "advice06"
 }
 
-func (a advice06) Enter(l *log.Logger, context Context) bool {
+func (a advice06) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	p.ShowInstruction("Press the #e#b[Up]#k arrow#n to use the portal \r\\and move to the next map.", 230, 5)
 	return true

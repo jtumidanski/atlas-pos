@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type balogTemple struct {
@@ -15,7 +15,7 @@ func (a balogTemple) Name() string {
 	return "balogTemple"
 }
 
-func (a balogTemple) Enter(l *log.Logger, context Context) bool {
+func (a balogTemple) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	p.PlayPortalSound()
 	p.WarpById(105100000, 2)

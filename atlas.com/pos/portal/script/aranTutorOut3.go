@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type aranTutorOut3 struct {
@@ -15,7 +15,7 @@ func (a aranTutorOut3) Name() string {
 	return "aranTutorOut3"
 }
 
-func (a aranTutorOut3) Enter(l *log.Logger, context Context) bool {
+func (a aranTutorOut3) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	p.TeachSkill(20000016, 0, -1, -1)
 	p.TeachSkill(20000016, 1, 0, -1)

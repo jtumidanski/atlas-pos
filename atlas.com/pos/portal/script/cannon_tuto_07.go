@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type cannonTuto07 struct {
@@ -15,7 +15,7 @@ func (a cannonTuto07) Name() string {
 	return "cannon_tuto_07"
 }
 
-func (a cannonTuto07) Enter(l *log.Logger, context Context) bool {
+func (a cannonTuto07) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	p.SetDirectionStatus(true)
 	p.LockUI()

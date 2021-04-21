@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type apq02 struct {
@@ -15,7 +15,7 @@ func (a apq02) Name() string {
 	return "apq02"
 }
 
-func (a apq02) Enter(l *log.Logger, context Context) bool {
+func (a apq02) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	p.PlayPortalSound()
 	p.WarpById(670010302, 0)

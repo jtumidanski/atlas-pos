@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type tutoChatNPC struct {
@@ -15,7 +15,7 @@ func (a tutoChatNPC) Name() string {
 	return "tutoChatNPC"
 }
 
-func (a tutoChatNPC) Enter(l *log.Logger, context Context) bool {
+func (a tutoChatNPC) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	if p.HasLevel30Character() {
 		p.OpenNPC(2007)

@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type ariantQueens struct {
@@ -15,7 +15,7 @@ func (a ariantQueens) Name() string {
 	return "ariant_queens"
 }
 
-func (a ariantQueens) Enter(l *log.Logger, context Context) bool {
+func (a ariantQueens) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	if p.Morphed(221005) {
 		return false

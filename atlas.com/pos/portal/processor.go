@@ -8,22 +8,22 @@ import (
 	"atlas-pos/rest/attributes"
 	"atlas-pos/rest/requests"
 	"context"
-	"log"
+	"github.com/sirupsen/logrus"
 	"strconv"
 )
 
 type Processor struct {
-	l *log.Logger
+	l logrus.FieldLogger
 }
 
-func NewProcessor(l *log.Logger) *Processor {
+func NewProcessor(l logrus.FieldLogger) *Processor {
 	return &Processor{l}
 }
 
 func (p *Processor) EnterPortal(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
 	portal, err := p.getMapPortalById(mapId, portalId)
 	if err != nil {
-		p.l.Printf("[WARN] unable to locate portal %d for map %d.", portalId, mapId)
+		p.l.WithError(err).Warnf("Unable to locate portal %d for map %d.", portalId, mapId)
 		return
 	}
 	p.enterPortal(worldId, channelId, characterId, mapId, portal)
@@ -73,7 +73,7 @@ func (p *Processor) enterPortal(worldId byte, channelId byte, characterId uint32
 		// execute portal script
 		s, err := script.GetScriptRegistry().GetScript(portal.ScriptName())
 		if err != nil {
-			p.l.Printf("[WARN] missing script %s for portal %d.", portal.ScriptName(), portal.Id())
+			p.l.WithError(err).Warnf("Missing script %s for portal %d.", portal.ScriptName(), portal.Id())
 			producers.EnableActions(p.l, context.Background()).Emit(characterId)
 			return
 		}
@@ -83,17 +83,17 @@ func (p *Processor) enterPortal(worldId byte, channelId byte, characterId uint32
 		if ps, ok := (*s).AsPortalScript(p.l, c); ok {
 			changed = ps.Enter()
 		} else {
-			p.l.Printf("[WARN] script retrieved named %s was not a PortalScript.", portal.ScriptName())
+			p.l.Warnf("Script retrieved named %s was not a PortalScript.", portal.ScriptName())
 		}
 	} else if portal.TargetMapId() != 999999999 {
 		// invalidate map change if trying to move with chalkboard open, and target is a free market map.
 
 		toPortal, err := p.getMapPortalByName(portal.TargetMapId(), portal.Target())
 		if err != nil {
-			p.l.Printf("[INFO] unable to locate portal target %s for map %d, defaulting to portal 0.", portal.Target(), portal.TargetMapId())
+			p.l.WithError(err).Infof("Unable to locate portal target %s for map %d, defaulting to portal 0.", portal.Target(), portal.TargetMapId())
 			toPortal, err = p.getMapPortalById(portal.TargetMapId(), 0)
 			if err != nil {
-				p.l.Printf("[ERROR] unable to locate portal 0 for map %d, is the destination map invalid?", portal.TargetMapId())
+				p.l.WithError(err).Errorf("Unable to locate portal 0 for map %d, is the destination map invalid?", portal.TargetMapId())
 				producers.EnableActions(p.l, context.Background()).Emit(characterId)
 				return
 			}

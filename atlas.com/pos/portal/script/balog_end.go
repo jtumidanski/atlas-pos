@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type balogEnd struct {
@@ -15,7 +15,7 @@ func (a balogEnd) Name() string {
 	return "balog_end"
 }
 
-func (a balogEnd) Enter(l *log.Logger, context Context) bool {
+func (a balogEnd) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	if p.CanHold(4001261, 1) {
 		p.GainItem(4001261, 1)

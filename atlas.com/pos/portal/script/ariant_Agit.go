@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type ariantAgit struct {
@@ -15,7 +15,7 @@ func (a ariantAgit) Name() string {
 	return "ariant_Agit"
 }
 
-func (a ariantAgit) Enter(l *log.Logger, context Context) bool {
+func (a ariantAgit) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	if p.QuestCompleted(3928) && p.QuestCompleted(3931) && p.QuestCompleted(3934) {
 		p.PlayPortalSound()

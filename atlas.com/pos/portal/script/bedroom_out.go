@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type bedroomOut struct {
@@ -15,7 +15,7 @@ func (a bedroomOut) Name() string {
 	return "bedroom_out"
 }
 
-func (a bedroomOut) Enter(l *log.Logger, context Context) bool {
+func (a bedroomOut) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	if p.QuestStarted(2570) {
 		p.PlayPortalSound()

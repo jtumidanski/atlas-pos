@@ -2,7 +2,7 @@ package consumers
 
 import (
 	"atlas-pos/portal"
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type PortalEnterCommand struct {
@@ -20,11 +20,11 @@ func PortalEnterCommandCreator() EmptyEventCreator {
 }
 
 func HandlePortalEnterCommand() EventProcessor {
-	return func(l *log.Logger, e interface{}) {
+	return func(l logrus.FieldLogger, e interface{}) {
 		if event, ok := e.(*PortalEnterCommand); ok {
 			portal.NewProcessor(l).EnterPortal(event.WorldId, event.ChannelId, event.CharacterId, event.MapId, event.PortalId)
 		} else {
-			l.Printf("[ERROR] unable to cast event provided to handler [PortalEnterCommand]")
+			l.Errorf("Unable to cast event provided to handler")
 		}
 	}
 }

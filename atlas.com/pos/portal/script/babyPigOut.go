@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type babyPigOut struct {
@@ -15,7 +15,7 @@ func (a babyPigOut) Name() string {
 	return "babyPigOut"
 }
 
-func (a babyPigOut) Enter(l *log.Logger, context Context) bool {
+func (a babyPigOut) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	if p.QuestCompleted(22015) {
 		p.PlayPortalSound()

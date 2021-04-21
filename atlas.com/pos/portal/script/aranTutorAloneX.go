@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type aranTutorAloneX struct {
@@ -15,7 +15,7 @@ func (a aranTutorAloneX) Name() string {
 	return "aranTutorAloneX"
 }
 
-func (a aranTutorAloneX) Enter(l *log.Logger, context Context) bool {
+func (a aranTutorAloneX) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	p.PlayPortalSound()
 	p.WarpById(914000100, 1)

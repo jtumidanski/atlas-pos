@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type captinsG00 struct {
@@ -15,7 +15,7 @@ func (a captinsG00) Name() string {
 	return "captinsg00"
 }
 
-func (a captinsG00) Enter(l *log.Logger, context Context) bool {
+func (a captinsG00) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	if !p.HasItem(4000381) {
 		p.SendPinkNotice("CAPTAIN_LATANICA_MISSING_ESSENCE")

@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type contactDragon struct {
@@ -15,7 +15,7 @@ func (a contactDragon) Name() string {
 	return "contactDragon"
 }
 
-func (a contactDragon) Enter(l *log.Logger, context Context) bool {
+func (a contactDragon) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	p.PlayPortalSound()
 	p.WarpById(900090100, 0)

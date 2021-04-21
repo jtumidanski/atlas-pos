@@ -5,15 +5,15 @@ import (
 	"atlas-pos/rest/attributes"
 	"atlas-pos/rest/requests"
 	"errors"
-	"log"
+	"github.com/sirupsen/logrus"
 	"strconv"
 )
 
 type Processor struct {
-	l *log.Logger
+	l logrus.FieldLogger
 }
 
-func NewProcessor(l *log.Logger) *Processor {
+func NewProcessor(l logrus.FieldLogger) *Processor {
 	return &Processor{l}
 }
 
@@ -31,7 +31,7 @@ func (p *Processor) WarpByName(mapId uint32, portalName string) {
 func (p *Processor) ShowInstruction(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) {
 	err := requests.WorldChannel().CreateInstruction(worldId, channelId, characterId, message, width, height)
 	if err != nil {
-		p.l.Printf("[ERROR] sending message %s to character %d in world %d channel %d.", message, characterId, worldId, channelId)
+		p.l.WithError(err).Errorf("Sending message %s to character %d in world %d channel %d.", message, characterId, worldId, channelId)
 	}
 }
 

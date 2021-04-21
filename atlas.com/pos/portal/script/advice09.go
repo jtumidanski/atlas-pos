@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type advice09 struct {
@@ -15,7 +15,7 @@ func (a advice09) Name() string {
 	return "advice09"
 }
 
-func (a advice09) Enter(l *log.Logger, context Context) bool {
+func (a advice09) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	p.ShowInstruction("Press #e#b[Down]#k on the arrow key#n and#e#b[Alt]#k#n at the same time to jump downwards.", 450, 6)
 	return true

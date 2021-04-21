@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type curseForest struct {
@@ -15,7 +15,7 @@ func (a curseForest) Name() string {
 	return "curseforest"
 }
 
-func (a curseForest) Enter(l *log.Logger, context Context) bool {
+func (a curseForest) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	if p.QuestStarted(2224) || p.QuestStarted(2226) || p.QuestCompleted(2227) {
 		hd := p.GetHourOfDay()

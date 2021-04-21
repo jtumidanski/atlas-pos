@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type infoMiniMap struct {
@@ -15,7 +15,7 @@ func (a infoMiniMap) Name() string {
 	return "infoMinimap"
 }
 
-func (a infoMiniMap) Enter(l *log.Logger, context Context) bool {
+func (a infoMiniMap) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	if p.QuestStarted(1031) {
 		p.ShowInfo("UI/tutorial.img/25")

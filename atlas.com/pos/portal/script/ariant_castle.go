@@ -1,7 +1,7 @@
 package script
 
 import (
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 type ariantCastle struct {
@@ -15,7 +15,7 @@ func (a ariantCastle) Name() string {
 	return "ariant_castle"
 }
 
-func (a ariantCastle) Enter(l *log.Logger, context Context) bool {
+func (a ariantCastle) Enter(l logrus.FieldLogger, context Context) bool {
 	p := Processor(l, context)
 	if p.HasItem(4031582) {
 		p.PlayPortalSound()
