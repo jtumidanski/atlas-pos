@@ -19,5 +19,5 @@ func main() {
 
 	// Block until a signal is received.
 	sig := <-c
-	l.Println("[INFO] shutting down via signal:", sig)
+	l.Infoln("Shutting down via signal:", sig)
 }

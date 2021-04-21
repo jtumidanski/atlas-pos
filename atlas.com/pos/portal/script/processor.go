@@ -23,7 +23,7 @@ func (p *Interaction) HasLevel30Character() bool {
 	cp := character.NewProcessor(p.l)
 	c, err := cp.GetCharacterAttributesById(p.c.CharacterId())
 	if err != nil {
-		p.l.Printf("[ERROR] unable to retrieve character information for character %d.", p.c.CharacterId())
+		p.l.WithError(err).Errorf("Unable to retrieve character information for character %d.", p.c.CharacterId())
 		return false
 	}
 	cs, err := cp.GetAccountCharacters(c.AccountId(), c.WorldId())
@@ -52,105 +52,105 @@ func (p *Interaction) ShowInstruction(message string, width int16, height int16)
 }
 
 func (p *Interaction) OpenNPC(npcId uint32) {
-	p.l.Printf("[INFO] call to unhandled OpenNPC for npc %d from character %d.", npcId, p.c.CharacterId())
+	p.l.Infof("call to unhandled OpenNPC for npc %d from character %d.", npcId, p.c.CharacterId())
 	//TODO
 }
 
 func (p *Interaction) OpenNPCWithScript(npcId uint32, script string) {
-	p.l.Printf("[INFO] call to unhandled OpenNPC for npc %d from character %d.", npcId, p.c.CharacterId())
+	p.l.Infof("call to unhandled OpenNPC for npc %d from character %d.", npcId, p.c.CharacterId())
 	//TODO
 }
 
 func (p *Interaction) BlockPortal() {
-	p.l.Printf("[INFO] call to unhandled BlockPortal from character %d.", p.c.CharacterId())
+	p.l.Infof("call to unhandled BlockPortal from character %d.", p.c.CharacterId())
 	blocked.GetCache().AddBlockedPortal(p.c.characterId, p.c.portal.ScriptName())
 	producers.EnableActions(p.l, context.Background()).Emit(p.c.characterId)
 }
 
 func (p *Interaction) QuestStarted(questId uint32) bool {
-	p.l.Printf("[INFO] call to unhandled QuestStarted for quest %d from character %d.", questId, p.c.CharacterId())
+	p.l.Infof("call to unhandled QuestStarted for quest %d from character %d.", questId, p.c.CharacterId())
 	//TODO
 	return false
 }
 
 func (p *Interaction) ShowInfo(info string) {
-	p.l.Printf("[INFO] call to unhandled ShowInfo for info %s from character %d.", info, p.c.CharacterId())
+	p.l.Infof("call to unhandled ShowInfo for info %s from character %d.", info, p.c.CharacterId())
 	//TODO
 }
 
 func (p *Interaction) GetSavedLocation(name string) (uint32, uint32) {
-	p.l.Printf("[INFO] call to unhandled GetSavedLocation for location %s.", name)
+	p.l.Infof("call to unhandled GetSavedLocation for location %s.", name)
 	//TODO
 	return 0, 0
 }
 
 func (p *Interaction) SendPinkNotice(token string) {
-	p.l.Printf("[INFO] call to unhandled SendPinkNotice.")
+	p.l.Infof("call to unhandled SendPinkNotice.")
 	//TODO
 }
 
 func (p *Interaction) GetReactor(mapId uint32, reactorName string) (*domain.ReactorModel, error) {
-	p.l.Printf("[INFO] call to unhandled GetReactor for reactor %s in map %d.", reactorName, mapId)
+	p.l.Infof("call to unhandled GetReactor for reactor %s in map %d.", reactorName, mapId)
 	return nil, errors.New("not implemented")
 }
 
 func (p *Interaction) ContainsAreaInfo(areaId uint16, info string) bool {
-	p.l.Printf("[INFO] call to unhandled ContainsAreaInfo.")
+	p.l.Infof("call to unhandled ContainsAreaInfo.")
 	//TODO
 	return false
 }
 
 func (p *Interaction) UpdateAreaInfo(areaId uint16, info string) {
-	p.l.Printf("[INFO] call to unhandled UpdateAreaInfo.")
+	p.l.Infof("call to unhandled UpdateAreaInfo.")
 	//TODO
 }
 
 func (p *Interaction) ShowIntro(path string) {
-	p.l.Printf("[INFO] call to unhandled ShowIntro.")
+	p.l.Infof("call to unhandled ShowIntro.")
 	//TODO
 }
 
 func (p *Interaction) PlaySound(path string) {
-	p.l.Printf("[INFO] call to unhandled PlaySound.")
+	p.l.Infof("call to unhandled PlaySound.")
 	//TODO
 }
 
 func (p *Interaction) TeachSkill(skillId uint32, level int8, masterLevel int8, expiration int64) {
-	p.l.Printf("[INFO] call to unhandled TeachSkill.")
+	p.l.Infof("call to unhandled TeachSkill.")
 	//TODO
 }
 
 func (p *Interaction) QuestCompleted(questId uint32) bool {
-	p.l.Printf("[INFO] call to unhandled QuestCompleted for quest %d from character %d.", questId, p.c.CharacterId())
+	p.l.Infof("call to unhandled QuestCompleted for quest %d from character %d.", questId, p.c.CharacterId())
 	//TODO
 	return false
 }
 
 func (p *Interaction) HasItem(itemId uint32) bool {
-	p.l.Printf("[INFO] call to unhandled HasItem.")
+	p.l.Infof("call to unhandled HasItem.")
 	//TODO
 	return false
 }
 
 func (p *Interaction) Morphed(morphId uint32) bool {
-	p.l.Printf("[INFO] call to unhandled Morphed.")
+	p.l.Infof("call to unhandled Morphed.")
 	//TODO
 	return false
 }
 
 func (p *Interaction) CanHold(itemId uint32, quantity int16) bool {
-	p.l.Printf("[INFO] call to unhandled CanHold.")
+	p.l.Infof("call to unhandled CanHold.")
 	//TODO
 	return false
 }
 
 func (p *Interaction) GainItem(itemId uint32, quantity int16) {
-	p.l.Printf("[INFO] call to unhandled GainItem.")
+	p.l.Infof("call to unhandled GainItem.")
 	//TODO
 }
 
 func (p *Interaction) EarnTitle(message string) {
-	p.l.Printf("[INFO] call to unhandled EarnTitle.")
+	p.l.Infof("call to unhandled EarnTitle.")
 	//TODO
 }
 
