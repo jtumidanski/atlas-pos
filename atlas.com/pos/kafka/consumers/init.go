@@ -19,7 +19,7 @@ func createEventConsumer(l *logrus.Logger, topicToken string, emptyEventCreator 
 	}
 
 	c := NewConsumer(l, context.Background(), h,
-		SetGroupId("Character Orchestration Service"),
+		SetGroupId("Portal Orchestration Service"),
 		SetTopicToken(topicToken),
 		SetEmptyEventCreator(emptyEventCreator))
 	go c.Init()
