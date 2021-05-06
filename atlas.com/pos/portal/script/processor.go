@@ -4,6 +4,7 @@ import (
 	"atlas-pos/character"
 	"atlas-pos/domain"
 	"atlas-pos/kafka/producers"
+	"atlas-pos/portal"
 	"atlas-pos/portal/blocked"
 	"context"
 	"errors"
@@ -40,11 +41,16 @@ func (p *Interaction) PlayPortalSound() {
 }
 
 func (p *Interaction) WarpById(mapId uint32, portalId uint32) {
-	character.NewProcessor(p.l).WarpById(mapId, portalId)
+	producers.ChangeMap(p.l, context.Background()).Emit(p.c.WorldId(), p.c.ChannelId(), p.c.CharacterId(), mapId, portalId)
 }
 
 func (p *Interaction) WarpByName(mapId uint32, portalName string) {
-	character.NewProcessor(p.l).WarpByName(mapId, portalName)
+	por, err := portal.NewProcessor(p.l).GetMapPortalByName(mapId, portalName)
+	if err != nil {
+		p.l.WithError(err).Errorf("Unable to lookup portal by name.")
+		return
+	}
+	p.WarpById(mapId, por.Id())
 }
 
 func (p *Interaction) ShowInstruction(message string, width int16, height int16) {

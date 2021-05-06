@@ -20,14 +20,6 @@ func NewProcessor(l logrus.FieldLogger) *Processor {
 func (p *Processor) PlayPortalSound() {
 }
 
-func (p *Processor) WarpById(mapId uint32, portalId uint32) {
-
-}
-
-func (p *Processor) WarpByName(mapId uint32, portalName string) {
-
-}
-
 func (p *Processor) ShowInstruction(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) {
 	err := requests.WorldChannel().CreateInstruction(worldId, channelId, characterId, message, width, height)
 	if err != nil {
