@@ -80,6 +80,7 @@ func initRegistry() *ScriptRegistry {
 	s.addPortalScript(DavyNext1())
 	s.addPortalScript(DavyNext2())
 	s.addPortalScript(EnterAchter())
+	s.addPortalScript(EnterMagiclibrar())
 	s.addPortalScript(TutoChatNPC())
 	s.addPortalScript(InfoMiniMap())
 	s.addPortalScript(GlTutoMsg0())
