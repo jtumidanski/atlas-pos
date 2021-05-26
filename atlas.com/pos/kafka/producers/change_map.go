@@ -1,7 +1,6 @@
 package producers
 
 import (
-	"context"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,19 +12,10 @@ type changeMapEvent struct {
 	PortalId    uint32 `json:"portalId"`
 }
 
-var ChangeMap = func(l logrus.FieldLogger, ctx context.Context) *changeMap {
-	return &changeMap{
-		l:   l,
-		ctx: ctx,
+func ChangeMap(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
+	producer := ProduceEvent(l, "TOPIC_CHANGE_MAP_COMMAND")
+	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
+		event := &changeMapEvent{WorldId: worldId, ChannelId: channelId, CharacterId: characterId, MapId: mapId, PortalId: portalId}
+		producer(CreateKey(int(characterId)), event)
 	}
-}
-
-type changeMap struct {
-	l   logrus.FieldLogger
-	ctx context.Context
-}
-
-func (e *changeMap) Emit(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
-	event := &changeMapEvent{WorldId: worldId, ChannelId: channelId, CharacterId: characterId, MapId: mapId, PortalId: portalId}
-	produceEvent(e.l, "TOPIC_CHANGE_MAP_COMMAND", createKey(int(characterId)), event)
 }

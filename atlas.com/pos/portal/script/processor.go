@@ -6,7 +6,6 @@ import (
 	"atlas-pos/kafka/producers"
 	"atlas-pos/portal"
 	"atlas-pos/portal/blocked"
-	"context"
 	"errors"
 	"github.com/sirupsen/logrus"
 )
@@ -41,7 +40,7 @@ func (p *Interaction) PlayPortalSound() {
 }
 
 func (p *Interaction) WarpById(mapId uint32, portalId uint32) {
-	producers.ChangeMap(p.l, context.Background()).Emit(p.c.WorldId(), p.c.ChannelId(), p.c.CharacterId(), mapId, portalId)
+	producers.ChangeMap(p.l)(p.c.WorldId(), p.c.ChannelId(), p.c.CharacterId(), mapId, portalId)
 }
 
 func (p *Interaction) WarpByName(mapId uint32, portalName string) {
@@ -70,7 +69,7 @@ func (p *Interaction) OpenNPCWithScript(npcId uint32, script string) {
 func (p *Interaction) BlockPortal() {
 	p.l.Infof("call to unhandled BlockPortal from character %d.", p.c.CharacterId())
 	blocked.GetCache().AddBlockedPortal(p.c.characterId, p.c.portal.ScriptName())
-	producers.EnableActions(p.l, context.Background()).Emit(p.c.characterId)
+	producers.EnableActions(p.l)(p.c.characterId)
 }
 
 func (p *Interaction) QuestStarted(questId uint32) bool {

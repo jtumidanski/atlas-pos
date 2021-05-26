@@ -2,11 +2,11 @@ package consumers
 
 import (
 	"atlas-pos/domain"
+	"atlas-pos/kafka/handler"
 	"atlas-pos/kafka/producers"
 	"atlas-pos/portal"
 	"atlas-pos/portal/blocked"
 	"atlas-pos/portal/script"
-	"context"
 	"github.com/sirupsen/logrus"
 )
 
@@ -18,13 +18,13 @@ type PortalEnterCommand struct {
 	CharacterId uint32 `json:"characterId"`
 }
 
-func PortalEnterCommandCreator() EmptyEventCreator {
+func PortalEnterCommandCreator() handler.EmptyEventCreator {
 	return func() interface{} {
 		return &PortalEnterCommand{}
 	}
 }
 
-func HandlePortalEnterCommand() EventProcessor {
+func HandlePortalEnterCommand() handler.EventHandler {
 	return func(l logrus.FieldLogger, e interface{}) {
 		if event, ok := e.(*PortalEnterCommand); ok {
 			p := portal.NewProcessor(l)
@@ -47,7 +47,7 @@ func enterPortal(l logrus.FieldLogger) func(worldId byte, channelId byte, charac
 
 		// TODO check portal delay
 		if model == nil || blocked.GetCache().Blocked(characterId, model.ScriptName()) {
-			producers.EnableActions(l, context.Background()).Emit(characterId)
+			producers.EnableActions(l)(characterId)
 			return
 		}
 
@@ -57,7 +57,7 @@ func enterPortal(l logrus.FieldLogger) func(worldId byte, channelId byte, charac
 			s, err := script.GetScriptRegistry().GetScript(model.ScriptName())
 			if err != nil {
 				l.WithError(err).Warnf("Missing script %s for portal %d.", model.ScriptName(), model.Id())
-				producers.EnableActions(l, context.Background()).Emit(characterId)
+				producers.EnableActions(l)(characterId)
 				return
 			}
 
@@ -77,17 +77,17 @@ func enterPortal(l logrus.FieldLogger) func(worldId byte, channelId byte, charac
 				toPortal, err = p.GetMapPortalById(model.TargetMapId(), 0)
 				if err != nil {
 					l.WithError(err).Errorf("Unable to locate portal 0 for map %d, is the destination map invalid?", model.TargetMapId())
-					producers.EnableActions(l, context.Background()).Emit(characterId)
+					producers.EnableActions(l)(characterId)
 					return
 				}
 			}
 
-			producers.ChangeMap(l, context.Background()).Emit(worldId, channelId, characterId, model.TargetMapId(), toPortal.Id())
+			producers.ChangeMap(l)(worldId, channelId, characterId, model.TargetMapId(), toPortal.Id())
 			changed = true
 		}
 
 		if !changed {
-			producers.EnableActions(l, context.Background()).Emit(characterId)
+			producers.EnableActions(l)(characterId)
 		}
 	}
 }

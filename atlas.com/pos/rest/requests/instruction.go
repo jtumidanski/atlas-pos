@@ -7,7 +7,7 @@ import (
 
 const (
 	worldChannelPrefix      string = "/ms/csrv/"
-	worldChannelService            = baseRequest + worldChannelPrefix
+	worldChannelService            = BaseRequest + worldChannelPrefix
 	worldsResource                 = worldChannelService + "worlds"
 	worldResource                  = worldsResource + "/%d"
 	channelsResource               = worldResource + "/channels"
