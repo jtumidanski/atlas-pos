@@ -4,9 +4,9 @@ type PortalModel struct {
 	id          uint32
 	name        string
 	target      string
-	theType     uint32
-	x           int32
-	y           int32
+	theType     uint8
+	x           int16
+	y           int16
 	targetMapId uint32
 	scriptName  string
 }
@@ -31,7 +31,7 @@ func (p PortalModel) Name() string {
 	return p.name
 }
 
-func NewPortalModel(id uint32, name string, target string, targetMapId uint32, theType uint32, x int32, y int32, scriptName string) PortalModel {
+func NewPortalModel(id uint32, name string, target string, targetMapId uint32, theType uint8, x int16, y int16, scriptName string) PortalModel {
 	return PortalModel{
 		id:          id,
 		name:        name,

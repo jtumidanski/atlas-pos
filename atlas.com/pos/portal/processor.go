@@ -49,5 +49,5 @@ func (p *Processor) GetMapPortalByName(mapId uint32, portalName string) (*domain
 }
 
 func makePortal(id uint32, attr attributes.PortalAttributes) domain.PortalModel {
-	return domain.NewPortalModel(id, attr.Name, attr.Target, attr.TargetMap, attr.Type, attr.X, attr.Y, attr.ScriptName)
+	return domain.NewPortalModel(id, attr.Name, attr.Target, attr.TargetMapId, attr.Type, attr.X, attr.Y, attr.ScriptName)
 }
