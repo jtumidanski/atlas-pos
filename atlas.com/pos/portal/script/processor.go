@@ -40,6 +40,14 @@ func QuestStarted(l logrus.FieldLogger, c Context) func(questId uint32) bool {
 	}
 }
 
+func QuestActive(l logrus.FieldLogger, c Context) func(questId uint32) bool {
+	return func(questId uint32) bool {
+		l.Infof("call to unhandled QuestActive for quest %d from character %d.", questId, c.CharacterId())
+		//TODO
+		return false
+	}
+}
+
 func ShowInfo(l logrus.FieldLogger, c Context) func(info string) {
 	return func(info string) {
 		l.Infof("call to unhandled ShowInfo for info %s from character %d.", info, c.CharacterId())
