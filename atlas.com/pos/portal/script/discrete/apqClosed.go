@@ -1,7 +1,6 @@
 package discrete
 
 import (
-	"atlas-pos/character"
 	"atlas-pos/portal/script"
 	"github.com/sirupsen/logrus"
 )
@@ -14,6 +13,6 @@ func (p ApqClosed) Name() string {
 }
 
 func (p ApqClosed) Enter(l logrus.FieldLogger, c script.Context) bool {
-	character.SendPinkNotice(l, c)("GATE_IS_NOT_YET_OPENED")
+	script.SendPinkNotice(l, c)("GATE_IS_NOT_YET_OPENED")
 	return false
 }

@@ -1,7 +1,6 @@
 package discrete
 
 import (
-	"atlas-pos/character"
 	"atlas-pos/portal/script"
 	"github.com/sirupsen/logrus"
 )
@@ -14,7 +13,7 @@ func (p Apq1) Name() string {
 }
 
 func (p Apq1) Enter(l logrus.FieldLogger, c script.Context) bool {
-	character.PlayPortalSound(l)
-	character.WarpById(l, c)(670010400, 0)
+	script.PlayPortalSound(l, c)
+	script.WarpById(l, c)(670010400, 0)
 	return true
 }

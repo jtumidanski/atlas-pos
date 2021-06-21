@@ -1,7 +1,6 @@
 package discrete
 
 import (
-	"atlas-pos/character"
 	"atlas-pos/portal/script"
 	"github.com/sirupsen/logrus"
 )
@@ -14,6 +13,6 @@ func (p Advice07) Name() string {
 }
 
 func (p Advice07) Enter(l logrus.FieldLogger, c script.Context) bool {
-	character.ShowInstruction(l, c)("You can view the World Map by pressing the #e#b[W]#k#nkey.", 350, 5)
+	script.ShowInstruction(l, c)("You can view the World Map by pressing the #e#b[W]#k#nkey.", 350, 5)
 	return true
 }

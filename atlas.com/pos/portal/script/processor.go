@@ -1,7 +1,11 @@
 package script
 
 import (
+	"atlas-pos/character"
 	"atlas-pos/kafka/producers"
+	_map "atlas-pos/map"
+	"atlas-pos/monster"
+	"atlas-pos/party"
 	"atlas-pos/portal/blocked"
 	"atlas-pos/reactor"
 	"errors"
@@ -125,4 +129,182 @@ func GetEventProperty(l logrus.FieldLogger, c Context) func(key string) string {
 	return func(key string) string {
 		return ""
 	}
+}
+
+func WarpById(l logrus.FieldLogger, c Context) func(mapId uint32, portalId uint32) {
+	return func(mapId uint32, portalId uint32) {
+		character.WarpById(l)(c.WorldId(), c.ChannelId(), c.CharacterId(), mapId, portalId)
+	}
+}
+
+func WarpByName(l logrus.FieldLogger, c Context) func(mapId uint32, portalName string) {
+	return func(mapId uint32, portalName string) {
+		character.WarpByName(l)(c.WorldId(), c.ChannelId(), c.CharacterId(), mapId, portalName)
+	}
+}
+
+func WarpRandom(l logrus.FieldLogger, c Context) func(mapId uint32) {
+	return func(mapId uint32) {
+		character.WarpRandom(l)(c.WorldId(), c.ChannelId(), c.CharacterId(), mapId)
+	}
+}
+
+func SendPinkNotice(l logrus.FieldLogger, c Context) func(token string) {
+	return func(token string) {
+		character.SendPinkNotice(l)(c.WorldId(), c.ChannelId(), c.CharacterId(), token)
+	}
+}
+
+func EnableActions(l logrus.FieldLogger, c Context) {
+	character.EnableActions(l)(c.WorldId(), c.ChannelId(), c.CharacterId())
+}
+
+func GainExperience(l logrus.FieldLogger, c Context) func(amount int32) {
+	return func(amount int32) {
+		character.GainExperience(l)(c.CharacterId(), amount)
+	}
+}
+
+func ShowInstruction(l logrus.FieldLogger, c Context) func(message string, width int16, height int16) {
+	return func(message string, width int16, height int16) {
+		character.ShowInstruction(l)(c.WorldId(), c.ChannelId(), c.CharacterId(), message, width, height)
+	}
+}
+
+func HasLevel30Character(l logrus.FieldLogger, c Context) bool {
+	return character.HasLevel30Character(l)(c.CharacterId())
+}
+
+func ShowIntro(l logrus.FieldLogger, c Context) func(path string) {
+	return func(path string) {
+		l.Infof("call to unhandled ShowIntro.")
+		//TODO
+	}
+}
+
+func PlaySound(l logrus.FieldLogger, c Context) func(path string) {
+	return func(path string) {
+		l.Infof("call to unhandled PlaySound.")
+		//TODO
+	}
+}
+
+func TeachSkill(l logrus.FieldLogger, c Context) func(skillId uint32, level int8, masterLevel int8, expiration int64) {
+	return func(skillId uint32, level int8, masterLevel int8, expiration int64) {
+		l.Infof("call to unhandled TeachSkill.")
+		//TODO
+	}
+}
+func HasItem(l logrus.FieldLogger, c Context) func(itemId uint32) bool {
+	return func(itemId uint32) bool {
+		l.Infof("call to unhandled HasItem.")
+		//TODO
+		return false
+	}
+}
+
+func Morphed(l logrus.FieldLogger, c Context) func(morphId uint32) bool {
+	return func(morphId uint32) bool {
+		l.Infof("call to unhandled Morphed.")
+		//TODO
+		return false
+	}
+}
+
+func CanHold(l logrus.FieldLogger, c Context) func(itemId uint32, quantity int16) bool {
+	return func(itemId uint32, quantity int16) bool {
+		l.Infof("call to unhandled CanHold.")
+		//TODO
+		return false
+	}
+}
+
+func GainItem(l logrus.FieldLogger, c Context) func(itemId uint32, quantity int16) {
+	return func(itemId uint32, quantity int16) {
+		l.Infof("call to unhandled GainItem.")
+		//TODO
+	}
+}
+
+func EarnTitle(l logrus.FieldLogger, c Context) func(message string) {
+	return func(message string) {
+		l.Infof("call to unhandled EarnTitle.")
+		//TODO
+	}
+}
+
+func LockUI(l logrus.FieldLogger, c Context) func() {
+	return func() {
+		//TODO
+	}
+}
+
+func UnlockUI(l logrus.FieldLogger, c Context) {
+	//TODO
+}
+
+func GetParty(l logrus.FieldLogger, c Context) (*party.Model, bool) {
+	//TODO
+	return nil, false
+}
+
+func PartyLeader(l logrus.FieldLogger, c Context) bool {
+	//TODO
+	return false
+}
+
+func SetNPCCooldown(l logrus.FieldLogger, c Context) func(time int64) {
+	return func(time int64) {
+
+	}
+}
+
+func NPCCooldown(l logrus.FieldLogger, c Context) int64 {
+	return 0
+}
+
+func DojoPoints(l logrus.FieldLogger, c Context) uint32 {
+	return DojoPointsOtherCharacter(l, c)(c.CharacterId())
+}
+
+func DojoPointsOtherCharacter(l logrus.FieldLogger, c Context) func(characterId uint32) uint32 {
+	return func(characterId uint32) uint32 {
+		return 0
+	}
+}
+
+func AwardDojoPoints(l logrus.FieldLogger, c Context) func(amount uint32) {
+	return func(amount uint32) {
+		AwardDojoPointsOtherCharacter(l, c)(c.CharacterId(), amount)
+	}
+}
+
+func AwardDojoPointsOtherCharacter(l logrus.FieldLogger, c Context) func(characterId uint32, amount uint32) {
+	return func(characterId uint32, amount uint32) {
+
+	}
+}
+
+func PlayPortalSound(l logrus.FieldLogger, c Context) {
+	character.PlayPortalSound(l)(c.CharacterId())
+}
+
+func MonsterById(l logrus.FieldLogger, c Context) func(monsterId uint32) *monster.Model {
+	return func(monsterId uint32) *monster.Model {
+		return _map.MonsterById(l)(c.WorldId(), c.ChannelId(), c.MapId(), monsterId)
+	}
+}
+
+func ReactorByName(l logrus.FieldLogger, c Context) func(reactorName string) *reactor.Model {
+	return func(reactorName string) *reactor.Model {
+		return reactor.ByName(l)(c.WorldId(), c.ChannelId(), c.MapId(), reactorName)
+	}
+}
+
+func MonsterCount(l logrus.FieldLogger, c Context) int {
+	return _map.MonsterCount(l)(c.WorldId(), c.ChannelId(), c.MapId())
+}
+
+func CharactersInMap(l logrus.FieldLogger, c Context) []uint32 {
+	return _map.CharactersInMap(l)(c.WorldId(), c.ChannelId(), c.MapId())
 }

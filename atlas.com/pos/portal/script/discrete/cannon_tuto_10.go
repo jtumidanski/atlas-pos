@@ -1,7 +1,6 @@
 package discrete
 
 import (
-	"atlas-pos/character"
 	"atlas-pos/portal/script"
 	"github.com/sirupsen/logrus"
 )
@@ -14,6 +13,6 @@ func (p CannonTuto10) Name() string {
 }
 
 func (p CannonTuto10) Enter(l logrus.FieldLogger, c script.Context) bool {
-	character.UnlockUI(l, c)
+	script.UnlockUI(l, c)
 	return true
 }

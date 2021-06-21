@@ -1,7 +1,6 @@
 package discrete
 
 import (
-	"atlas-pos/character"
 	"atlas-pos/portal/script"
 	"github.com/sirupsen/logrus"
 )
@@ -19,8 +18,8 @@ func (p EnterMagiclibrar) Enter(l logrus.FieldLogger, c script.Context) bool {
 		//cml.setProperty("player", pi.getPlayer().getName());
 		//cml.startInstance(pi.getPlayer());
 	} else {
-		character.WarpById(l, c)(101000003, 8)
+		script.WarpById(l, c)(101000003, 8)
 	}
-	character.PlayPortalSound(l)
+	script.PlayPortalSound(l, c)
 	return true
 }

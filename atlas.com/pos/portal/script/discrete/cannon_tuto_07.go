@@ -1,7 +1,6 @@
 package discrete
 
 import (
-	"atlas-pos/character"
 	"atlas-pos/portal/script"
 	"github.com/sirupsen/logrus"
 )
@@ -15,7 +14,7 @@ func (p CannonTuto07) Name() string {
 
 func (p CannonTuto07) Enter(l logrus.FieldLogger, c script.Context) bool {
 	script.SetDirectionStatus(l, c)(true)
-	character.LockUI(l, c)
+	script.LockUI(l, c)
 	script.SpawnNPC(l, c)(579711, 1096012, -51, -97, 0, true)
 	script.SetNPCValue(l, c)(579711, "summon")
 	script.UpdateInfo(l, c)("fly", "579711")

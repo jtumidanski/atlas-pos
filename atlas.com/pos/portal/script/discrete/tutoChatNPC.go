@@ -1,7 +1,6 @@
 package discrete
 
 import (
-	"atlas-pos/character"
 	"atlas-pos/portal/script"
 	"github.com/sirupsen/logrus"
 )
@@ -14,7 +13,7 @@ func (p TutoChatNPC) Name() string {
 }
 
 func (p TutoChatNPC) Enter(l logrus.FieldLogger, c script.Context) bool {
-	if character.HasLevel30Character(l, c) {
+	if script.HasLevel30Character(l, c) {
 		script.OpenNPC(l, c)(2007)
 	}
 	script.BlockPortal(l, c)

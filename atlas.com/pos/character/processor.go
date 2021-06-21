@@ -2,9 +2,7 @@ package character
 
 import (
 	"atlas-pos/kafka/producers"
-	"atlas-pos/party"
 	"atlas-pos/portal"
-	"atlas-pos/portal/script"
 	"atlas-pos/rest/attributes"
 	"atlas-pos/rest/requests"
 	"errors"
@@ -12,15 +10,9 @@ import (
 	"strconv"
 )
 
-func PlayPortalSound(_ logrus.FieldLogger) {
-}
+func PlayPortalSound(l logrus.FieldLogger) func(characterId uint32) {
+	return func(characterId uint32) {
 
-func ShowInstruction(l logrus.FieldLogger, c script.Context) func(message string, width int16, height int16) {
-	return func(message string, width int16, height int16) {
-		err := requests.WorldChannel().CreateInstruction(c.WorldId(), c.ChannelId(), c.CharacterId(), message, width, height)
-		if err != nil {
-			l.WithError(err).Errorf("Sending message %s to character %d in world %d channel %d.", message, c.CharacterId(), c.WorldId(), c.ChannelId())
-		}
 	}
 }
 
@@ -50,6 +42,32 @@ func GetAccountCharacters(accountId uint32, worldId byte) ([]*Properties, error)
 		return nil, errors.New("unable to make character attributes")
 	}
 	return cas, nil
+}
+
+func ShowInstruction(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) {
+	return func(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) {
+		err := requests.WorldChannel().CreateInstruction(worldId, channelId, characterId, message, width, height)
+		if err != nil {
+			l.WithError(err).Errorf("Sending message %s to character %d in world %d channel %d.", message, characterId, worldId, channelId)
+		}
+	}
+}
+
+func HasLevel30Character(l logrus.FieldLogger) func(characterId uint32) bool {
+	return func(characterId uint32) bool {
+		p, err := GetPropertiesById(characterId)
+		if err != nil {
+			l.WithError(err).Errorf("Unable to retrieve character information for character %d.", characterId)
+			return false
+		}
+		cs, err := GetAccountCharacters(p.AccountId(), p.WorldId())
+		for _, p = range cs {
+			if p.Level() >= 30 {
+				return true
+			}
+		}
+		return false
+	}
 }
 
 func makeCharacterAttributes(ca *attributes.CharacterAttributesData) *Properties {
@@ -92,118 +110,50 @@ func makeCharacterAttributes(ca *attributes.CharacterAttributesData) *Properties
 	return &r
 }
 
-func HasLevel30Character(l logrus.FieldLogger, c script.Context) bool {
-	p, err := GetPropertiesById(c.CharacterId())
-	if err != nil {
-		l.WithError(err).Errorf("Unable to retrieve character information for character %d.", c.CharacterId())
-		return false
-	}
-	cs, err := GetAccountCharacters(p.AccountId(), p.WorldId())
-	for _, p = range cs {
-		if p.Level() >= 30 {
-			return true
-		}
-	}
-	return false
-}
-
-func WarpById(l logrus.FieldLogger, c script.Context) func(mapId uint32, portalId uint32) {
-	return func(mapId uint32, portalId uint32) {
-		producers.ChangeMap(l)(c.WorldId(), c.ChannelId(), c.CharacterId(), mapId, portalId)
-	}
-}
-
-func WarpByName(l logrus.FieldLogger, c script.Context) func(mapId uint32, portalName string) {
-	return func(mapId uint32, portalName string) {
-		por, err := portal.GetMapPortalByName(mapId, portalName)
-		if err != nil {
-			l.WithError(err).Errorf("Unable to lookup portal by name.")
-			return
-		}
-		WarpById(l, c)(mapId, por.Id())
-	}
-}
-
-func SendPinkNotice(l logrus.FieldLogger, c script.Context) func(token string) {
-	return func(token string) {
-		l.Infof("call to unhandled SendPinkNotice.")
-		//TODO
-	}
-}
-func ShowIntro(l logrus.FieldLogger, c script.Context) func(path string) {
-	return func(path string) {
-		l.Infof("call to unhandled ShowIntro.")
+func SendPinkNotice(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, token string) {
+	return func(worldId byte, channelId byte, characterId uint32, token string) {
 		//TODO
 	}
 }
 
-func PlaySound(l logrus.FieldLogger, c script.Context) func(path string) {
-	return func(path string) {
-		l.Infof("call to unhandled PlaySound.")
+func GainExperience(l logrus.FieldLogger) func(characterId uint32, amount int32) {
+	return func(characterId uint32, amount int32) {
 		//TODO
 	}
 }
 
-func TeachSkill(l logrus.FieldLogger, c script.Context) func(skillId uint32, level int8, masterLevel int8, expiration int64) {
-	return func(skillId uint32, level int8, masterLevel int8, expiration int64) {
-		l.Infof("call to unhandled TeachSkill.")
-		//TODO
-	}
-}
-func HasItem(l logrus.FieldLogger, c script.Context) func(itemId uint32) bool {
-	return func(itemId uint32) bool {
-		l.Infof("call to unhandled HasItem.")
-		//TODO
-		return false
-	}
-}
-
-func Morphed(l logrus.FieldLogger, c script.Context) func(morphId uint32) bool {
-	return func(morphId uint32) bool {
-		l.Infof("call to unhandled Morphed.")
-		//TODO
-		return false
-	}
-}
-
-func CanHold(l logrus.FieldLogger, c script.Context) func(itemId uint32, quantity int16) bool {
-	return func(itemId uint32, quantity int16) bool {
-		l.Infof("call to unhandled CanHold.")
-		//TODO
-		return false
-	}
-}
-
-func GainItem(l logrus.FieldLogger, c script.Context) func(itemId uint32, quantity int16) {
-	return func(itemId uint32, quantity int16) {
-		l.Infof("call to unhandled GainItem.")
+func ForceCompleteQuest(l logrus.FieldLogger) func(characterId uint32, questId uint32) {
+	return func(characterId uint32, questId uint32) {
 		//TODO
 	}
 }
 
-func EarnTitle(l logrus.FieldLogger, c script.Context) func(message string) {
-	return func(message string) {
-		l.Infof("call to unhandled EarnTitle.")
-		//TODO
+func WarpToPortal(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, mapId uint32, p portal.IdProvider) {
+	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, p portal.IdProvider) {
+		producers.ChangeMap(l)(worldId, channelId, characterId, mapId, p())
 	}
 }
 
-func LockUI(l logrus.FieldLogger, c script.Context) func() {
-	return func() {
-		//TODO
+func WarpRandom(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, mapId uint32) {
+	return func(worldId byte, channelId byte, characterId uint32, mapId uint32) {
+		WarpToPortal(l)(worldId, channelId, characterId, mapId, portal.RandomPortalIdProvider(l)(mapId))
 	}
 }
 
-func UnlockUI(l logrus.FieldLogger, c script.Context) {
-	//TODO
+func WarpById(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
+	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
+		WarpToPortal(l)(worldId, channelId, characterId, mapId, portal.FixedPortalIdProvider(portalId))
+	}
 }
 
-func GetParty(l logrus.FieldLogger, c script.Context) (*party.Model, bool) {
-	//TODO
-	return nil, false
+func WarpByName(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalName string) {
+	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalName string) {
+		WarpToPortal(l)(worldId, channelId, characterId, mapId, portal.ByNamePortalIdProvider(l)(mapId, portalName))
+	}
 }
 
-func PartyLeader(l logrus.FieldLogger, c script.Context) bool {
-	//TODO
-	return false
+func EnableActions(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32) {
+	return func(worldId byte, channelId byte, characterId uint32) {
+		producers.EnableActions(l)(characterId)
+	}
 }

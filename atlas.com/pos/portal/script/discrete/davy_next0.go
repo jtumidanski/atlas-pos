@@ -1,8 +1,6 @@
 package discrete
 
 import (
-	"atlas-pos/character"
-	_map "atlas-pos/map"
 	"atlas-pos/portal/script"
 	"github.com/sirupsen/logrus"
 )
@@ -15,12 +13,12 @@ func (p DavyNext0) Name() string {
 }
 
 func (p DavyNext0) Enter(l logrus.FieldLogger, c script.Context) bool {
-	if _map.MonsterCount(l, c)(c.MapId()) == 0 && p.passedGrindMode(c.MapId()) {
-		character.PlayPortalSound(l)
-		character.WarpById(l, c)(925100100, 0)
+	if script.MonsterCount(l, c) == 0 && p.passedGrindMode(c.MapId()) {
+		script.PlayPortalSound(l, c)
+		script.WarpById(l, c)(925100100, 0)
 		return true
 	} else {
-		character.SendPinkNotice(l, c)("PORTAL_NOT_YET_OPENED")
+		script.SendPinkNotice(l, c)("PORTAL_NOT_YET_OPENED")
 		return false
 	}
 }

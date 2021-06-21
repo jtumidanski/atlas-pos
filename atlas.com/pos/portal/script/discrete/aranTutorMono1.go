@@ -1,7 +1,6 @@
 package discrete
 
 import (
-	"atlas-pos/character"
 	"atlas-pos/portal/script"
 	"github.com/sirupsen/logrus"
 )
@@ -19,7 +18,7 @@ func (p AranTutorMono1) Enter(l logrus.FieldLogger, c script.Context) bool {
 	if script.ContainsAreaInfo(l, c)(21002, "mo2=o") {
 		return false
 	}
-	character.PlaySound(l, c)("Aran/balloon")
+	script.PlaySound(l, c)("Aran/balloon")
 	script.UpdateAreaInfo(l, c)(21002, "mo1=o;mo2=o")
 	script.ShowInfo(l, c)("Effect/OnUserEff.img/guideEffect/aranTutorial/legendBalloon2")
 	return true
