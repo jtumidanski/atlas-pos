@@ -316,3 +316,15 @@ func MonsterCount(l logrus.FieldLogger, c Context) int {
 func CharactersInMap(l logrus.FieldLogger, c Context) []uint32 {
 	return _map.CharactersInMap(l)(c.WorldId(), c.ChannelId(), c.MapId())
 }
+
+func QuestProgressInt(l logrus.FieldLogger, c Context) func(questId uint32, infoNumber int) int {
+	return func(questId uint32, infoNumber int) int {
+		return character.QuestProgressInt(l)(c.CharacterId(), questId, infoNumber)
+	}
+}
+
+func SetQuestProgress(l logrus.FieldLogger, c Context) func(questId uint32, infoNumber int, progress uint32) {
+	return func(questId uint32, infoNumber int, progress uint32) {
+		character.SetQuestProgress(l)(c.CharacterId(), questId, infoNumber, progress)
+	}
+}

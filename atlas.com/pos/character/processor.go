@@ -1,6 +1,7 @@
 package character
 
 import (
+	"atlas-pos/job"
 	"atlas-pos/kafka/producers"
 	"atlas-pos/portal"
 	"atlas-pos/rest/attributes"
@@ -155,5 +156,54 @@ func WarpByName(l logrus.FieldLogger) func(worldId byte, channelId byte, charact
 func EnableActions(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32) {
 	return func(worldId byte, channelId byte, characterId uint32) {
 		producers.EnableActions(l)(characterId)
+	}
+}
+
+func QuestProgressInt(l logrus.FieldLogger) func(characterId uint32, questId uint32, infoNumber int) int {
+	return func(characterId uint32, questId uint32, infoNumber int) int {
+		//TODO
+		return 0
+	}
+}
+
+func SetQuestProgress(l logrus.FieldLogger) func(characterId uint32, questId uint32, infoNumber int, progress uint32) {
+	return func(characterId uint32, questId uint32, infoNumber int, progress uint32) {
+		//TODO
+	}
+}
+
+type AttributeCriteria func(*Properties) bool
+
+func MeetsCriteria(l logrus.FieldLogger) func(characterId uint32, criteria ...AttributeCriteria) bool {
+	return func(characterId uint32, criteria ...AttributeCriteria) bool {
+		c, err := GetPropertiesById(characterId)
+		if err != nil {
+			l.WithError(err).Errorf("Unable to retrieve character %d for criteria check.", characterId)
+			return false
+		}
+		for _, check := range criteria {
+			if ok := check(c); !ok {
+				return false
+			}
+		}
+		return true
+	}
+}
+
+func IsJob(l logrus.FieldLogger) func(characterId uint32, option uint16) bool {
+	return func(characterId uint32, option uint16) bool {
+		return MeetsCriteria(l)(characterId, IsJobCriteria(option))
+	}
+}
+
+func IsJobCriteria(option uint16) AttributeCriteria {
+	return func(c *Properties) bool {
+		return job.IsA(c.JobId(), option)
+	}
+}
+
+func RemoveAll(l logrus.FieldLogger) func(characterId uint32, itemId uint32) {
+	return func(characterId uint32, itemId uint32) {
+		//TODO
 	}
 }

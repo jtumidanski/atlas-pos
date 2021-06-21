@@ -19,7 +19,7 @@ func (p EnterDisguise1) Enter(l logrus.FieldLogger, c script.Context) bool {
 		script.QuestStarted(l, c)(20303) ||
 		script.QuestStarted(l, c)(20304) ||
 		script.QuestStarted(l, c)(20305) {
-		if len(_map.CharactersInMap(l)(c.WorldId(), c.ChannelId(), 108010600)) > 0 {
+		if _map.CharacterCount(l)(c.WorldId(), c.ChannelId(), 108010600) > 0 {
 			script.SendPinkNotice(l, c)("SOMEONE_ALREADY_SEARCHING")
 			return false
 		}

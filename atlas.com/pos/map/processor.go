@@ -34,3 +34,31 @@ func CharactersInMap(l logrus.FieldLogger) func(worldId byte, channelId byte, ma
 		return []uint32{}
 	}
 }
+
+func CharacterCount(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId uint32) uint32 {
+	return func(worldId byte, channelId byte, mapId uint32) uint32 {
+		return uint32(len(CharactersInMap(l)(worldId, channelId, mapId)))
+	}
+}
+
+func ResetPartyQuest(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId uint32) {
+	return func(worldId byte, channelId byte, mapId uint32) {
+
+	}
+}
+
+func ResetPartyQuestLevel(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId uint32, level uint32) {
+	return func(worldId byte, channelId byte, mapId uint32, level uint32) {
+
+	}
+}
+
+func KillAllMonsters(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId uint32) {
+	return func(worldId byte, channelId byte, mapId uint32) {
+	}
+}
+
+func SpawnMonster(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId uint32, monsterId uint32, x int16, y int16) {
+	return func(worldId byte, channelId byte, mapId uint32, monsterId uint32, x int16, y int16) {
+	}
+}
