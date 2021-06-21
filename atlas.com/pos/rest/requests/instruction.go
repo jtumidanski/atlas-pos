@@ -36,7 +36,7 @@ func (c *worldChannel) CreateInstruction(worldId byte, channelId byte, character
 			},
 		},
 	}
-	_, err := post(fmt.Sprintf(instructionsResource, worldId, channelId, characterId), ar)
+	_, err := Post(fmt.Sprintf(instructionsResource, worldId, channelId, characterId), ar)
 	if err != nil {
 		return err
 	}

@@ -1,7 +1,7 @@
 package script
 
 import (
-	"atlas-pos/domain"
+	portal2 "atlas-pos/portal"
 	"github.com/sirupsen/logrus"
 )
 
@@ -10,7 +10,7 @@ type Context struct {
 	channelId   byte
 	characterId uint32
 	mapId       uint32
-	portal      *domain.PortalModel
+	portal      *portal2.Model
 }
 
 func (c Context) MapId() uint32 {
@@ -29,11 +29,11 @@ func (c Context) CharacterId() uint32 {
 	return c.characterId
 }
 
-func (c Context) Portal() *domain.PortalModel {
+func (c Context) Portal() *portal2.Model {
 	return c.portal
 }
 
-func NewContext(worldId byte, channelId byte, characterId uint32, mapId uint32, portal *domain.PortalModel) Context {
+func NewContext(worldId byte, channelId byte, characterId uint32, mapId uint32, portal *portal2.Model) Context {
 	return Context{
 		worldId:     worldId,
 		channelId:   channelId,

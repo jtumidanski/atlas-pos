@@ -1,22 +1,12 @@
 package portal
 
 import (
-	"atlas-pos/domain"
 	"atlas-pos/rest/attributes"
 	"atlas-pos/rest/requests"
-	"github.com/sirupsen/logrus"
 	"strconv"
 )
 
-type Processor struct {
-	l logrus.FieldLogger
-}
-
-func NewProcessor(l logrus.FieldLogger) *Processor {
-	return &Processor{l}
-}
-
-func (p *Processor) GetMapPortalById(mapId uint32, portalId uint32) (*domain.PortalModel, error) {
+func GetMapPortalById(mapId uint32, portalId uint32) (*Model, error) {
 	resp, err := requests.MapInformation().GetPortalById(mapId, portalId)
 	if err != nil {
 		return nil, err
@@ -32,7 +22,7 @@ func (p *Processor) GetMapPortalById(mapId uint32, portalId uint32) (*domain.Por
 	return &a, nil
 }
 
-func (p *Processor) GetMapPortalByName(mapId uint32, portalName string) (*domain.PortalModel, error) {
+func GetMapPortalByName(mapId uint32, portalName string) (*Model, error) {
 	resp, err := requests.MapInformation().GetPortalByName(mapId, portalName)
 	if err != nil {
 		return nil, err
@@ -48,6 +38,6 @@ func (p *Processor) GetMapPortalByName(mapId uint32, portalName string) (*domain
 	return &a, nil
 }
 
-func makePortal(id uint32, attr attributes.PortalAttributes) domain.PortalModel {
-	return domain.NewPortalModel(id, attr.Name, attr.Target, attr.TargetMapId, attr.Type, attr.X, attr.Y, attr.ScriptName)
+func makePortal(id uint32, attr attributes.PortalAttributes) Model {
+	return NewPortalModel(id, attr.Name, attr.Target, attr.TargetMapId, attr.Type, attr.X, attr.Y, attr.ScriptName)
 }

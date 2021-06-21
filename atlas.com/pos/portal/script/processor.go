@@ -1,214 +1,128 @@
 package script
 
 import (
-	"atlas-pos/character"
-	"atlas-pos/domain"
 	"atlas-pos/kafka/producers"
-	"atlas-pos/portal"
 	"atlas-pos/portal/blocked"
+	"atlas-pos/reactor"
 	"errors"
 	"github.com/sirupsen/logrus"
 )
 
-type Interaction struct {
-	l logrus.FieldLogger
-	c Context
+func OpenNPC(l logrus.FieldLogger, c Context) func(npcId uint32) {
+	return func(npcId uint32) {
+		l.Infof("call to unhandled OpenNPC for npc %d from character %d.", npcId, c.CharacterId())
+		//TODO
+	}
 }
 
-var Processor = func(l logrus.FieldLogger, c Context) *Interaction {
-	return &Interaction{l, c}
+func OpenNPCWithScript(l logrus.FieldLogger, c Context) func(npcId uint32, script string) {
+	return func(npcId uint32, script string) {
+		l.Infof("call to unhandled OpenNPC for npc %d from character %d.", npcId, c.CharacterId())
+		//TODO
+	}
 }
 
-func (p *Interaction) HasLevel30Character() bool {
-	cp := character.NewProcessor(p.l)
-	c, err := cp.GetCharacterAttributesById(p.c.CharacterId())
-	if err != nil {
-		p.l.WithError(err).Errorf("Unable to retrieve character information for character %d.", p.c.CharacterId())
+func BlockPortal(l logrus.FieldLogger, c Context) {
+	l.Infof("call to unhandled BlockPortal from character %d.", c.CharacterId())
+	blocked.GetCache().AddBlockedPortal(c.CharacterId(), c.portal.ScriptName())
+	producers.EnableActions(l)(c.CharacterId())
+}
+
+func QuestStarted(l logrus.FieldLogger, c Context) func(questId uint32) bool {
+	return func(questId uint32) bool {
+		l.Infof("call to unhandled QuestStarted for quest %d from character %d.", questId, c.CharacterId())
+		//TODO
 		return false
 	}
-	cs, err := cp.GetAccountCharacters(c.AccountId(), c.WorldId())
-	for _, c = range cs {
-		if c.Level() >= 30 {
-			return true
-		}
+}
+
+func ShowInfo(l logrus.FieldLogger, c Context) func(info string) {
+	return func(info string) {
+		l.Infof("call to unhandled ShowInfo for info %s from character %d.", info, c.CharacterId())
+		//TODO
 	}
-	return false
 }
 
-func (p *Interaction) PlayPortalSound() {
-	character.NewProcessor(p.l).PlayPortalSound()
-}
-
-func (p *Interaction) WarpById(mapId uint32, portalId uint32) {
-	producers.ChangeMap(p.l)(p.c.WorldId(), p.c.ChannelId(), p.c.CharacterId(), mapId, portalId)
-}
-
-func (p *Interaction) WarpByName(mapId uint32, portalName string) {
-	por, err := portal.NewProcessor(p.l).GetMapPortalByName(mapId, portalName)
-	if err != nil {
-		p.l.WithError(err).Errorf("Unable to lookup portal by name.")
-		return
+func GetSavedLocation(l logrus.FieldLogger, c Context) func(name string) (uint32, uint32) {
+	return func(name string) (uint32, uint32) {
+		l.Infof("call to unhandled GetSavedLocation for location %s.", name)
+		//TODO
+		return 0, 0
 	}
-	p.WarpById(mapId, por.Id())
 }
 
-func (p *Interaction) ShowInstruction(message string, width int16, height int16) {
-	character.NewProcessor(p.l).ShowInstruction(p.c.WorldId(), p.c.ChannelId(), p.c.CharacterId(), message, width, height)
+func GetReactor(l logrus.FieldLogger, c Context) func(mapId uint32, reactorName string) (*reactor.Model, error) {
+	return func(mapId uint32, reactorName string) (*reactor.Model, error) {
+		l.Infof("call to unhandled GetReactor for reactor %s in map %d.", reactorName, mapId)
+		return nil, errors.New("not implemented")
+	}
 }
 
-func (p *Interaction) OpenNPC(npcId uint32) {
-	p.l.Infof("call to unhandled OpenNPC for npc %d from character %d.", npcId, p.c.CharacterId())
-	//TODO
+func ContainsAreaInfo(l logrus.FieldLogger, c Context) func(areaId uint16, info string) bool {
+	return func(areaId uint16, info string) bool {
+		l.Infof("call to unhandled ContainsAreaInfo.")
+		//TODO
+		return false
+	}
 }
 
-func (p *Interaction) OpenNPCWithScript(npcId uint32, script string) {
-	p.l.Infof("call to unhandled OpenNPC for npc %d from character %d.", npcId, p.c.CharacterId())
-	//TODO
+func UpdateAreaInfo(l logrus.FieldLogger, c Context) func(areaId uint16, info string) {
+	return func(areaId uint16, info string) {
+		l.Infof("call to unhandled UpdateAreaInfo.")
+		//TODO
+	}
 }
 
-func (p *Interaction) BlockPortal() {
-	p.l.Infof("call to unhandled BlockPortal from character %d.", p.c.CharacterId())
-	blocked.GetCache().AddBlockedPortal(p.c.characterId, p.c.portal.ScriptName())
-	producers.EnableActions(p.l)(p.c.characterId)
+func QuestCompleted(l logrus.FieldLogger, c Context) func(questId uint32) bool {
+	return func(questId uint32) bool {
+		l.Infof("call to unhandled QuestCompleted for quest %d from character %d.", questId, c.CharacterId())
+		//TODO
+		return false
+	}
 }
 
-func (p *Interaction) QuestStarted(questId uint32) bool {
-	p.l.Infof("call to unhandled QuestStarted for quest %d from character %d.", questId, p.c.CharacterId())
-	//TODO
-	return false
+func SetDirectionStatus(l logrus.FieldLogger, c Context) func(b bool) {
+	return func(b bool) {
+		//TODO
+	}
 }
 
-func (p *Interaction) ShowInfo(info string) {
-	p.l.Infof("call to unhandled ShowInfo for info %s from character %d.", info, p.c.CharacterId())
-	//TODO
+func SpawnNPC(l logrus.FieldLogger, c Context) func(npcId uint32, i2 int, i3 int, i4 int, i5 int, b bool) {
+	return func(npcId uint32, i2 int, i3 int, i4 int, i5 int, b bool) {
+		//TODO
+	}
 }
 
-func (p *Interaction) GetSavedLocation(name string) (uint32, uint32) {
-	p.l.Infof("call to unhandled GetSavedLocation for location %s.", name)
-	//TODO
-	return 0, 0
+func SetNPCValue(l logrus.FieldLogger, c Context) func(npdId uint32, value string) {
+	return func(npdId uint32, value string) {
+		//TODO
+	}
 }
 
-func (p *Interaction) SendPinkNotice(token string) {
-	p.l.Infof("call to unhandled SendPinkNotice.")
-	//TODO
+func UpdateInfo(l logrus.FieldLogger, c Context) func(key string, value string) {
+	return func(key string, value string) {
+		//TODO
+	}
 }
 
-func (p *Interaction) GetReactor(mapId uint32, reactorName string) (*domain.ReactorModel, error) {
-	p.l.Infof("call to unhandled GetReactor for reactor %s in map %d.", reactorName, mapId)
-	return nil, errors.New("not implemented")
+func SendDirectionInfo(l logrus.FieldLogger, c Context) func(i int, i2 int) {
+	return func(i int, i2 int) {
+		//TODO
+	}
 }
 
-func (p *Interaction) ContainsAreaInfo(areaId uint16, info string) bool {
-	p.l.Infof("call to unhandled ContainsAreaInfo.")
-	//TODO
-	return false
+func StartEvent(l logrus.FieldLogger, c Context) func(eventName string, partyId uint32, mapId uint32, state int) error {
+	return func(eventName string, partyId uint32, mapId uint32, state int) error {
+		return nil
+	}
 }
 
-func (p *Interaction) UpdateAreaInfo(areaId uint16, info string) {
-	p.l.Infof("call to unhandled UpdateAreaInfo.")
-	//TODO
-}
-
-func (p *Interaction) ShowIntro(path string) {
-	p.l.Infof("call to unhandled ShowIntro.")
-	//TODO
-}
-
-func (p *Interaction) PlaySound(path string) {
-	p.l.Infof("call to unhandled PlaySound.")
-	//TODO
-}
-
-func (p *Interaction) TeachSkill(skillId uint32, level int8, masterLevel int8, expiration int64) {
-	p.l.Infof("call to unhandled TeachSkill.")
-	//TODO
-}
-
-func (p *Interaction) QuestCompleted(questId uint32) bool {
-	p.l.Infof("call to unhandled QuestCompleted for quest %d from character %d.", questId, p.c.CharacterId())
-	//TODO
-	return false
-}
-
-func (p *Interaction) HasItem(itemId uint32) bool {
-	p.l.Infof("call to unhandled HasItem.")
-	//TODO
-	return false
-}
-
-func (p *Interaction) Morphed(morphId uint32) bool {
-	p.l.Infof("call to unhandled Morphed.")
-	//TODO
-	return false
-}
-
-func (p *Interaction) CanHold(itemId uint32, quantity int16) bool {
-	p.l.Infof("call to unhandled CanHold.")
-	//TODO
-	return false
-}
-
-func (p *Interaction) GainItem(itemId uint32, quantity int16) {
-	p.l.Infof("call to unhandled GainItem.")
-	//TODO
-}
-
-func (p *Interaction) EarnTitle(message string) {
-	p.l.Infof("call to unhandled EarnTitle.")
-	//TODO
-}
-
-func (p *Interaction) SetDirectionStatus(b bool) {
-	//TODO
-}
-
-func (p *Interaction) LockUI() {
-	//TODO
-}
-
-func (p *Interaction) SpawnNPC(npcId uint32, i2 int, i3 int, i4 int, i5 int, b bool) {
-	//TODO
-}
-
-func (p *Interaction) SetNPCValue(npdId uint32, value string) {
-	//TODO
-}
-
-func (p *Interaction) UpdateInfo(key string, value string) {
-	//TODO
-}
-
-func (p *Interaction) SendDirectionInfo(i int, i2 int) {
-	//TODO
-}
-
-func (p *Interaction) UnlockUI() {
-	//TODO
-}
-
-func (p *Interaction) GetParty() (*domain.PartyModel, bool) {
-	//TODO
-	return nil, false
-}
-
-func (p *Interaction) PartyLeader() bool {
-	//TODO
-	return false
-}
-
-func (p *Interaction) StartEvent(eventName string, partyId uint32, mapId uint32, state int) error {
-	return nil
-}
-
-func (p *Interaction) GetHourOfDay() uint32 {
+func GetHourOfDay(l logrus.FieldLogger) uint32 {
 	return 0
 }
 
-func (p *Interaction) MapMonsterCount(mapId uint32) int {
-	return 0
-}
-
-func (p *Interaction) GetEventProperty(key string) string {
-	return ""
+func GetEventProperty(l logrus.FieldLogger, c Context) func(key string) string {
+	return func(key string) string {
+		return ""
+	}
 }

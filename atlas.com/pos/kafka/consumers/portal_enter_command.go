@@ -1,12 +1,12 @@
 package consumers
 
 import (
-	"atlas-pos/domain"
 	"atlas-pos/kafka/handler"
 	"atlas-pos/kafka/producers"
 	"atlas-pos/portal"
 	"atlas-pos/portal/blocked"
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/registry"
 	"github.com/sirupsen/logrus"
 )
 
@@ -27,9 +27,7 @@ func PortalEnterCommandCreator() handler.EmptyEventCreator {
 func HandlePortalEnterCommand() handler.EventHandler {
 	return func(l logrus.FieldLogger, e interface{}) {
 		if event, ok := e.(*PortalEnterCommand); ok {
-			p := portal.NewProcessor(l)
-
-			model, err := p.GetMapPortalById(event.MapId, event.PortalId)
+			model, err := portal.GetMapPortalById(event.MapId, event.PortalId)
 			if err != nil {
 				l.WithError(err).Warnf("Unable to locate portal %d for map %d.", event.MapId, event.PortalId)
 				return
@@ -41,10 +39,8 @@ func HandlePortalEnterCommand() handler.EventHandler {
 	}
 }
 
-func enterPortal(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, mapId uint32, model *domain.PortalModel) {
-	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, model *domain.PortalModel) {
-		p := portal.NewProcessor(l)
-
+func enterPortal(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, mapId uint32, model *portal.Model) {
+	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, model *portal.Model) {
 		// TODO check portal delay
 		if model == nil || blocked.GetCache().Blocked(characterId, model.ScriptName()) {
 			producers.EnableActions(l)(characterId)
@@ -54,7 +50,7 @@ func enterPortal(l logrus.FieldLogger) func(worldId byte, channelId byte, charac
 		changed := false
 		if model.ScriptName() != "" {
 			// execute portal script
-			s, err := script.GetScriptRegistry().GetScript(model.ScriptName())
+			s, err := registry.GetScriptRegistry().GetScript(model.ScriptName())
 			if err != nil {
 				l.WithError(err).Warnf("Missing script %s for portal %d.", model.ScriptName(), model.Id())
 				producers.EnableActions(l)(characterId)
@@ -71,10 +67,10 @@ func enterPortal(l logrus.FieldLogger) func(worldId byte, channelId byte, charac
 		} else if model.TargetMapId() != 999999999 {
 			// invalidate map change if trying to move with chalkboard open, and target is a free market map.
 
-			toPortal, err := p.GetMapPortalByName(model.TargetMapId(), model.Target())
+			toPortal, err := portal.GetMapPortalByName(model.TargetMapId(), model.Target())
 			if err != nil {
 				l.WithError(err).Infof("Unable to locate portal target %s for map %d, defaulting to portal 0.", model.Target(), model.TargetMapId())
-				toPortal, err = p.GetMapPortalById(model.TargetMapId(), 0)
+				toPortal, err = portal.GetMapPortalById(model.TargetMapId(), 0)
 				if err != nil {
 					l.WithError(err).Errorf("Unable to locate portal 0 for map %d, is the destination map invalid?", model.TargetMapId())
 					producers.EnableActions(l)(characterId)

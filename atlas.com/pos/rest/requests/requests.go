@@ -11,7 +11,7 @@ const (
 	BaseRequest string = "http://atlas-nginx:80"
 )
 
-func get(url string, resp interface{}) error {
+func Get(url string, resp interface{}) error {
 	r, err := http.Get(url)
 	if err != nil {
 		return err
@@ -21,7 +21,7 @@ func get(url string, resp interface{}) error {
 	return err
 }
 
-func post(url string, input interface{}) (*http.Response, error) {
+func Post(url string, input interface{}) (*http.Response, error) {
 	jsonReq, err := json.Marshal(input)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ func post(url string, input interface{}) (*http.Response, error) {
 	return r, nil
 }
 
-func delete(url string) (*http.Response, error) {
+func Delete(url string) (*http.Response, error) {
 	client := &http.Client{}
 	r, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
