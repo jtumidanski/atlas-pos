@@ -68,3 +68,13 @@ func SpawnMonster(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId
 	return func(worldId byte, channelId byte, mapId uint32, monsterId uint32, x int16, y int16) {
 	}
 }
+
+func ResetMapObjects(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId uint32) {
+	return func(worldId byte, channelId byte, mapId uint32) {
+	}
+}
+
+func ShuffleReactors(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId uint32) {
+	return func(worldId byte, channelId byte, mapId uint32) {
+	}
+}
