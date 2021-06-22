@@ -163,6 +163,12 @@ func SendPinkNotice(l logrus.FieldLogger, c Context) func(token string) {
 	}
 }
 
+func SendLightBlueNotice(l logrus.FieldLogger, c Context) func(token string) {
+	return func(token string) {
+
+	}
+}
+
 func EnableActions(l logrus.FieldLogger, c Context) {
 	character.EnableActions(l)(c.WorldId(), c.ChannelId(), c.CharacterId())
 }
