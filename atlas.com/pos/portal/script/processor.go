@@ -58,7 +58,7 @@ func ShowInfo(l logrus.FieldLogger, c Context) func(info string) {
 
 func ShowEffect(l logrus.FieldLogger, c Context) func(path string) {
 	return func(path string) {
-		l.Infof("call to unhandled ShowInfo for info %s from character %d.", info, c.CharacterId())
+		l.Infof("call to unhandled ShowInfo for info %s from character %d.", path, c.CharacterId())
 		//TODO
 	}
 }
@@ -357,4 +357,16 @@ func SetQuestProgress(l logrus.FieldLogger, c Context) func(questId uint32, info
 
 func RunMapScript(l logrus.FieldLogger, c Context) {
 
+}
+
+func MapEffect(l logrus.FieldLogger, c Context) func(path string) {
+	return func(path string) {
+
+	}
+}
+
+func UseItem(l logrus.FieldLogger, c Context) func(itemId uint32) {
+	return func(itemId uint32) {
+		character.UseItem(l)(c.CharacterId(), itemId)
+	}
 }

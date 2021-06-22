@@ -237,3 +237,9 @@ func GetGender(l logrus.FieldLogger) func(characterId uint32) byte {
 		return c.Gender()
 	}
 }
+
+func UseItem(l logrus.FieldLogger) func(characterId uint32, itemId uint32) {
+	return func(characterId uint32, itemId uint32) {
+		//TODO
+	}
+}
