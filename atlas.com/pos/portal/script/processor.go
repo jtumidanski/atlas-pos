@@ -56,6 +56,13 @@ func ShowInfo(l logrus.FieldLogger, c Context) func(info string) {
 	}
 }
 
+func ShowEffect(l logrus.FieldLogger, c Context) func(path string) {
+	return func(path string) {
+		l.Infof("call to unhandled ShowInfo for info %s from character %d.", info, c.CharacterId())
+		//TODO
+	}
+}
+
 func SaveLocation(l logrus.FieldLogger, c Context) func(name string) {
 	return func(name string) {
 
