@@ -250,3 +250,28 @@ func ItemQuantity(l logrus.FieldLogger) func(characterId uint32, itemId uint32) 
 		return 0
 	}
 }
+
+func QuestProgress(l logrus.FieldLogger) func(characterId uint32, questId uint32) string {
+	return func(characterId uint32, questId uint32) string {
+		//TODO
+		return ""
+	}
+}
+
+func AboveLevel(l logrus.FieldLogger) func(characterId uint32, level byte) bool {
+	return func(characterId uint32, level byte) bool {
+		return MeetsCriteria(l)(characterId, AboveLevelCriteria(level))
+	}
+}
+
+func AboveLevelCriteria(level byte) AttributeCriteria {
+	return func(c *Properties) bool {
+		return c.Level() > level
+	}
+}
+
+func GuideHint(l logrus.FieldLogger) func(characterId uint32, hint uint32) {
+	return func(characterId uint32, hint uint32) {
+		//TODO
+	}
+}

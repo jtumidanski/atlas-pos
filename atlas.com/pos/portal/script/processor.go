@@ -378,6 +378,9 @@ func UseItem(l logrus.FieldLogger, c Context) func(itemId uint32) {
 	}
 }
 
+func SpawnGuide(l logrus.FieldLogger, c Context) {
+}
+
 func TalkGuide(l logrus.FieldLogger, c Context) func(message string) {
 	return func(message string) {
 
@@ -386,4 +389,30 @@ func TalkGuide(l logrus.FieldLogger, c Context) func(message string) {
 
 func RemoveGuide(l logrus.FieldLogger, c Context) {
 
+}
+
+func QuestProgress(l logrus.FieldLogger, c Context) func(questId uint32) string {
+	return func(questId uint32) string {
+		return character.QuestProgress(l)(c.CharacterId(), questId)
+	}
+}
+
+func HasItems(l logrus.FieldLogger, c Context) func(itemId uint32, amount int16) bool {
+	return func(itemId uint32, amount int16) bool {
+		l.Infof("call to unhandled HasItem.")
+		//TODO
+		return false
+	}
+}
+
+func CancelItem(l logrus.FieldLogger, c Context) func(itemId uint32) {
+	return func(itemId uint32) {
+
+	}
+}
+
+func GuideHint(l logrus.FieldLogger, c Context) func(hint uint32) {
+	return func(hint uint32) {
+		character.GuideHint(l)(c.CharacterId(), hint)
+	}
 }
