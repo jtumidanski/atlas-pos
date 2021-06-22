@@ -1,0 +1,27 @@
+package discrete
+
+import (
+	"atlas-pos/portal/script"
+	"github.com/sirupsen/logrus"
+)
+
+type Kpq3 struct {
+}
+
+func (p Kpq3) Name() string {
+	return "kpq3"
+}
+
+func (p Kpq3) Enter(l logrus.FieldLogger, c script.Context) bool {
+	//EventInstanceManager eim = pi.getPlayer().getEventInstance()
+	//MapleMap target = eim.getMapInstance(103000804)
+	//if (eim.getProperty("4stageclear") != null) {
+	//	pi.playPortalSound()
+	//	pi.getPlayer().changeMap(target, target.getPortal("st00"))
+	//	return true
+	//}
+	//else {
+	script.SendPinkNotice(l, c)("PORTAL_NOT_YET_OPENED")
+	return false
+	//}
+}

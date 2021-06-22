@@ -6,6 +6,7 @@ import (
 	_map "atlas-pos/map"
 	"atlas-pos/monster"
 	"atlas-pos/party"
+	"atlas-pos/portal"
 	"atlas-pos/portal/blocked"
 	"atlas-pos/reactor"
 	"errors"
@@ -55,12 +56,24 @@ func ShowInfo(l logrus.FieldLogger, c Context) func(info string) {
 	}
 }
 
+func SaveLocation(l logrus.FieldLogger, c Context) func(name string) {
+	return func(name string) {
+
+	}
+}
+
 func GetSavedLocation(l logrus.FieldLogger, c Context) func(name string) (uint32, uint32) {
 	return func(name string) (uint32, uint32) {
 		l.Infof("call to unhandled GetSavedLocation for location %s.", name)
 		//TODO
 		return 0, 0
 	}
+}
+
+func GetMarketPortal(l logrus.FieldLogger, c Context) (uint32, uint32) {
+	mapId, _ := GetSavedLocation(l, c)("FREE_MARKET")
+	portalId := portal.MarketPortalIdProvider(l)(mapId)()
+	return mapId, portalId
 }
 
 func GetReactor(l logrus.FieldLogger, c Context) func(mapId uint32, reactorName string) (*reactor.Model, error) {
@@ -335,6 +348,6 @@ func SetQuestProgress(l logrus.FieldLogger, c Context) func(questId uint32, info
 	}
 }
 
-func RunMapScript(l logrus.FieldLogger, c Context)  {
+func RunMapScript(l logrus.FieldLogger, c Context) {
 
 }

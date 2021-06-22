@@ -4,6 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"math/rand"
 	"strconv"
+	"strings"
 )
 
 type IdProvider func() uint32
@@ -38,6 +39,29 @@ func RandomPortalIdProvider(l logrus.FieldLogger) func(mapId uint32) IdProvider 
 			if len(ps) == 0 {
 				l.Warnf("No portals in map %d. Defaulting to zero.", mapId)
 				return 0
+			}
+			return ps[rand.Intn(len(ps))].Id()
+		}
+	}
+}
+
+func MarketPortalIdProvider(l logrus.FieldLogger) func(mapId uint32) IdProvider {
+	return func(mapId uint32) IdProvider {
+		return func() uint32 {
+			ps, err := ForMap(mapId)
+			if err != nil {
+				l.WithError(err).Errorf("Unable to retrieve portals for map %d. Defaulting to 0.", mapId)
+				return 0
+			}
+			if len(ps) == 0 {
+				l.Warnf("No portals in map %d. Defaulting to zero.", mapId)
+				return 0
+			}
+
+			for _, p := range ps {
+				if p.ScriptName() != "" && strings.Contains(p.ScriptName(), "market") {
+					return p.Id()
+				}
 			}
 			return ps[rand.Intn(len(ps))].Id()
 		}
