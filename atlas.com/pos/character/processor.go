@@ -123,7 +123,19 @@ func GainExperience(l logrus.FieldLogger) func(characterId uint32, amount int32)
 	}
 }
 
+func ForceCompleteQuestViaNPC(l logrus.FieldLogger) func(characterId uint32, questId uint32, npcId uint32) {
+	return func(characterId uint32, questId uint32, npcId uint32) {
+		//TODO
+	}
+}
+
 func ForceCompleteQuest(l logrus.FieldLogger) func(characterId uint32, questId uint32) {
+	return func(characterId uint32, questId uint32) {
+		//TODO
+	}
+}
+
+func ForceStartQuest(l logrus.FieldLogger) func(characterId uint32, questId uint32) {
 	return func(characterId uint32, questId uint32) {
 		//TODO
 	}
@@ -202,8 +214,26 @@ func IsJobCriteria(option uint16) AttributeCriteria {
 	}
 }
 
+func IsJobNiche(option uint16) AttributeCriteria {
+	return func(c *Properties) bool {
+		//TODO
+		return job.IsA(c.JobId(), option)
+	}
+}
+
 func RemoveAll(l logrus.FieldLogger) func(characterId uint32, itemId uint32) {
 	return func(characterId uint32, itemId uint32) {
 		//TODO
+	}
+}
+
+func GetGender(l logrus.FieldLogger) func(characterId uint32) byte {
+	return func(characterId uint32) byte {
+		c, err := GetPropertiesById(characterId)
+		if err != nil {
+			l.WithError(err).Errorf("Unable to retrieve character %d.", characterId)
+			return 0
+		}
+		return c.Gender()
 	}
 }

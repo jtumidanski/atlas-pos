@@ -7,3 +7,9 @@ func ByName(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId uint3
 		return nil
 	}
 }
+
+func ForceHit(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId uint32, readtorId uint32, state byte) {
+	return func(worldId byte, channelId byte, mapId uint32, readtorId uint32, state byte) {
+
+	}
+}

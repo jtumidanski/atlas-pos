@@ -310,7 +310,7 @@ func ReactorByName(l logrus.FieldLogger, c Context) func(reactorName string) *re
 }
 
 func MonsterCount(l logrus.FieldLogger, c Context) int {
-	return _map.MonsterCount(l)(c.WorldId(), c.ChannelId(), c.MapId())
+	return _map.MonstersCount(l)(c.WorldId(), c.ChannelId(), c.MapId())
 }
 
 func CharactersInMap(l logrus.FieldLogger, c Context) []uint32 {
@@ -327,4 +327,8 @@ func SetQuestProgress(l logrus.FieldLogger, c Context) func(questId uint32, info
 	return func(questId uint32, infoNumber int, progress uint32) {
 		character.SetQuestProgress(l)(c.CharacterId(), questId, infoNumber, progress)
 	}
+}
+
+func RunMapScript(l logrus.FieldLogger, c Context)  {
+
 }

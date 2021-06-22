@@ -18,6 +18,6 @@ func (p EnterDollcave) Enter(l logrus.FieldLogger, c script.Context) bool {
 		script.WarpById(l, c)(105040201, 2)
 		return true
 	}
-	script.OpenNPC(l, c)(1063011, "PupeteerPassword")
+	script.OpenNPCWithScript(l, c)(1063011, "PupeteerPassword")
 	return false
 }

@@ -17,8 +17,14 @@ func DojoPartyArea(mapId uint32) bool {
 	return mapId >= 925030100 && mapId < 925040000
 }
 
-func MonsterCount(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId uint32) int {
+func MonstersCount(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId uint32) int {
 	return func(worldId byte, channelId byte, mapId uint32) int {
+		return 0
+	}
+}
+
+func MonsterCount(l logrus.FieldLogger) func(worldId byte, channelId byte, mapId uint32, monsterId uint32) int {
+	return func(worldId byte, channelId byte, mapId uint32, monsterId uint32) int {
 		return 0
 	}
 }
