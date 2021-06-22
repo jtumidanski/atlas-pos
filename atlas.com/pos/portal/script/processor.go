@@ -56,6 +56,13 @@ func ShowInfo(l logrus.FieldLogger, c Context) func(info string) {
 	}
 }
 
+func ShowInfoText(l logrus.FieldLogger, c Context) func(message string) {
+	return func(info string) {
+		l.Infof("call to unhandled ShowInfo for info %s from character %d.", info, c.CharacterId())
+		//TODO
+	}
+}
+
 func ShowEffect(l logrus.FieldLogger, c Context) func(path string) {
 	return func(path string) {
 		l.Infof("call to unhandled ShowInfo for info %s from character %d.", path, c.CharacterId())
@@ -369,4 +376,14 @@ func UseItem(l logrus.FieldLogger, c Context) func(itemId uint32) {
 	return func(itemId uint32) {
 		character.UseItem(l)(c.CharacterId(), itemId)
 	}
+}
+
+func TalkGuide(l logrus.FieldLogger, c Context) func(message string) {
+	return func(message string) {
+
+	}
+}
+
+func RemoveGuide(l logrus.FieldLogger, c Context) {
+
 }

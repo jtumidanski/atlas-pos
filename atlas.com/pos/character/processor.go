@@ -243,3 +243,10 @@ func UseItem(l logrus.FieldLogger) func(characterId uint32, itemId uint32) {
 		//TODO
 	}
 }
+
+func ItemQuantity(l logrus.FieldLogger) func(characterId uint32, itemId uint32) uint32 {
+	return func(characterId uint32, itemId uint32) uint32 {
+		//TODO
+		return 0
+	}
+}
