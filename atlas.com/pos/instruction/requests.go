@@ -1,13 +1,13 @@
-package requests
+package instruction
 
 import (
-	"atlas-pos/rest/attributes"
+	"atlas-pos/rest/requests"
 	"fmt"
 )
 
 const (
 	worldChannelPrefix      string = "/ms/csrv/"
-	worldChannelService            = BaseRequest + worldChannelPrefix
+	worldChannelService            = requests.BaseRequest + worldChannelPrefix
 	worldsResource                 = worldChannelService + "worlds"
 	worldResource                  = worldsResource + "/%d"
 	channelsResource               = worldResource + "/channels"
@@ -17,26 +17,19 @@ const (
 	instructionsResource           = worldCharacterResource + "/instructions"
 )
 
-var WorldChannel = func() *worldChannel {
-	return &worldChannel{}
-}
-
-type worldChannel struct {
-}
-
-func (c *worldChannel) CreateInstruction(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) error {
-	ar := &attributes.InstructionInputDataContainer{
-		Data: attributes.InstructionData{
+func Create(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) error {
+	ar := &InputDataContainer{
+		Data: DataBody{
 			Id:   "0",
 			Type: "Instruction",
-			Attributes: attributes.InstructionAttributes{
+			Attributes: Attributes{
 				Message: message,
 				Width:   width,
 				Height:  height,
 			},
 		},
 	}
-	_, err := Post(fmt.Sprintf(instructionsResource, worldId, channelId, characterId), ar)
+	_, err := requests.Post(fmt.Sprintf(instructionsResource, worldId, channelId, characterId), ar)
 	if err != nil {
 		return err
 	}

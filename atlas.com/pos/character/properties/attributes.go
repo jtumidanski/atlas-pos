@@ -1,4 +1,4 @@
-package attributes
+package properties
 
 import "atlas-pos/rest/response"
 
