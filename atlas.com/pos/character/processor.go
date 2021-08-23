@@ -17,32 +17,36 @@ func PlayPortalSound(l logrus.FieldLogger) func(characterId uint32) {
 	}
 }
 
-func GetPropertiesById(characterId uint32) (*Properties, error) {
-	cs, err := requestAttributesById(characterId)
-	if err != nil {
-		return nil, err
+func GetPropertiesById(l logrus.FieldLogger) func(characterId uint32) (*Properties, error) {
+	return func(characterId uint32) (*Properties, error) {
+		cs, err := requestAttributesById(l)(characterId)
+		if err != nil {
+			return nil, err
+		}
+		ca := makeCharacterAttributes(cs.Data())
+		if ca == nil {
+			return nil, errors.New("unable to make character attributes")
+		}
+		return ca, nil
 	}
-	ca := makeCharacterAttributes(cs.Data())
-	if ca == nil {
-		return nil, errors.New("unable to make character attributes")
-	}
-	return ca, nil
 }
 
-func GetAccountCharacters(accountId uint32, worldId byte) ([]*Properties, error) {
-	cs, err := requestAccountCharacters(accountId, worldId)
-	if err != nil {
-		return nil, err
-	}
+func GetAccountCharacters(l logrus.FieldLogger) func(accountId uint32, worldId byte) ([]*Properties, error) {
+	return func(accountId uint32, worldId byte) ([]*Properties, error) {
+		cs, err := requestAccountCharacters(l)(accountId, worldId)
+		if err != nil {
+			return nil, err
+		}
 
-	var cas = make([]*Properties, 0)
-	for _, v := range cs.DataList() {
-		cas = append(cas, makeCharacterAttributes(&v))
+		var cas = make([]*Properties, 0)
+		for _, v := range cs.DataList() {
+			cas = append(cas, makeCharacterAttributes(&v))
+		}
+		if len(cas) == 0 {
+			return nil, errors.New("unable to make character attributes")
+		}
+		return cas, nil
 	}
-	if len(cas) == 0 {
-		return nil, errors.New("unable to make character attributes")
-	}
-	return cas, nil
 }
 
 func ShowInstruction(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) {
@@ -56,12 +60,12 @@ func ShowInstruction(l logrus.FieldLogger) func(worldId byte, channelId byte, ch
 
 func HasLevel30Character(l logrus.FieldLogger) func(characterId uint32) bool {
 	return func(characterId uint32) bool {
-		p, err := GetPropertiesById(characterId)
+		p, err := GetPropertiesById(l)(characterId)
 		if err != nil {
 			l.WithError(err).Errorf("Unable to retrieve character information for character %d.", characterId)
 			return false
 		}
-		cs, err := GetAccountCharacters(p.AccountId(), p.WorldId())
+		cs, err := GetAccountCharacters(l)(p.AccountId(), p.WorldId())
 		for _, p = range cs {
 			if p.Level() >= 30 {
 				return true
@@ -188,7 +192,7 @@ type AttributeCriteria func(*Properties) bool
 
 func MeetsCriteria(l logrus.FieldLogger) func(characterId uint32, criteria ...AttributeCriteria) bool {
 	return func(characterId uint32, criteria ...AttributeCriteria) bool {
-		c, err := GetPropertiesById(characterId)
+		c, err := GetPropertiesById(l)(characterId)
 		if err != nil {
 			l.WithError(err).Errorf("Unable to retrieve character %d for criteria check.", characterId)
 			return false
@@ -229,7 +233,7 @@ func RemoveAll(l logrus.FieldLogger) func(characterId uint32, itemId uint32) {
 
 func GetGender(l logrus.FieldLogger) func(characterId uint32) byte {
 	return func(characterId uint32) byte {
-		c, err := GetPropertiesById(characterId)
+		c, err := GetPropertiesById(l)(characterId)
 		if err != nil {
 			l.WithError(err).Errorf("Unable to retrieve character %d.", characterId)
 			return 0

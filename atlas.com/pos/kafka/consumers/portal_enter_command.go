@@ -27,7 +27,7 @@ func PortalEnterCommandCreator() handler.EmptyEventCreator {
 func HandlePortalEnterCommand() handler.EventHandler {
 	return func(l logrus.FieldLogger, e interface{}) {
 		if event, ok := e.(*PortalEnterCommand); ok {
-			model, err := portal.GetById(event.MapId, event.PortalId)
+			model, err := portal.GetById(l)(event.MapId, event.PortalId)
 			if err != nil {
 				l.WithError(err).Warnf("Unable to locate portal %d for map %d.", event.MapId, event.PortalId)
 				return
@@ -67,10 +67,10 @@ func enterPortal(l logrus.FieldLogger) func(worldId byte, channelId byte, charac
 		} else if model.TargetMapId() != 999999999 {
 			// invalidate map change if trying to move with chalkboard open, and target is a free market map.
 
-			toPortal, err := portal.GetByName(model.TargetMapId(), model.Target())
+			toPortal, err := portal.GetByName(l)(model.TargetMapId(), model.Target())
 			if err != nil {
 				l.WithError(err).Infof("Unable to locate portal target %s for map %d, defaulting to portal 0.", model.Target(), model.TargetMapId())
-				toPortal, err = portal.GetById(model.TargetMapId(), 0)
+				toPortal, err = portal.GetById(l)(model.TargetMapId(), 0)
 				if err != nil {
 					l.WithError(err).Errorf("Unable to locate portal 0 for map %d, is the destination map invalid?", model.TargetMapId())
 					producers.EnableActions(l)(characterId)

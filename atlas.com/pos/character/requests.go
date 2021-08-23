@@ -1,9 +1,10 @@
 package character
 
 import (
-"atlas-pos/rest/attributes"
+	"atlas-pos/rest/attributes"
 	"atlas-pos/rest/requests"
 	"fmt"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -14,20 +15,24 @@ const (
 	accountCharacters              = charactersService + "?accountId=%d&worldId=%d"
 )
 
-func requestAttributesById(characterId uint32) (*attributes.CharacterAttributesDataContainer, error) {
-	ar := &attributes.CharacterAttributesDataContainer{}
-	err := requests.Get(fmt.Sprintf(charactersById, characterId), ar)
-	if err != nil {
-		return nil, err
+func requestAttributesById(l logrus.FieldLogger) func(characterId uint32) (*attributes.CharacterAttributesDataContainer, error) {
+	return func(characterId uint32) (*attributes.CharacterAttributesDataContainer, error) {
+		ar := &attributes.CharacterAttributesDataContainer{}
+		err := requests.Get(l)(fmt.Sprintf(charactersById, characterId), ar)
+		if err != nil {
+			return nil, err
+		}
+		return ar, nil
 	}
-	return ar, nil
 }
 
-func requestAccountCharacters(accountId uint32, worldId byte) (*attributes.CharacterAttributesDataContainer, error) {
-	ar := &attributes.CharacterAttributesDataContainer{}
-	err := requests.Get(fmt.Sprintf(accountCharacters, accountId, worldId), ar)
-	if err != nil {
-		return nil, err
+func requestAccountCharacters(l logrus.FieldLogger) func(accountId uint32, worldId byte) (*attributes.CharacterAttributesDataContainer, error) {
+	return func(accountId uint32, worldId byte) (*attributes.CharacterAttributesDataContainer, error) {
+		ar := &attributes.CharacterAttributesDataContainer{}
+		err := requests.Get(l)(fmt.Sprintf(accountCharacters, accountId, worldId), ar)
+		if err != nil {
+			return nil, err
+		}
+		return ar, nil
 	}
-	return ar, nil
 }
