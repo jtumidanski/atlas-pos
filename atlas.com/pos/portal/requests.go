@@ -15,8 +15,10 @@ const (
 	portalResource                     = portalsResource + "/%d"
 )
 
-func request(l logrus.FieldLogger) func(url string) (*dataContainer, error) {
-	return func(url string) (*dataContainer, error) {
+type Request func(l logrus.FieldLogger) (*dataContainer, error)
+
+func makeRequest(url string) Request {
+	return func(l logrus.FieldLogger) (*dataContainer, error) {
 		ar := &dataContainer{}
 		err := requests.Get(l)(url, ar)
 		if err != nil {
@@ -26,20 +28,14 @@ func request(l logrus.FieldLogger) func(url string) (*dataContainer, error) {
 	}
 }
 
-func requestById(l logrus.FieldLogger) func(mapId uint32, portalId uint32) (*dataContainer, error) {
-	return func(mapId uint32, portalId uint32) (*dataContainer, error) {
-		return request(l)(fmt.Sprintf(portalResource, mapId, portalId))
-	}
+func requestById(mapId uint32, portalId uint32) Request {
+	return makeRequest(fmt.Sprintf(portalResource, mapId, portalId))
 }
 
-func requestByName(l logrus.FieldLogger) func(mapId uint32, portalName string) (*dataContainer, error) {
-	return func(mapId uint32, portalName string) (*dataContainer, error) {
-		return request(l)(fmt.Sprintf(portalsByName, mapId, portalName))
-	}
+func requestByName(mapId uint32, portalName string) Request {
+	return makeRequest(fmt.Sprintf(portalsByName, mapId, portalName))
 }
 
-func requestAll(l logrus.FieldLogger) func(mapId uint32) (*dataContainer, error) {
-	return func(mapId uint32) (*dataContainer, error) {
-		return request(l)(fmt.Sprintf(portalsResource, mapId))
-	}
+func requestAll(mapId uint32) Request {
+	return makeRequest(fmt.Sprintf(portalsResource, mapId))
 }
