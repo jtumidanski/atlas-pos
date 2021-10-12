@@ -3,6 +3,7 @@ package discrete
 import (
 	"atlas-pos/character"
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,7 @@ func (p GoSecretRoom) Name() string {
 	return "go_secretroom"
 }
 
-func (p GoSecretRoom) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p GoSecretRoom) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if !script.QuestCompleted(l, c)(2335) &&
 		!script.QuestStarted(l, c)(2335) &&
 		script.HasItem(l, c)(4032405) {
@@ -27,6 +28,6 @@ func (p GoSecretRoom) Enter(l logrus.FieldLogger, c script.Context) bool {
 		script.GainItem(l, c)(4032405, -1)
 	}
 	script.PlayPortalSound(l, c)
-	script.WarpById(l, c)(106021001, 1)
+	script.WarpById(l, span, c)(106021001, 1)
 	return true
 }

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p Party3Room8) Name() string {
 	return "party3_room8"
 }
 
-func (p Party3Room8) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p Party3Room8) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//if (pi.getEventInstance().getIntProperty("statusStg8") == 1) {
 	//	pi.playPortalSound()
 	//	pi.warp(920011000, 0)

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p S4MindEnd) Name() string {
 	return "s4mind_end"
 }
 
-func (p S4MindEnd) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p S4MindEnd) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//if (!pi.getEventInstance().isEventCleared()) {
 	script.SendPinkNotice(l, c)("COMPLETE_MISSION_BEFORE_PROCEEDING")
 	return false

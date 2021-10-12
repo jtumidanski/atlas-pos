@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p HorntaleC) Name() string {
 	return "hontale_C"
 }
 
-func (p HorntaleC) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p HorntaleC) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//if (pi.isEventLeader()) {
 	//	EventInstanceManager eim = pi.getPlayer().getEventInstance()
 	//	int target

@@ -3,6 +3,7 @@ package discrete
 import (
 	_map "atlas-pos/map"
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,7 @@ func (p EnterThirdDH) Name() string {
 	return "enterthirdDH"
 }
 
-func (p EnterThirdDH) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p EnterThirdDH) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if script.HasItem(l, c)(4032120) ||
 		script.HasItem(l, c)(4032121) ||
 		script.HasItem(l, c)(4032122) ||
@@ -30,7 +31,7 @@ func (p EnterThirdDH) Enter(l logrus.FieldLogger, c script.Context) bool {
 		if _map.CharacterCount(l)(c.WorldId(), c.ChannelId(), 913010200) == 0 {
 			_map.KillAllMonsters(l)(c.WorldId(), c.ChannelId(), 913010200)
 			script.PlayPortalSound(l, c)
-			script.WarpById(l, c)(913010200, 0)
+			script.WarpById(l, span, c)(913010200, 0)
 			_map.SpawnMonster(l)(c.WorldId(), c.ChannelId(), 913010200, 9300289, 0, 0)
 			return true
 		} else {

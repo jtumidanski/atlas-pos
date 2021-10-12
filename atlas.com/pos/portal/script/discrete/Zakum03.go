@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p Zakum03) Name() string {
 	return "Zakum03"
 }
 
-func (p Zakum03) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p Zakum03) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//if (!pi.getEventInstance().isEventCleared()) {
 	//	pi.sendPinkNotice("ZAKUM_COMPLETE_TRIALS")
 	//	return false
@@ -24,6 +25,6 @@ func (p Zakum03) Enter(l logrus.FieldLogger, c script.Context) bool {
 	//}
 
 	script.PlayPortalSound(l, c)
-	script.WarpRandom(l, c)(211042300)
+	script.WarpRandom(l, span, c)(211042300)
 	return true
 }

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p CurseForest) Name() string {
 	return "curseforest"
 }
 
-func (p CurseForest) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p CurseForest) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if script.QuestStarted(l, c)(2224) || script.QuestStarted(l, c)(2226) || script.QuestCompleted(l, c)(2227) {
 		hd := script.GetHourOfDay(l)
 		if !((hd >= 0 && hd < 7) || hd >= 17) {
@@ -26,7 +27,7 @@ func (p CurseForest) Enter(l logrus.FieldLogger, c script.Context) bool {
 			} else {
 				mid = 910100000
 			}
-			script.WarpByName(l, c)(mid, "out00")
+			script.WarpByName(l, span, c)(mid, "out00")
 			return true
 		}
 	}

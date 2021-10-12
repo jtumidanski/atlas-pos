@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p GuildWaitingEnter) Name() string {
 	return "guildwaitingenter"
 }
 
-func (p GuildWaitingEnter) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p GuildWaitingEnter) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//long entryTime = pi.getPlayer().getEventInstance().getProperty("entryTimestamp").toLong()
 	//long timeNow = System.currentTimeMillis()
 	//

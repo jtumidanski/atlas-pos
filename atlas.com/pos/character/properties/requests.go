@@ -3,6 +3,7 @@ package properties
 import (
 	"atlas-pos/rest/requests"
 	"fmt"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -14,10 +15,10 @@ const (
 	accountCharacters              = charactersService + "?accountId=%d&worldId=%d"
 )
 
-func request(l logrus.FieldLogger) func(url string) (*CharacterAttributesDataContainer, error) {
+func request(l logrus.FieldLogger, span opentracing.Span) func(url string) (*CharacterAttributesDataContainer, error) {
 	return func(url string) (*CharacterAttributesDataContainer, error) {
 		ar := &CharacterAttributesDataContainer{}
-		err := requests.Get(l)(url, ar)
+		err := requests.Get(l, span)(url, ar)
 		if err != nil {
 			return nil, err
 		}
@@ -25,14 +26,14 @@ func request(l logrus.FieldLogger) func(url string) (*CharacterAttributesDataCon
 	}
 }
 
-func requestAttributesById(l logrus.FieldLogger) func(characterId uint32) (*CharacterAttributesDataContainer, error) {
+func requestAttributesById(l logrus.FieldLogger, span opentracing.Span) func(characterId uint32) (*CharacterAttributesDataContainer, error) {
 	return func(characterId uint32) (*CharacterAttributesDataContainer, error) {
-		return request(l)(fmt.Sprintf(charactersById, characterId))
+		return request(l, span)(fmt.Sprintf(charactersById, characterId))
 	}
 }
 
-func requestAccountCharacters(l logrus.FieldLogger) func(accountId uint32, worldId byte) (*CharacterAttributesDataContainer, error) {
+func requestAccountCharacters(l logrus.FieldLogger, span opentracing.Span) func(accountId uint32, worldId byte) (*CharacterAttributesDataContainer, error) {
 	return func(accountId uint32, worldId byte) (*CharacterAttributesDataContainer, error) {
-		return request(l)(fmt.Sprintf(accountCharacters, accountId, worldId))
+		return request(l, span)(fmt.Sprintf(accountCharacters, accountId, worldId))
 	}
 }

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p SpaceGagaOut0) Name() string {
 	return "Spacegaga_out0"
 }
 
-func (p SpaceGagaOut0) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p SpaceGagaOut0) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//EventInstanceManager eim = pi.getPlayer().getEventInstance()
 	//int fc = eim.getIntProperty("falls")
 	//

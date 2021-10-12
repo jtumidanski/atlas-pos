@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p Party3RoomOut) Name() string {
 	return "party3_roomout"
 }
 
-func (p Party3RoomOut) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p Party3RoomOut) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	exitPortal := uint32(0)
 
 	switch c.MapId() {
@@ -39,6 +40,6 @@ func (p Party3RoomOut) Enter(l logrus.FieldLogger, c script.Context) bool {
 		break
 	}
 	script.PlayPortalSound(l, c)
-	script.WarpById(l, c)(920010100, exitPortal)
+	script.WarpById(l, span, c)(920010100, exitPortal)
 	return true
 }

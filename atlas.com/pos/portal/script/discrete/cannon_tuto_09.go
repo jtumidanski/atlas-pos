@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p CannonTuto09) Name() string {
 	return "cannon_tuto_09"
 }
 
-func (p CannonTuto09) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p CannonTuto09) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	script.OpenNPCWithScript(l, c)(8, "1096005")
 	return true
 }

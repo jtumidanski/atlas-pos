@@ -4,6 +4,7 @@ import (
 	"atlas-pos/character"
 	"atlas-pos/portal/script"
 	"atlas-pos/reactor"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -14,7 +15,7 @@ func (p Party6Stage800) Name() string {
 	return "party6_stage800"
 }
 
-func (p Party6Stage800) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p Party6Stage800) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	character.RemoveAll(l)(c.CharacterId(), 4001162)
 	character.RemoveAll(l)(c.CharacterId(), 4001163)
 	character.RemoveAll(l)(c.CharacterId(), 4001164)
@@ -30,6 +31,6 @@ func (p Party6Stage800) Enter(l logrus.FieldLogger, c script.Context) bool {
 		script.GainItem(l, c)(4001198, 1)
 	}
 	script.PlayPortalSound(l, c)
-	script.WarpById(l, c)(300030100, 0)
+	script.WarpById(l, span, c)(300030100, 0)
 	return true
 }

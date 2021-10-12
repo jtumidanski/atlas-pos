@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p HorntaleBR) Name() string {
 	return "hontale_BR"
 }
 
-func (p HorntaleBR) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p HorntaleBR) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if c.MapId() == 240060000 {
 		//if (pi.getEventInstance().getIntProperty("defeatedHead") >= 1) {
 		//	pi.playPortalSound()

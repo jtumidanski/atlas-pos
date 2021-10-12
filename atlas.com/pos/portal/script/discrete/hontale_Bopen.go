@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p HorntaleBOpen) Name() string {
 	return "hontale_Bopen"
 }
 
-func (p HorntaleBOpen) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p HorntaleBOpen) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//var nextMap uint32
 
 	if c.MapId() == 240050101 {

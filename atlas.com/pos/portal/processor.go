@@ -1,6 +1,7 @@
 package portal
 
 import (
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 	"math/rand"
 	"strconv"
@@ -44,9 +45,9 @@ func modelProviderToIdProviderAdapter(l logrus.FieldLogger) func(mp ModelProvide
 	}
 }
 
-func ByNamePortalIdProvider(l logrus.FieldLogger) func(mapId uint32, name string) IdProvider {
+func ByNamePortalIdProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32, name string) IdProvider {
 	return func(mapId uint32, name string) IdProvider {
-		return modelProviderToIdProviderAdapter(l)(ByNameModelProvider(l)(mapId, name))
+		return modelProviderToIdProviderAdapter(l)(ByNameModelProvider(l, span)(mapId, name))
 	}
 }
 
@@ -67,15 +68,15 @@ func RandomPreciselyOneFilter(models []*Model) (*Model, error) {
 	return models[rand.Intn(len(models))], nil
 }
 
-func RandomPortalIdProvider(l logrus.FieldLogger) func(mapId uint32) IdProvider {
+func RandomPortalIdProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32) IdProvider {
 	return func(mapId uint32) IdProvider {
-		return modelProviderToIdProviderAdapter(l)(randomPortalModelProvider(l)(mapId))
+		return modelProviderToIdProviderAdapter(l)(randomPortalModelProvider(l, span)(mapId))
 	}
 }
 
-func randomPortalModelProvider(l logrus.FieldLogger) func(mapId uint32) ModelProvider {
+func randomPortalModelProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32) ModelProvider {
 	return func(mapId uint32) ModelProvider {
-		return modelListProviderToModelProviderAdapter(ByMapModelListProvider(l)(mapId), RandomPreciselyOneFilter)
+		return modelListProviderToModelProviderAdapter(ByMapModelListProvider(l, span)(mapId), RandomPreciselyOneFilter)
 	}
 }
 
@@ -91,22 +92,22 @@ func MarketPreciselyOneFilter(models []*Model) (*Model, error) {
 	return RandomPreciselyOneFilter(models)
 }
 
-func MarketPortalIdProvider(l logrus.FieldLogger) func(mapId uint32) IdProvider {
+func MarketPortalIdProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32) IdProvider {
 	return func(mapId uint32) IdProvider {
-		return modelProviderToIdProviderAdapter(l)(marketModelProvider(l)(mapId))
+		return modelProviderToIdProviderAdapter(l)(marketModelProvider(l, span)(mapId))
 	}
 }
 
-func marketModelProvider(l logrus.FieldLogger) func(mapId uint32) ModelProvider {
+func marketModelProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32) ModelProvider {
 	return func(mapId uint32) ModelProvider {
-		return modelListProviderToModelProviderAdapter(ByMapModelListProvider(l)(mapId), MarketPreciselyOneFilter)
+		return modelListProviderToModelProviderAdapter(ByMapModelListProvider(l, span)(mapId), MarketPreciselyOneFilter)
 	}
 }
 
-func requestModelProvider(l logrus.FieldLogger) func(r Request) ModelProvider {
+func requestModelProvider(l logrus.FieldLogger, span opentracing.Span) func(r Request) ModelProvider {
 	return func(r Request) ModelProvider {
 		return func() (*Model, error) {
-			resp, err := r(l)
+			resp, err := r(l, span)
 			if err != nil {
 				return nil, err
 			}
@@ -120,10 +121,10 @@ func requestModelProvider(l logrus.FieldLogger) func(r Request) ModelProvider {
 	}
 }
 
-func requestModelListProvider(l logrus.FieldLogger) func(r Request) ModelListProvider {
+func requestModelListProvider(l logrus.FieldLogger, span opentracing.Span) func(r Request) ModelListProvider {
 	return func(r Request) ModelListProvider {
 		return func() ([]*Model, error) {
-			resp, err := r(l)
+			resp, err := r(l, span)
 			if err != nil {
 				return nil, err
 			}
@@ -141,21 +142,21 @@ func requestModelListProvider(l logrus.FieldLogger) func(r Request) ModelListPro
 	}
 }
 
-func ByIdModelProvider(l logrus.FieldLogger) func(mapId uint32, portalId uint32) ModelProvider {
+func ByIdModelProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32, portalId uint32) ModelProvider {
 	return func(mapId uint32, portalId uint32) ModelProvider {
-		return requestModelProvider(l)(requestById(mapId, portalId))
+		return requestModelProvider(l, span)(requestById(mapId, portalId))
 	}
 }
 
-func ByNameModelProvider(l logrus.FieldLogger) func(mapId uint32, portalName string) ModelProvider {
+func ByNameModelProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32, portalName string) ModelProvider {
 	return func(mapId uint32, portalName string) ModelProvider {
-		return requestModelProvider(l)(requestByName(mapId, portalName))
+		return requestModelProvider(l, span)(requestByName(mapId, portalName))
 	}
 }
 
-func ByMapModelListProvider(l logrus.FieldLogger) func(mapId uint32) ModelListProvider {
+func ByMapModelListProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32) ModelListProvider {
 	return func(mapId uint32) ModelListProvider {
-		return requestModelListProvider(l)(requestAll(mapId))
+		return requestModelListProvider(l, span)(requestAll(mapId))
 	}
 }
 

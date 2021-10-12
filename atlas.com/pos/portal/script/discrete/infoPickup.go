@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,10 +13,10 @@ func (p InfoPickup) Name() string {
 	return "infoPickup"
 }
 
-func (p InfoPickup) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p InfoPickup) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if script.QuestStarted(l, c)(1035) {
 		script.ShowInfo(l, c)("UI/tutorial.img/21")
 	}
-	script.BlockPortal(l, c)
+	script.BlockPortal(l, span, c)
 	return true
 }

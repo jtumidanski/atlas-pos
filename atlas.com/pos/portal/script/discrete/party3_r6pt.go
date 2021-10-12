@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p Party3R6pt) Name() string {
 	return "party3_r6pt"
 }
 
-func (p Party3R6pt) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p Party3R6pt) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//EventInstanceManager eim = pi.getEventInstance()
 	//if (eim.getProperty("stage6_comb") == null) {
 	//	String comb = "0"

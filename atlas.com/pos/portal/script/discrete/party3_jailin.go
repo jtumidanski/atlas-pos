@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p Party3JailIn) Name() string {
 	return "party3_jailin"
 }
 
-func (p Party3JailIn) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p Party3JailIn) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//MapleMap map = pi.getMap()
 	//
 	//int jailn = (pi.getMap().getId() / 10) % 10

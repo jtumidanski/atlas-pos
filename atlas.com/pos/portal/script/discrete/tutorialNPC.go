@@ -4,6 +4,7 @@ import (
 	"atlas-pos/character"
 	"atlas-pos/job"
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -14,8 +15,8 @@ func (p TutorialNPC) Name() string {
 	return "tutorialNPC"
 }
 
-func (p TutorialNPC) Enter(l logrus.FieldLogger, c script.Context) bool {
-	if character.AboveLevel(l)(c.CharacterId(), 10) || !character.IsJob(l)(c.CharacterId(), job.Beginner) {
+func (p TutorialNPC) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
+	if character.AboveLevel(l, span)(c.CharacterId(), 10) || !character.IsJob(l, span)(c.CharacterId(), job.Beginner) {
 		return false
 	}
 

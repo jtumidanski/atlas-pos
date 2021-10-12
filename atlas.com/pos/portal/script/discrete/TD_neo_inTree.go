@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p TDNeoInTree) Name() string {
 	return "TD_neo_inTree"
 }
 
-func (p TDNeoInTree) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p TDNeoInTree) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//EventManager nex = pi.getEventManager("GuardianNex")
 	//if (nex == null) {
 	//	pi.sendPinkNotice("GUARDIAN_NEX_ERROR")

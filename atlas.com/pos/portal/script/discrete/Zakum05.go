@@ -3,6 +3,7 @@ package discrete
 import (
 	"atlas-pos/portal/script"
 	"atlas-pos/reactor"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,7 @@ func (p Zakum05) Name() string {
 	return "Zakum05"
 }
 
-func (p Zakum05) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p Zakum05) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if !(script.QuestStarted(l, c)(100200) || script.QuestCompleted(l, c)(100200)) {
 		script.SendPinkNotice(l, c)("ZAKUM_MASTER_APPROVAL")
 		return false
@@ -35,6 +36,6 @@ func (p Zakum05) Enter(l logrus.FieldLogger, c script.Context) bool {
 	}
 
 	script.PlayPortalSound(l, c)
-	script.WarpByName(l, c)(211042400, "west00")
+	script.WarpByName(l, span, c)(211042400, "west00")
 	return true
 }

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p CaptinsG00) Name() string {
 	return "captinsg00"
 }
 
-func (p CaptinsG00) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p CaptinsG00) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if !script.HasItem(l, c)(4000381) {
 		script.SendPinkNotice(l, c)("CAPTAIN_LATANICA_MISSING_ESSENCE")
 		return false

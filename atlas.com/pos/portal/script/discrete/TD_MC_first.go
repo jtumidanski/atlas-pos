@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p TDMCFirst) Name() string {
 	return "TD_MC_first"
 }
 
-func (p TDMCFirst) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p TDMCFirst) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if script.QuestCompleted(l, c)(2260) ||
 		script.QuestStarted(l, c)(2300) ||
 		script.QuestStarted(l, c)(2301) ||
@@ -37,7 +38,7 @@ func (p TDMCFirst) Enter(l logrus.FieldLogger, c script.Context) bool {
 		script.QuestCompleted(l, c)(2309) ||
 		script.QuestCompleted(l, c)(2310) {
 		script.PlayPortalSound(l, c)
-		script.WarpById(l, c)(106020000, 0)
+		script.WarpById(l, span, c)(106020000, 0)
 		return true
 	}
 	script.SendPinkNotice(l, c)("STRANGE_FORCE_2")

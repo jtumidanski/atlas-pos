@@ -10,6 +10,7 @@ import (
 	"atlas-pos/portal/blocked"
 	"atlas-pos/reactor"
 	"errors"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -27,10 +28,10 @@ func OpenNPCWithScript(l logrus.FieldLogger, c Context) func(npcId uint32, scrip
 	}
 }
 
-func BlockPortal(l logrus.FieldLogger, c Context) {
+func BlockPortal(l logrus.FieldLogger, span opentracing.Span, c Context) {
 	l.Infof("call to unhandled BlockPortal from character %d.", c.CharacterId())
 	blocked.GetCache().AddBlockedPortal(c.CharacterId(), c.portal.ScriptName())
-	producers.EnableActions(l)(c.CharacterId())
+	producers.EnableActions(l, span)(c.CharacterId())
 }
 
 func QuestStarted(l logrus.FieldLogger, c Context) func(questId uint32) bool {
@@ -84,9 +85,9 @@ func GetSavedLocation(l logrus.FieldLogger, c Context) func(name string) (uint32
 	}
 }
 
-func GetMarketPortal(l logrus.FieldLogger, c Context) (uint32, uint32) {
+func GetMarketPortal(l logrus.FieldLogger, span opentracing.Span, c Context) (uint32, uint32) {
 	mapId, _ := GetSavedLocation(l, c)("FREE_MARKET")
-	portalId := portal.MarketPortalIdProvider(l)(mapId)()
+	portalId := portal.MarketPortalIdProvider(l, span)(mapId)()
 	return mapId, portalId
 }
 
@@ -166,21 +167,21 @@ func GetEventProperty(l logrus.FieldLogger, c Context) func(key string) string {
 	}
 }
 
-func WarpById(l logrus.FieldLogger, c Context) func(mapId uint32, portalId uint32) {
+func WarpById(l logrus.FieldLogger, span opentracing.Span, c Context) func(mapId uint32, portalId uint32) {
 	return func(mapId uint32, portalId uint32) {
-		character.WarpById(l)(c.WorldId(), c.ChannelId(), c.CharacterId(), mapId, portalId)
+		character.WarpById(l, span)(c.WorldId(), c.ChannelId(), c.CharacterId(), mapId, portalId)
 	}
 }
 
-func WarpByName(l logrus.FieldLogger, c Context) func(mapId uint32, portalName string) {
+func WarpByName(l logrus.FieldLogger, span opentracing.Span, c Context) func(mapId uint32, portalName string) {
 	return func(mapId uint32, portalName string) {
-		character.WarpByName(l)(c.WorldId(), c.ChannelId(), c.CharacterId(), mapId, portalName)
+		character.WarpByName(l, span)(c.WorldId(), c.ChannelId(), c.CharacterId(), mapId, portalName)
 	}
 }
 
-func WarpRandom(l logrus.FieldLogger, c Context) func(mapId uint32) {
+func WarpRandom(l logrus.FieldLogger, span opentracing.Span, c Context) func(mapId uint32) {
 	return func(mapId uint32) {
-		character.WarpRandom(l)(c.WorldId(), c.ChannelId(), c.CharacterId(), mapId)
+		character.WarpRandom(l, span)(c.WorldId(), c.ChannelId(), c.CharacterId(), mapId)
 	}
 }
 
@@ -196,8 +197,8 @@ func SendLightBlueNotice(l logrus.FieldLogger, c Context) func(token string) {
 	}
 }
 
-func EnableActions(l logrus.FieldLogger, c Context) {
-	character.EnableActions(l)(c.WorldId(), c.ChannelId(), c.CharacterId())
+func EnableActions(l logrus.FieldLogger, span opentracing.Span, c Context) {
+	character.EnableActions(l, span)(c.WorldId(), c.ChannelId(), c.CharacterId())
 }
 
 func GainExperience(l logrus.FieldLogger, c Context) func(amount int32) {
@@ -206,14 +207,14 @@ func GainExperience(l logrus.FieldLogger, c Context) func(amount int32) {
 	}
 }
 
-func ShowInstruction(l logrus.FieldLogger, c Context) func(message string, width int16, height int16) {
+func ShowInstruction(l logrus.FieldLogger, span opentracing.Span, c Context) func(message string, width int16, height int16) {
 	return func(message string, width int16, height int16) {
-		character.ShowInstruction(l)(c.WorldId(), c.ChannelId(), c.CharacterId(), message, width, height)
+		character.ShowInstruction(l, span)(c.WorldId(), c.ChannelId(), c.CharacterId(), message, width, height)
 	}
 }
 
-func HasLevel30Character(l logrus.FieldLogger, c Context) bool {
-	return character.HasLevel30Character(l)(c.CharacterId())
+func HasLevel30Character(l logrus.FieldLogger, span opentracing.Span, c Context) bool {
+	return character.HasLevel30Character(l, span)(c.CharacterId())
 }
 
 func ShowIntro(l logrus.FieldLogger, c Context) func(path string) {

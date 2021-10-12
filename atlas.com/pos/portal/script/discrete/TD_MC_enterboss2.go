@@ -3,6 +3,7 @@ package discrete
 import (
 	"atlas-pos/character"
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,7 @@ func (p TDMCEnterBoss2) Name() string {
 	return "TD_MC_enterboss2"
 }
 
-func (p TDMCEnterBoss2) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p TDMCEnterBoss2) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if script.QuestCompleted(l, c)(2331) {
 		script.OpenNPC(l, c)(1300013)
 		return false
@@ -32,7 +33,7 @@ func (p TDMCEnterBoss2) Enter(l logrus.FieldLogger, c script.Context) bool {
 
 	if script.QuestCompleted(l, c)(2333) {
 		script.PlayPortalSound(l, c)
-		script.WarpById(l, c)(106021600, 1)
+		script.WarpById(l, span, c)(106021600, 1)
 		return true
 	}
 

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p Party3GardenIn) Name() string {
 	return "party3_gardenin"
 }
 
-func (p Party3GardenIn) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p Party3GardenIn) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//if (pi.getParty().isPresent() && pi.isEventLeader() && pi.hasItem(4001055, 1)) {
 	//	pi.playPortalSound()
 	//	pi.getEventInstance().warpEventTeam(920010100)

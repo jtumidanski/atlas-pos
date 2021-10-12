@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p Kpq2) Name() string {
 	return "kpq2"
 }
 
-func (p Kpq2) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p Kpq2) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//EventInstanceManager eim = pi.getPlayer().getEventInstance()
 	//MapleMap target = eim.getMapInstance(103000803)
 	//if (eim.getProperty("3stageclear") != null) {

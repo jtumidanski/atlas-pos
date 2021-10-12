@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p JailOut) Name() string {
 	return "jail_out"
 }
 
-func (p JailOut) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p JailOut) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//long jailedTime = pi.getJailTimeLeft()
 	//
 	//if (jailedTime <= 0) {

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p OutPepeKing) Name() string {
 	return "out_pepeking"
 }
 
-func (p OutPepeKing) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p OutPepeKing) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//EventInstanceManager eim = pi.getEventInstance()
 	//if (eim != null) {
 	//	eim.stopEventTimer()
@@ -22,7 +23,7 @@ func (p OutPepeKing) Enter(l logrus.FieldLogger, c script.Context) bool {
 	qp := script.QuestProgressInt(l, c)(2330, 3300005) + script.QuestProgressInt(l, c)(2330, 3300006) + script.QuestProgressInt(l, c)(2330, 3300007)
 	if qp != 3 || script.HasItem(l, c)(4032388) {
 		script.PlayPortalSound(l, c)
-		script.WarpById(l, c)(106021400, 2)
+		script.WarpById(l, span, c)(106021400, 2)
 		return true
 	}
 
@@ -34,6 +35,6 @@ func (p OutPepeKing) Enter(l logrus.FieldLogger, c script.Context) bool {
 	script.SendPinkNotice(l, c)("PEPE_KING_DROP")
 	script.GainItem(l, c)(4032388, 1)
 	script.PlayPortalSound(l, c)
-	script.WarpById(l, c)(106021400, 2)
+	script.WarpById(l, span, c)(106021400, 2)
 	return true
 }

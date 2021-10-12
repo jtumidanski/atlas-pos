@@ -2,6 +2,7 @@ package script
 
 import (
 	portal2 "atlas-pos/portal"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -45,7 +46,7 @@ func NewContext(worldId byte, channelId byte, characterId uint32, mapId uint32, 
 
 type Script interface {
 	Name() string
-	AsPortalScript(l logrus.FieldLogger, c Context) (*PortalScriptImpl, bool)
+	AsPortalScript(l logrus.FieldLogger, span opentracing.Span, c Context) (*PortalScriptImpl, bool)
 }
 
 type ScriptImpl struct {
@@ -63,10 +64,11 @@ func (s ScriptImpl) Name() string {
 	return ""
 }
 
-func (s ScriptImpl) AsPortalScript(l logrus.FieldLogger, c Context) (*PortalScriptImpl, bool) {
+func (s ScriptImpl) AsPortalScript(l logrus.FieldLogger, span opentracing.Span, c Context) (*PortalScriptImpl, bool) {
 	if val, ok := s.si.(PortalScript); ok {
 		return &PortalScriptImpl{
 			l:     l,
+			span:  span,
 			c:     c,
 			name:  val.Name,
 			enter: val.Enter,
@@ -77,9 +79,10 @@ func (s ScriptImpl) AsPortalScript(l logrus.FieldLogger, c Context) (*PortalScri
 
 type PortalScriptImpl struct {
 	l     logrus.FieldLogger
+	span  opentracing.Span
 	c     Context
 	name  func() string
-	enter func(l logrus.FieldLogger, c Context) bool
+	enter func(l logrus.FieldLogger, span opentracing.Span, c Context) bool
 }
 
 func (p PortalScriptImpl) Name() string {
@@ -87,12 +90,12 @@ func (p PortalScriptImpl) Name() string {
 }
 
 func (p PortalScriptImpl) Enter() bool {
-	return p.enter(p.l, p.c)
+	return p.enter(p.l, p.span, p.c)
 }
 
 type PortalScript interface {
 	Name() string
-	Enter(l logrus.FieldLogger, c Context) bool
+	Enter(l logrus.FieldLogger, span opentracing.Span, c Context) bool
 }
 
 type PortalScriptName func() string

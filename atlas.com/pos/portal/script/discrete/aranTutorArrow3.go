@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,8 +13,8 @@ func (p AranTutorArrow3) Name() string {
 	return "aranTutorArrow3"
 }
 
-func (p AranTutorArrow3) Enter(l logrus.FieldLogger, c script.Context) bool {
-	script.BlockPortal(l, c)
+func (p AranTutorArrow3) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
+	script.BlockPortal(l, span, c)
 
 	if script.ContainsAreaInfo(l, c)(21002, "arr3=o") {
 		return false

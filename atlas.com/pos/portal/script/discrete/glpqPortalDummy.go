@@ -3,6 +3,7 @@ package discrete
 import (
 	"atlas-pos/portal/script"
 	"atlas-pos/reactor"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,7 @@ func (p GlpqPortalDummy) Name() string {
 	return "glpqPortalDummy"
 }
 
-func (p GlpqPortalDummy) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p GlpqPortalDummy) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	r := reactor.ByName(l)(c.WorldId(), c.ChannelId(), c.MapId(), "mob0")
 	if r.State() >= 1 {
 		script.SendPinkNotice(l, c)("PORTAL_MALFUNCTION")
@@ -25,7 +26,7 @@ func (p GlpqPortalDummy) Enter(l logrus.FieldLogger, c script.Context) bool {
 	//eim.setIntProperty("glpq1", 1)
 	script.SendPinkNotice(l, c)("STRANGE_FORCE")
 	script.PlayPortalSound(l, c)
-	script.WarpById(l, c)(610030100, 0)
+	script.WarpById(l, span, c)(610030100, 0)
 	//pi.getEventInstance().showClearEffect()
 	//eim.giveEventPlayersStageReward(1)
 	return true

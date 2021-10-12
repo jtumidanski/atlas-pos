@@ -3,6 +3,7 @@ package discrete
 import (
 	_map "atlas-pos/map"
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,7 @@ func (p EnterFirstDH) Name() string {
 	return "enterFirstDH"
 }
 
-func (p EnterFirstDH) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p EnterFirstDH) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	mapId := uint32(0)
 	if script.QuestStarted(l, c)(20701) {
 		mapId = 913000000
@@ -35,6 +36,6 @@ func (p EnterFirstDH) Enter(l logrus.FieldLogger, c script.Context) bool {
 
 	_map.ResetPartyQuest(l)(c.WorldId(), c.ChannelId(), mapId)
 	script.PlayPortalSound(l, c)
-	script.WarpById(l, c)(mapId, 0)
+	script.WarpById(l, span, c)(mapId, 0)
 	return true
 }

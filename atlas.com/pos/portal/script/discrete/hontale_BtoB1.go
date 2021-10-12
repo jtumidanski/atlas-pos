@@ -3,6 +3,7 @@ package discrete
 import (
 	_map "atlas-pos/map"
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,7 @@ func (p HorntaleBtoB1) Name() string {
 	return "hontale_BtoB1"
 }
 
-func (p HorntaleBtoB1) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p HorntaleBtoB1) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if _map.CharacterCount(l)(c.WorldId(), c.ChannelId(), c.MapId()) == 1 {
 		script.SendLightBlueNotice(l, c)("HORNTAIL_LAST_PLAYER")
 		return false
@@ -23,6 +24,6 @@ func (p HorntaleBtoB1) Enter(l logrus.FieldLogger, c script.Context) bool {
 		return false
 	}
 	script.PlayPortalSound(l, c)
-	script.WarpById(l, c)(240050101, 0)
+	script.WarpById(l, span, c)(240050101, 0)
 	return true
 }

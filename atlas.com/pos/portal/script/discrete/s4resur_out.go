@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,10 +13,10 @@ func (p S4ResurOut) Name() string {
 	return "s4resur_out"
 }
 
-func (p S4ResurOut) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p S4ResurOut) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if !script.QuestStarted(l, c)(6134) {
 		script.PlayPortalSound(l, c)
-		script.WarpById(l, c)(220070400, 3)
+		script.WarpById(l, span, c)(220070400, 3)
 		return true
 	}
 	if !script.CanHold(l, c)(4031448, 1) {
@@ -24,6 +25,6 @@ func (p S4ResurOut) Enter(l logrus.FieldLogger, c script.Context) bool {
 	}
 	script.GainItem(l, c)(4031448, 1)
 	script.PlayPortalSound(l, c)
-	script.WarpById(l, c)(220070400, 3)
+	script.WarpById(l, span, c)(220070400, 3)
 	return true
 }

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p TDBossEnter) Name() string {
 	return "TD_Boss_enter"
 }
 
-func (p TDBossEnter) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p TDBossEnter) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//int stage = ((Math.floor(pi.getMapId() / 100)) % 10) - 1
 	//EventManager em = pi.getEventManager("TD_Battle" + stage)
 	//if (em == null) {

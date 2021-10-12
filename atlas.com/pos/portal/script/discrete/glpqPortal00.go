@@ -3,6 +3,7 @@ package discrete
 import (
 	"atlas-pos/character"
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,10 +14,10 @@ func (p GlpqPortal00) Name() string {
 	return "glpqPortal00"
 }
 
-func (p GlpqPortal00) Enter(l logrus.FieldLogger, c script.Context) bool {
-	if character.MeetsCriteria(l)(c.CharacterId(), character.IsJobNiche(1)) {
+func (p GlpqPortal00) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
+	if character.MeetsCriteria(l, span)(c.CharacterId(), character.IsJobNiche(1)) {
 		script.PlayPortalSound(l, c)
-		script.WarpById(l, c)(610030510, 0)
+		script.WarpById(l, span, c)(610030510, 0)
 		return true
 	}
 	script.SendPinkNotice(l, c)("WARRIOR_ONLY")

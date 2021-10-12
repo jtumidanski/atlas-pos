@@ -3,6 +3,7 @@ package discrete
 import (
 	_map "atlas-pos/map"
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,10 +14,10 @@ func (p EnterNepenthes) Name() string {
 	return "enterNepenthes"
 }
 
-func (p EnterNepenthes) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p EnterNepenthes) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if !script.QuestActive(l, c)(21739) {
 		script.PlayPortalSound(l, c)
-		script.WarpById(l, c)(200060001, 2)
+		script.WarpById(l, span, c)(200060001, 2)
 		return true
 	}
 
@@ -30,6 +31,6 @@ func (p EnterNepenthes) Enter(l logrus.FieldLogger, c script.Context) bool {
 
 	_map.SpawnMonster(l)(c.WorldId(), c.ChannelId(), 920030001, 9300348, 591, -34)
 	script.PlayPortalSound(l, c)
-	script.WarpById(l, c)(920030000, 2)
+	script.WarpById(l, span, c)(920030000, 2)
 	return true
 }

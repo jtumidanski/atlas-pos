@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p Populatus00) Name() string {
 	return "Populatus00"
 }
 
-func (p Populatus00) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p Populatus00) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if !((script.QuestStarted(l, c)(6361) && script.HasItem(l, c)(4031870)) || script.QuestCompleted(l, c)(6361)) && !script.QuestCompleted(l, c)(6363) {
 		//EventManager em = pi.getEventManager("PapulatusBattle")
 		//
@@ -39,7 +40,7 @@ func (p Populatus00) Enter(l logrus.FieldLogger, c script.Context) bool {
 		//}
 	} else {
 		script.PlayPortalSound(l, c)
-		script.WarpById(l, c)(922020300, 0)
+		script.WarpById(l, span, c)(922020300, 0)
 		return true
 	}
 }

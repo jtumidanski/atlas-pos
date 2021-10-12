@@ -4,6 +4,7 @@ import (
 	_map "atlas-pos/map"
 	"atlas-pos/portal/script"
 	"atlas-pos/reactor"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -14,16 +15,16 @@ func (p Party6Stage) Name() string {
 	return "party6_stage"
 }
 
-func (p Party6Stage) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p Party6Stage) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	switch c.MapId() {
 	case 930000000:
 		script.PlayPortalSound(l, c)
-		script.WarpById(l, c)(930000100, 0)
+		script.WarpById(l, span, c)(930000100, 0)
 		return true
 	case 930000100:
 		if _map.MonstersCount(l)(c.WorldId(), c.ChannelId(), c.MapId()) == 0 {
 			script.PlayPortalSound(l, c)
-			script.WarpById(l, c)(930000200, 0)
+			script.WarpById(l, span, c)(930000200, 0)
 			return true
 		} else {
 			script.SendPinkNotice(l, c)("ELIMINATE_MONSTERS")
@@ -35,7 +36,7 @@ func (p Party6Stage) Enter(l logrus.FieldLogger, c script.Context) bool {
 			return false
 		} else {
 			script.PlayPortalSound(l, c)
-			script.WarpById(l, c)(930000300, 0) //assuming they cant get past reactor without it being gone
+			script.WarpById(l, span, c)(930000300, 0) //assuming they cant get past reactor without it being gone
 			return true
 		}
 	default:

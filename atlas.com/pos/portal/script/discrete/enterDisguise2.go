@@ -3,6 +3,7 @@ package discrete
 import (
 	_map "atlas-pos/map"
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,7 @@ func (p EnterDisguise2) Name() string {
 	return "enterDisguise2"
 }
 
-func (p EnterDisguise2) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p EnterDisguise2) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if script.QuestStarted(l, c)(20301) ||
 		script.QuestStarted(l, c)(20302) ||
 		script.QuestStarted(l, c)(20303) ||
@@ -30,11 +31,11 @@ func (p EnterDisguise2) Enter(l logrus.FieldLogger, c script.Context) bool {
 		}
 
 		script.PlayPortalSound(l, c)
-		script.WarpByName(l, c)(108010610, "out00")
+		script.WarpByName(l, span, c)(108010610, "out00")
 		return true
 	}
 
 	script.PlayPortalSound(l, c)
-	script.WarpByName(l, c)(130010020, "out00")
+	script.WarpByName(l, span, c)(130010020, "out00")
 	return true
 }

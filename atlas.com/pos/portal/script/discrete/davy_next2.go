@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,10 +13,10 @@ func (p DavyNext2) Name() string {
 	return "davy_next2"
 }
 
-func (p DavyNext2) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p DavyNext2) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if script.MonsterCount(l, c) == 0 && p.passedGrindMode(c.MapId()) {
 		script.PlayPortalSound(l, c)
-		script.WarpById(l, c)(925100300, 0)
+		script.WarpById(l, span, c)(925100300, 0)
 		return true
 	} else {
 		script.SendPinkNotice(l, c)("PORTAL_NOT_YET_OPENED")

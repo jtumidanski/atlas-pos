@@ -6,6 +6,7 @@ import (
 	"atlas-pos/job"
 	"atlas-pos/kafka/producers"
 	"atlas-pos/portal"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -15,23 +16,23 @@ func PlayPortalSound(l logrus.FieldLogger) func(characterId uint32) {
 	}
 }
 
-func ShowInstruction(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) {
+func ShowInstruction(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) {
 	return func(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) {
-		err := instruction.Create(worldId, channelId, characterId, message, width, height)
+		err := instruction.Create(l, span)(worldId, channelId, characterId, message, width, height)
 		if err != nil {
 			l.WithError(err).Errorf("Sending message %s to character %d in world %d channel %d.", message, characterId, worldId, channelId)
 		}
 	}
 }
 
-func HasLevel30Character(l logrus.FieldLogger) func(characterId uint32) bool {
+func HasLevel30Character(l logrus.FieldLogger, span opentracing.Span) func(characterId uint32) bool {
 	return func(characterId uint32) bool {
-		p, err := properties.GetById(l)(characterId)
+		p, err := properties.GetById(l, span)(characterId)
 		if err != nil {
 			l.WithError(err).Errorf("Unable to retrieve character information for character %d.", characterId)
 			return false
 		}
-		cs, err := properties.GetForAccountInWorld(l)(p.AccountId(), p.WorldId())
+		cs, err := properties.GetForAccountInWorld(l, span)(p.AccountId(), p.WorldId())
 		for _, p = range cs {
 			if p.Level() >= 30 {
 				return true
@@ -71,33 +72,33 @@ func ForceStartQuest(l logrus.FieldLogger) func(characterId uint32, questId uint
 	}
 }
 
-func WarpToPortal(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, mapId uint32, p portal.IdProvider) {
+func WarpToPortal(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, p portal.IdProvider) {
 	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, p portal.IdProvider) {
-		producers.ChangeMap(l)(worldId, channelId, characterId, mapId, p())
+		producers.ChangeMap(l, span)(worldId, channelId, characterId, mapId, p())
 	}
 }
 
-func WarpRandom(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, mapId uint32) {
+func WarpRandom(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32) {
 	return func(worldId byte, channelId byte, characterId uint32, mapId uint32) {
-		WarpToPortal(l)(worldId, channelId, characterId, mapId, portal.RandomPortalIdProvider(l)(mapId))
+		WarpToPortal(l, span)(worldId, channelId, characterId, mapId, portal.RandomPortalIdProvider(l, span)(mapId))
 	}
 }
 
-func WarpById(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
+func WarpById(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
 	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
-		WarpToPortal(l)(worldId, channelId, characterId, mapId, portal.FixedPortalIdProvider(portalId))
+		WarpToPortal(l, span)(worldId, channelId, characterId, mapId, portal.FixedPortalIdProvider(portalId))
 	}
 }
 
-func WarpByName(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalName string) {
+func WarpByName(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalName string) {
 	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalName string) {
-		WarpToPortal(l)(worldId, channelId, characterId, mapId, portal.ByNamePortalIdProvider(l)(mapId, portalName))
+		WarpToPortal(l, span)(worldId, channelId, characterId, mapId, portal.ByNamePortalIdProvider(l, span)(mapId, portalName))
 	}
 }
 
-func EnableActions(l logrus.FieldLogger) func(worldId byte, channelId byte, characterId uint32) {
+func EnableActions(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32) {
 	return func(worldId byte, channelId byte, characterId uint32) {
-		producers.EnableActions(l)(characterId)
+		producers.EnableActions(l, span)(characterId)
 	}
 }
 
@@ -116,9 +117,9 @@ func SetQuestProgress(l logrus.FieldLogger) func(characterId uint32, questId uin
 
 type PropertiesCriteria func(*properties.Model) bool
 
-func MeetsCriteria(l logrus.FieldLogger) func(characterId uint32, criteria ...PropertiesCriteria) bool {
+func MeetsCriteria(l logrus.FieldLogger, span opentracing.Span) func(characterId uint32, criteria ...PropertiesCriteria) bool {
 	return func(characterId uint32, criteria ...PropertiesCriteria) bool {
-		c, err := properties.GetById(l)(characterId)
+		c, err := properties.GetById(l, span)(characterId)
 		if err != nil {
 			l.WithError(err).Errorf("Unable to retrieve character %d for criteria check.", characterId)
 			return false
@@ -132,9 +133,9 @@ func MeetsCriteria(l logrus.FieldLogger) func(characterId uint32, criteria ...Pr
 	}
 }
 
-func IsJob(l logrus.FieldLogger) func(characterId uint32, option uint16) bool {
+func IsJob(l logrus.FieldLogger, span opentracing.Span) func(characterId uint32, option uint16) bool {
 	return func(characterId uint32, option uint16) bool {
-		return MeetsCriteria(l)(characterId, IsJobCriteria(option))
+		return MeetsCriteria(l, span)(characterId, IsJobCriteria(option))
 	}
 }
 
@@ -157,9 +158,9 @@ func RemoveAll(l logrus.FieldLogger) func(characterId uint32, itemId uint32) {
 	}
 }
 
-func GetGender(l logrus.FieldLogger) func(characterId uint32) byte {
+func GetGender(l logrus.FieldLogger, span opentracing.Span) func(characterId uint32) byte {
 	return func(characterId uint32) byte {
-		c, err := properties.GetById(l)(characterId)
+		c, err := properties.GetById(l, span)(characterId)
 		if err != nil {
 			l.WithError(err).Errorf("Unable to retrieve character %d.", characterId)
 			return 0
@@ -188,9 +189,9 @@ func QuestProgress(l logrus.FieldLogger) func(characterId uint32, questId uint32
 	}
 }
 
-func AboveLevel(l logrus.FieldLogger) func(characterId uint32, level byte) bool {
+func AboveLevel(l logrus.FieldLogger, span opentracing.Span) func(characterId uint32, level byte) bool {
 	return func(characterId uint32, level byte) bool {
-		return MeetsCriteria(l)(characterId, AboveLevelCriteria(level))
+		return MeetsCriteria(l, span)(characterId, AboveLevelCriteria(level))
 	}
 }
 

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p RaidRest) Name() string {
 	return "raid_rest"
 }
 
-func (p RaidRest) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p RaidRest) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//int evLevel = ((pi.getMapId() - 1) % 5) + 1
 	//
 	//if (pi.getPlayer().getEventInstance().isEventLeader(pi.getPlayer()) && pi.getPlayer().getEventInstance().getPlayerCount() > 1) {

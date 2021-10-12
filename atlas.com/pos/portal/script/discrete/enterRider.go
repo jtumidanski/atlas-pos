@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p EnterRider) Name() string {
 	return "enterRider"
 }
 
-func (p EnterRider) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p EnterRider) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if script.QuestStarted(l, c)(21610) &&
 		script.HasItem(l, c)(4001193) {
 		script.SendPinkNotice(l, c)("2ND_MOUNT_QUEST_CLOSED")

@@ -3,6 +3,7 @@ package discrete
 import (
 	_map "atlas-pos/map"
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -13,7 +14,7 @@ func (p OutTestWolf) Name() string {
 	return "outtestWolf"
 }
 
-func (p OutTestWolf) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p OutTestWolf) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if _map.MonstersCount(l)(c.WorldId(), c.ChannelId(), c.MapId()) != 0 {
 		script.SendPinkNotice(l, c)("DEFEAT_ALL_WOLVES")
 		return false
@@ -24,6 +25,6 @@ func (p OutTestWolf) Enter(l logrus.FieldLogger, c script.Context) bool {
 	}
 	script.GainItem(l, c)(4001193, 1)
 	script.PlayPortalSound(l, c)
-	script.WarpById(l, c)(140010210, 0)
+	script.WarpById(l, span, c)(140010210, 0)
 	return true
 }

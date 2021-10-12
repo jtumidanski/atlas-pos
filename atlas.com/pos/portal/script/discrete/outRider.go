@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,13 +13,13 @@ func (p OutRider) Name() string {
 	return "outRider"
 }
 
-func (p OutRider) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p OutRider) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if !script.CanHold(l, c)(4001193, 1) {
 		script.SendPinkNotice(l, c)("FREE_SPACE_FOR_COUSE_CLEAR_TOKEN")
 		return false
 	}
 	script.GainItem(l, c)(4001193, 1)
 	script.PlayPortalSound(l, c)
-	script.WarpById(l, c)(211050000, 4)
+	script.WarpById(l, span, c)(211050000, 4)
 	return true
 }

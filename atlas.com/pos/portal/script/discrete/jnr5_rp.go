@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,7 +13,7 @@ func (p Jnr5Rp) Name() string {
 	return "jnr5_rp"
 }
 
-func (p Jnr5Rp) Enter(l logrus.FieldLogger, c script.Context) bool {
+func (p Jnr5Rp) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//String mapPlayer = "stage6_comb" + (pi.getMapId() % 10)
 	//EventInstanceManager eim = pi.getEventInstance()
 	//

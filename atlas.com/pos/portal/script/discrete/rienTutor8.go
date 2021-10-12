@@ -4,6 +4,7 @@ import (
 	"atlas-pos/character"
 	"atlas-pos/job"
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
@@ -14,8 +15,8 @@ func (p RienTutor8) Name() string {
 	return "rienTutor8"
 }
 
-func (p RienTutor8) Enter(l logrus.FieldLogger, c script.Context) bool {
-	if character.IsJob(l)(c.CharacterId(), job.Legend) {
+func (p RienTutor8) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
+	if character.IsJob(l, span)(c.CharacterId(), job.Legend) {
 		if script.QuestStarted(l, c)(21015) {
 			script.ShowInfoText(l, c)("You must exit to the right in order to find Murupas.")
 			return false
@@ -30,6 +31,6 @@ func (p RienTutor8) Enter(l logrus.FieldLogger, c script.Context) bool {
 		}
 	}
 	script.PlayPortalSound(l, c)
-	script.WarpById(l, c)(140010000, 2)
+	script.WarpById(l, span, c)(140010000, 2)
 	return true
 }

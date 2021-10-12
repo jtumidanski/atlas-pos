@@ -7,15 +7,19 @@ import (
 	"sync"
 )
 
+const (
+	EnterPortalCommand = "enter_portal_command"
+)
+
 func CreateEventConsumers(l *logrus.Logger, ctx context.Context, wg *sync.WaitGroup) {
-	cec := func(topicToken string, emptyEventCreator handler.EmptyEventCreator, processor handler.EventHandler) {
-		createEventConsumer(l, ctx, wg, topicToken, emptyEventCreator, processor)
+	cec := func(topicToken string, name string, emptyEventCreator handler.EmptyEventCreator, processor handler.EventHandler) {
+		createEventConsumer(l, ctx, wg, name, topicToken, emptyEventCreator, processor)
 	}
-	cec("TOPIC_ENTER_PORTAL", PortalEnterCommandCreator(), HandlePortalEnterCommand())
+	cec("TOPIC_ENTER_PORTAL", EnterPortalCommand, PortalEnterCommandCreator(), HandlePortalEnterCommand())
 
 }
 
-func createEventConsumer(l *logrus.Logger, ctx context.Context, wg *sync.WaitGroup, topicToken string, emptyEventCreator handler.EmptyEventCreator, processor handler.EventHandler) {
+func createEventConsumer(l *logrus.Logger, ctx context.Context, wg *sync.WaitGroup, name string, topicToken string, emptyEventCreator handler.EmptyEventCreator, processor handler.EventHandler) {
 	wg.Add(1)
-	go NewConsumer(l, ctx, wg, topicToken, "Portal Orchestration Service", emptyEventCreator, processor)
+	go NewConsumer(l, ctx, wg, name, topicToken, "Portal Orchestration Service", emptyEventCreator, processor)
 }

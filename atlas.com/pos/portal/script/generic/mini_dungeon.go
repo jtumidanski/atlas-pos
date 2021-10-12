@@ -2,10 +2,11 @@ package generic
 
 import (
 	"atlas-pos/portal/script"
+	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
-func EnterMiniDungeon(l logrus.FieldLogger, c script.Context) func(baseId uint32, dungeonId uint32, count uint8) bool {
+func EnterMiniDungeon(l logrus.FieldLogger, span opentracing.Span, c script.Context) func(baseId uint32, dungeonId uint32, count uint8) bool {
 	return func(baseId uint32, dungeonId uint32, count uint8) bool {
 		if c.MapId() == baseId {
 			_, partyExists := script.GetParty(l, c)
@@ -35,7 +36,7 @@ func EnterMiniDungeon(l logrus.FieldLogger, c script.Context) func(baseId uint32
 			return false
 		} else {
 			script.PlayPortalSound(l, c)
-			script.WarpByName(l, c)(baseId, "MD00")
+			script.WarpByName(l, span, c)(baseId, "MD00")
 			return true
 		}
 	}
