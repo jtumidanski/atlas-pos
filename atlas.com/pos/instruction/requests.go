@@ -32,10 +32,6 @@ func Create(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, chan
 				},
 			},
 		}
-		_, err := requests.Post(l, span)(fmt.Sprintf(instructionsResource, worldId, channelId, characterId), ar)
-		if err != nil {
-			return err
-		}
-		return nil
+		return requests.Post(l, span)(fmt.Sprintf(instructionsResource, worldId, channelId, characterId), ar, nil, nil)
 	}
 }
