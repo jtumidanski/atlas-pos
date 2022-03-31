@@ -1,17 +1,25 @@
-package consumers
+package _map
 
 import (
-	"atlas-pos/kafka/handler"
-	"atlas-pos/kafka/producers"
+	"atlas-pos/character"
+	"atlas-pos/kafka"
 	"atlas-pos/portal"
 	"atlas-pos/portal/blocked"
 	"atlas-pos/portal/script"
-	"atlas-pos/portal/script/registry"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
 
-type PortalEnterCommand struct {
+const (
+	consumerNameEnterPortal = "enter_portal_command"
+	topicTokenEnterPortal   = "TOPIC_ENTER_PORTAL"
+)
+
+func EnterPortalConsumer(groupId string) kafka.ConsumerConfig {
+	return kafka.NewConsumerConfig[enterPortalCommand](consumerNameEnterPortal, topicTokenEnterPortal, groupId, handleEnterPortal())
+}
+
+type enterPortalCommand struct {
 	WorldId     byte   `json:"worldId"`
 	ChannelId   byte   `json:"channelId"`
 	MapId       uint32 `json:"mapId"`
@@ -19,24 +27,14 @@ type PortalEnterCommand struct {
 	CharacterId uint32 `json:"characterId"`
 }
 
-func PortalEnterCommandCreator() handler.EmptyEventCreator {
-	return func() interface{} {
-		return &PortalEnterCommand{}
-	}
-}
-
-func HandlePortalEnterCommand() handler.EventHandler {
-	return func(l logrus.FieldLogger, span opentracing.Span, e interface{}) {
-		if event, ok := e.(*PortalEnterCommand); ok {
-			model, err := portal.ByIdModelProvider(l, span)(event.MapId, event.PortalId)()
-			if err != nil {
-				l.WithError(err).Warnf("Unable to locate portal %d for map %d.", event.MapId, event.PortalId)
-				return
-			}
-			enterPortal(l, span)(event.WorldId, event.ChannelId, event.CharacterId, event.MapId, model)
-		} else {
-			l.Errorf("Unable to cast event provided to handler")
+func handleEnterPortal() kafka.HandlerFunc[enterPortalCommand] {
+	return func(l logrus.FieldLogger, span opentracing.Span, command enterPortalCommand) {
+		model, err := portal.ByIdModelProvider(l, span)(command.MapId, command.PortalId)()
+		if err != nil {
+			l.WithError(err).Warnf("Unable to locate portal %d for map %d.", command.MapId, command.PortalId)
+			return
 		}
+		enterPortal(l, span)(command.WorldId, command.ChannelId, command.CharacterId, command.MapId, model)
 	}
 }
 
@@ -44,17 +42,17 @@ func enterPortal(l logrus.FieldLogger, span opentracing.Span) func(worldId byte,
 	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, model *portal.Model) {
 		// TODO check portal delay
 		if model == nil || blocked.GetCache().Blocked(characterId, model.ScriptName()) {
-			producers.EnableActions(l, span)(characterId)
+			character.EnableActions(l, span)(worldId, channelId, characterId)
 			return
 		}
 
 		changed := false
 		if model.ScriptName() != "" {
 			// execute portal script
-			s, err := registry.GetScriptRegistry().GetScript(model.ScriptName())
+			s, err := script.GetRegistry().GetScript(model.ScriptName())
 			if err != nil {
 				l.WithError(err).Warnf("Missing script %s for portal %d.", model.ScriptName(), model.Id())
-				producers.EnableActions(l, span)(characterId)
+				character.EnableActions(l, span)(worldId, channelId, characterId)
 				return
 			}
 
@@ -74,17 +72,17 @@ func enterPortal(l logrus.FieldLogger, span opentracing.Span) func(worldId byte,
 				toPortal, err = portal.ByIdModelProvider(l, span)(model.TargetMapId(), 0)()
 				if err != nil {
 					l.WithError(err).Errorf("Unable to locate portal 0 for map %d, is the destination map invalid?", model.TargetMapId())
-					producers.EnableActions(l, span)(characterId)
+					character.EnableActions(l, span)(worldId, channelId, characterId)
 					return
 				}
 			}
 
-			producers.ChangeMap(l, span)(worldId, channelId, characterId, model.TargetMapId(), toPortal.Id())
+			portal.WarpById(l, span)(worldId, channelId, characterId, model.TargetMapId(), toPortal.Id())
 			changed = true
 		}
 
 		if !changed {
-			producers.EnableActions(l, span)(characterId)
+			character.EnableActions(l, span)(worldId, channelId, characterId)
 		}
 	}
 }

@@ -3,8 +3,6 @@ package instruction
 import (
 	"atlas-pos/rest/requests"
 	"fmt"
-	"github.com/opentracing/opentracing-go"
-	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -19,19 +17,17 @@ const (
 	instructionsResource           = worldCharacterResource + "/instructions"
 )
 
-func Create(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) error {
-	return func(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) error {
-		ar := &InputDataContainer{
-			Data: DataBody{
-				Id:   "0",
-				Type: "Instruction",
-				Attributes: Attributes{
-					Message: message,
-					Width:   width,
-					Height:  height,
-				},
+func Create(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) requests.PostRequest[Attributes] {
+	ar := &InputDataContainer{
+		Data: DataBody{
+			Id:   "0",
+			Type: "Instruction",
+			Attributes: Attributes{
+				Message: message,
+				Width:   width,
+				Height:  height,
 			},
-		}
-		return requests.Post(l, span)(fmt.Sprintf(instructionsResource, worldId, channelId, characterId), ar, nil, nil)
+		},
 	}
+	return requests.MakePostRequest[Attributes](fmt.Sprintf(instructionsResource, worldId, channelId, characterId), ar)
 }

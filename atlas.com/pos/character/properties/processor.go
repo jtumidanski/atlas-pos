@@ -1,6 +1,7 @@
 package properties
 
 import (
+	"atlas-pos/rest/requests"
 	"errors"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
@@ -9,7 +10,7 @@ import (
 
 func GetById(l logrus.FieldLogger, span opentracing.Span) func(characterId uint32) (*Model, error) {
 	return func(characterId uint32) (*Model, error) {
-		cs, err := requestAttributesById(l, span)(characterId)
+		cs, err := requestAttributesById(characterId)(l, span)
 		if err != nil {
 			return nil, err
 		}
@@ -23,14 +24,14 @@ func GetById(l logrus.FieldLogger, span opentracing.Span) func(characterId uint3
 
 func GetForAccountInWorld(l logrus.FieldLogger, span opentracing.Span) func(accountId uint32, worldId byte) ([]*Model, error) {
 	return func(accountId uint32, worldId byte) ([]*Model, error) {
-		cs, err := requestAccountCharacters(l, span)(accountId, worldId)
+		cs, err := requestAccountCharacters(accountId, worldId)(l, span)
 		if err != nil {
 			return nil, err
 		}
 
 		var cas = make([]*Model, 0)
 		for _, v := range cs.DataList() {
-			cas = append(cas, makeModel(&v))
+			cas = append(cas, makeModel(v))
 		}
 		if len(cas) == 0 {
 			return nil, errors.New("unable to make character attributes")
@@ -39,7 +40,7 @@ func GetForAccountInWorld(l logrus.FieldLogger, span opentracing.Span) func(acco
 	}
 }
 
-func makeModel(ca *CharacterAttributesData) *Model {
+func makeModel(ca requests.DataBody[attributes]) *Model {
 	cid, err := strconv.ParseUint(ca.Id, 10, 32)
 	if err != nil {
 		return nil

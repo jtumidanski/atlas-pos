@@ -1,7 +1,7 @@
 package script
 
 import (
-	portal2 "atlas-pos/portal"
+	"atlas-pos/portal"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -11,7 +11,7 @@ type Context struct {
 	channelId   byte
 	characterId uint32
 	mapId       uint32
-	portal      *portal2.Model
+	portal      *portal.Model
 }
 
 func (c Context) MapId() uint32 {
@@ -30,11 +30,11 @@ func (c Context) CharacterId() uint32 {
 	return c.characterId
 }
 
-func (c Context) Portal() *portal2.Model {
+func (c Context) Portal() *portal.Model {
 	return c.portal
 }
 
-func NewContext(worldId byte, channelId byte, characterId uint32, mapId uint32, portal *portal2.Model) Context {
+func NewContext(worldId byte, channelId byte, characterId uint32, mapId uint32, portal *portal.Model) Context {
 	return Context{
 		worldId:     worldId,
 		channelId:   channelId,

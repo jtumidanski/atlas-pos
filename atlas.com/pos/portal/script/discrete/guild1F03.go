@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -15,7 +16,7 @@ func (p Guild1F03) Name() string {
 
 func (p Guild1F03) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//pi.getEventInstance().gridInsert(pi.getPlayer(), 3)
-	script.PlayPortalSound(l, c)
-	script.WarpByName(l, span, c)(990000700, "st00")
+	processor.PlayPortalSound(l, c)
+	processor.WarpByName(l, span, c)(990000700, "st00")
 	return true
 }

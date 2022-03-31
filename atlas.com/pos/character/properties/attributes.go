@@ -1,22 +1,6 @@
 package properties
 
-import (
-	"atlas-pos/rest/response"
-	"encoding/json"
-)
-
-type CharacterAttributesDataContainer struct {
-	data     response.DataSegment
-	included response.DataSegment
-}
-
-type CharacterAttributesData struct {
-	Id         string                        `json:"id"`
-	Type       string                        `json:"type"`
-	Attributes CharacterAttributesAttributes `json:"attributes"`
-}
-
-type CharacterAttributesAttributes struct {
+type attributes struct {
 	AccountId          uint32 `json:"accountId"`
 	WorldId            byte   `json:"worldId"`
 	Name               string `json:"name"`
@@ -47,45 +31,4 @@ type CharacterAttributesAttributes struct {
 	X                  int16  `json:"x"`
 	Y                  int16  `json:"y"`
 	Stance             byte   `json:"stance"`
-}
-
-func (c *CharacterAttributesDataContainer) MarshalJSON() ([]byte, error) {
-	t := struct {
-		Data     interface{} `json:"data"`
-		Included interface{} `json:"included"`
-	}{}
-	if len(c.data) == 1 {
-		t.Data = c.data[0]
-	} else {
-		t.Data = c.data
-	}
-	return json.Marshal(t)
-}
-
-func (c *CharacterAttributesDataContainer) UnmarshalJSON(data []byte) error {
-	d, _, err := response.UnmarshalRoot(data, response.MapperFunc(EmptyCharacterAttributesData))
-	if err != nil {
-		return err
-	}
-	c.data = d
-	return nil
-}
-
-func (c *CharacterAttributesDataContainer) Data() *CharacterAttributesData {
-	if len(c.data) >= 1 {
-		return c.data[0].(*CharacterAttributesData)
-	}
-	return nil
-}
-
-func (c *CharacterAttributesDataContainer) DataList() []CharacterAttributesData {
-	var r = make([]CharacterAttributesData, 0)
-	for _, x := range c.data {
-		r = append(r, *x.(*CharacterAttributesData))
-	}
-	return r
-}
-
-func EmptyCharacterAttributesData() interface{} {
-	return &CharacterAttributesData{}
 }

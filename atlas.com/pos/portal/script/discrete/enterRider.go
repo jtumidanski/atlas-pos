@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,9 +15,9 @@ func (p EnterRider) Name() string {
 }
 
 func (p EnterRider) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if script.QuestStarted(l, c)(21610) &&
-		script.HasItem(l, c)(4001193) {
-		script.SendPinkNotice(l, c)("2ND_MOUNT_QUEST_CLOSED")
+	if processor.QuestStarted(l, c)(21610) &&
+		processor.HasItem(l, c)(4001193) {
+		processor.SendPinkNotice(l, c)("2ND_MOUNT_QUEST_CLOSED")
 		return false
 		//EventManager em = pi.getEventManager("Aran_2ndmount")
 		//if (em == null) {
@@ -33,6 +34,6 @@ func (p EnterRider) Enter(l logrus.FieldLogger, span opentracing.Span, c script.
 		//}
 	}
 
-	script.SendPinkNotice(l, c)("2ND_MOUNT_QUEST_REQUIREMENT")
+	processor.SendPinkNotice(l, c)("2ND_MOUNT_QUEST_REQUIREMENT")
 	return false
 }

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,7 +15,7 @@ func (p InfoWorldMap) Name() string {
 }
 
 func (p InfoWorldMap) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	script.ShowInfo(l, c)("UI/tutorial.img/26")
-	script.BlockPortal(l, span, c)
+	processor.ShowInfo(l, c)("UI/tutorial.img/26")
+	processor.BlockPortal(l, span, c)
 	return true
 }

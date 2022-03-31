@@ -4,8 +4,6 @@ import (
 	"atlas-pos/character/properties"
 	"atlas-pos/instruction"
 	"atlas-pos/job"
-	"atlas-pos/kafka/producers"
-	"atlas-pos/portal"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -18,7 +16,7 @@ func PlayPortalSound(l logrus.FieldLogger) func(characterId uint32) {
 
 func ShowInstruction(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) {
 	return func(worldId byte, channelId byte, characterId uint32, message string, width int16, height int16) {
-		err := instruction.Create(l, span)(worldId, channelId, characterId, message, width, height)
+		_, _, err := instruction.Create(worldId, channelId, characterId, message, width, height)(l, span)
 		if err != nil {
 			l.WithError(err).Errorf("Sending message %s to character %d in world %d channel %d.", message, characterId, worldId, channelId)
 		}
@@ -72,33 +70,9 @@ func ForceStartQuest(l logrus.FieldLogger) func(characterId uint32, questId uint
 	}
 }
 
-func WarpToPortal(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, p portal.IdProvider) {
-	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, p portal.IdProvider) {
-		producers.ChangeMap(l, span)(worldId, channelId, characterId, mapId, p())
-	}
-}
-
-func WarpRandom(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32) {
-	return func(worldId byte, channelId byte, characterId uint32, mapId uint32) {
-		WarpToPortal(l, span)(worldId, channelId, characterId, mapId, portal.RandomPortalIdProvider(l, span)(mapId))
-	}
-}
-
-func WarpById(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
-	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
-		WarpToPortal(l, span)(worldId, channelId, characterId, mapId, portal.FixedPortalIdProvider(portalId))
-	}
-}
-
-func WarpByName(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalName string) {
-	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalName string) {
-		WarpToPortal(l, span)(worldId, channelId, characterId, mapId, portal.ByNamePortalIdProvider(l, span)(mapId, portalName))
-	}
-}
-
 func EnableActions(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32) {
 	return func(worldId byte, channelId byte, characterId uint32) {
-		producers.EnableActions(l, span)(characterId)
+		emitEnableActions(l, span)(characterId)
 	}
 }
 

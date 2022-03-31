@@ -3,6 +3,7 @@ package discrete
 import (
 	_map "atlas-pos/map"
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -15,17 +16,17 @@ func (p S4Resurrection) Name() string {
 }
 
 func (p S4Resurrection) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if script.HasItem(l, c)(4001108) {
+	if processor.HasItem(l, c)(4001108) {
 		if _map.CharacterCount(l)(c.WorldId(), c.ChannelId(), 923000100) == 0 {
 			_map.ResetMapObjects(l)(c.WorldId(), c.ChannelId(), 923000100)
-			script.PlayPortalSound(l, c)
-			script.WarpById(l, span, c)(923000100, 0)
+			processor.PlayPortalSound(l, c)
+			processor.WarpById(l, span, c)(923000100, 0)
 			return true
 		} else {
-			script.SendPinkNotice(l, c)("OTHER_PLAYER_INSIDE")
+			processor.SendPinkNotice(l, c)("OTHER_PLAYER_INSIDE")
 			return false
 		}
 	}
-	script.SendPinkNotice(l, c)("MYSTERIOUS_FORCE")
+	processor.SendPinkNotice(l, c)("MYSTERIOUS_FORCE")
 	return false
 }

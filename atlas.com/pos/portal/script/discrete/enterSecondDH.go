@@ -3,6 +3,7 @@ package discrete
 import (
 	"atlas-pos/character"
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 	"math/rand"
@@ -16,7 +17,7 @@ func (p EnterSecondDH) Name() string {
 }
 
 func (p EnterSecondDH) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if script.QuestStarted(l, c)(20201) || script.QuestStarted(l, c)(20202) || script.QuestStarted(l, c)(20203) || script.QuestStarted(l, c)(20204) || script.QuestStarted(l, c)(20205) {
+	if processor.QuestStarted(l, c)(20201) || processor.QuestStarted(l, c)(20202) || processor.QuestStarted(l, c)(20203) || processor.QuestStarted(l, c)(20204) || processor.QuestStarted(l, c)(20205) {
 		character.RemoveAll(l)(c.CharacterId(), 4032096)
 		character.RemoveAll(l)(c.CharacterId(), 4032097)
 		character.RemoveAll(l)(c.CharacterId(), 4032098)
@@ -25,8 +26,8 @@ func (p EnterSecondDH) Enter(l logrus.FieldLogger, span opentracing.Span, c scri
 
 		mapIds := []uint32{108000600, 108000601, 108000602}
 		random := rand.Intn(len(mapIds))
-		script.PlayPortalSound(l, c)
-		script.WarpById(l, span, c)(mapIds[random], 0)
+		processor.PlayPortalSound(l, c)
+		processor.WarpById(l, span, c)(mapIds[random], 0)
 		return true
 	}
 	return false

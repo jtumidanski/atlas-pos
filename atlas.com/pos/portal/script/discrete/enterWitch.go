@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,18 +15,18 @@ func (p EnterWitch) Name() string {
 }
 
 func (p EnterWitch) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if !script.QuestCompleted(l, c)(20404) {
-		script.SendPinkNotice(l, c)("SHOULD_NOT_GO_CREEPY")
+	if !processor.QuestCompleted(l, c)(20404) {
+		processor.SendPinkNotice(l, c)("SHOULD_NOT_GO_CREEPY")
 		return false
 	}
 
 	mapId := uint32(924010000)
-	if script.QuestCompleted(l, c)(20407) {
+	if processor.QuestCompleted(l, c)(20407) {
 		mapId = 924010200
-	} else if script.QuestCompleted(l, c)(20406) {
+	} else if processor.QuestCompleted(l, c)(20406) {
 		mapId = 924010100
 	}
-	script.PlayPortalSound(l, c)
-	script.WarpById(l, span, c)(mapId, 1)
+	processor.PlayPortalSound(l, c)
+	processor.WarpById(l, span, c)(mapId, 1)
 	return true
 }

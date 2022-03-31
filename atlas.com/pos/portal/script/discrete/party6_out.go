@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -26,7 +27,7 @@ func (p Party6Out) Enter(l logrus.FieldLogger, span opentracing.Span, c script.C
 	//		return false
 	//	}
 	//} else {
-	script.SendPinkNotice(l, c)("ELIMINATE_POISON_GOLEM")
+	processor.SendPinkNotice(l, c)("ELIMINATE_POISON_GOLEM")
 	return false
 	//}
 }

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,17 +15,17 @@ func (p S4ResurOut) Name() string {
 }
 
 func (p S4ResurOut) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if !script.QuestStarted(l, c)(6134) {
-		script.PlayPortalSound(l, c)
-		script.WarpById(l, span, c)(220070400, 3)
+	if !processor.QuestStarted(l, c)(6134) {
+		processor.PlayPortalSound(l, c)
+		processor.WarpById(l, span, c)(220070400, 3)
 		return true
 	}
-	if !script.CanHold(l, c)(4031448, 1) {
-		script.SendPinkNotice(l, c)("MAKE_ROOM_FOR_QUEST_ITEM")
+	if !processor.CanHold(l, c)(4031448, 1) {
+		processor.SendPinkNotice(l, c)("MAKE_ROOM_FOR_QUEST_ITEM")
 		return false
 	}
-	script.GainItem(l, c)(4031448, 1)
-	script.PlayPortalSound(l, c)
-	script.WarpById(l, span, c)(220070400, 3)
+	processor.GainItem(l, c)(4031448, 1)
+	processor.PlayPortalSound(l, c)
+	processor.WarpById(l, span, c)(220070400, 3)
 	return true
 }

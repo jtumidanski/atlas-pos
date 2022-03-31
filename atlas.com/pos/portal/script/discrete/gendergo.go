@@ -3,6 +3,7 @@ package discrete
 import (
 	"atlas-pos/character"
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -17,18 +18,18 @@ func (p Gendergo) Name() string {
 func (p Gendergo) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if c.Portal().Name() == "female00" {
 		if character.GetGender(l, span)(c.CharacterId()) == character.GenderFemale {
-			script.PlayPortalSound(l, c)
-			script.WarpByName(l, span, c)(c.MapId(), "female01")
+			processor.PlayPortalSound(l, c)
+			processor.WarpByName(l, span, c)(c.MapId(), "female01")
 			return true
 		}
-		script.SendPinkNotice(l, c)("FEMALE_ONLY")
+		processor.SendPinkNotice(l, c)("FEMALE_ONLY")
 		return false
 	}
 	if character.GetGender(l, span)(c.CharacterId()) == character.GenderMale {
-		script.PlayPortalSound(l, c)
-		script.WarpByName(l, span, c)(c.MapId(), "male01")
+		processor.PlayPortalSound(l, c)
+		processor.WarpByName(l, span, c)(c.MapId(), "male01")
 		return true
 	}
-	script.SendPinkNotice(l, c)("MALE_ONLY")
+	processor.SendPinkNotice(l, c)("MALE_ONLY")
 	return false
 }

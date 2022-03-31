@@ -3,6 +3,7 @@ package discrete
 import (
 	"atlas-pos/character"
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -15,32 +16,32 @@ func (p TDMCEnterBoss2) Name() string {
 }
 
 func (p TDMCEnterBoss2) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if script.QuestCompleted(l, c)(2331) {
-		script.OpenNPC(l, c)(1300013)
+	if processor.QuestCompleted(l, c)(2331) {
+		processor.OpenNPC(l, c)(1300013)
 		return false
 	}
 
-	if script.QuestCompleted(l, c)(2333) &&
-		script.QuestStarted(l, c)(2331) &&
-		!script.HasItem(l, c)(4001318) {
-		script.SendPinkNotice(l, c)("LOST_SEAL")
-		if script.CanHold(l, c)(4001318, 1) {
-			script.GainItem(l, c)(4001318, 1)
+	if processor.QuestCompleted(l, c)(2333) &&
+		processor.QuestStarted(l, c)(2331) &&
+		!processor.HasItem(l, c)(4001318) {
+		processor.SendPinkNotice(l, c)("LOST_SEAL")
+		if processor.CanHold(l, c)(4001318, 1) {
+			processor.GainItem(l, c)(4001318, 1)
 		} else {
-			script.SendPinkNotice(l, c)("SEAL_INVENTORY_FULL")
+			processor.SendPinkNotice(l, c)("SEAL_INVENTORY_FULL")
 		}
 	}
 
-	if script.QuestCompleted(l, c)(2333) {
-		script.PlayPortalSound(l, c)
-		script.WarpById(l, span, c)(106021600, 1)
+	if processor.QuestCompleted(l, c)(2333) {
+		processor.PlayPortalSound(l, c)
+		processor.WarpById(l, span, c)(106021600, 1)
 		return true
 	}
 
-	if script.QuestStarted(l, c)(2332) && script.HasItem(l, c)(4032388) {
+	if processor.QuestStarted(l, c)(2332) && processor.HasItem(l, c)(4032388) {
 		character.ForceCompleteQuestViaNPC(l)(c.CharacterId(), 2332, 1300002)
-		script.SendPinkNotice(l, c)("FOUND_PRINCESS")
-		script.GainExperience(l, c)(4400)
+		processor.SendPinkNotice(l, c)("FOUND_PRINCESS")
+		processor.GainExperience(l, c)(4400)
 
 		//EventManager em = pi.getEventManager("MK_PrimeMinister")
 		//Optional<MapleParty> party = pi.getPlayer().getParty()
@@ -60,11 +61,11 @@ func (p TDMCEnterBoss2) Enter(l logrus.FieldLogger, span opentracing.Span, c scr
 		//		pi.playPortalSound()
 		//		return true
 		//	} else {
-		script.SendPinkNotice(l, c)("BOSS_ANOTHER_PARTY_CHALLENGING_IN_CHANNEL")
+		processor.SendPinkNotice(l, c)("BOSS_ANOTHER_PARTY_CHALLENGING_IN_CHANNEL")
 		return false
 		//	}
 		//}
-	} else if script.QuestStarted(l, c)(2333) || (script.QuestCompleted(l, c)(2332) && !script.QuestStarted(l, c)(2333)) {
+	} else if processor.QuestStarted(l, c)(2333) || (processor.QuestCompleted(l, c)(2332) && !processor.QuestStarted(l, c)(2333)) {
 		//EventManager em = pi.getEventManager("MK_PrimeMinister")
 		//
 		//Optional<MapleParty> party = pi.getPlayer().getParty()
@@ -84,12 +85,12 @@ func (p TDMCEnterBoss2) Enter(l logrus.FieldLogger, span opentracing.Span, c scr
 		//		pi.playPortalSound()
 		//		return true
 		//	} else {
-		script.SendPinkNotice(l, c)("BOSS_ANOTHER_PARTY_CHALLENGING_IN_CHANNEL")
+		processor.SendPinkNotice(l, c)("BOSS_ANOTHER_PARTY_CHALLENGING_IN_CHANNEL")
 		return false
 		//	}
 		//}
 	} else {
-		script.SendPinkNotice(l, c)("SEEMS_TO_BE_LOCKED_LONG")
+		processor.SendPinkNotice(l, c)("SEEMS_TO_BE_LOCKED_LONG")
 		return false
 	}
 

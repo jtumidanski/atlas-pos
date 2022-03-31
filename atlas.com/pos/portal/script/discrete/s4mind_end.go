@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -15,7 +16,7 @@ func (p S4MindEnd) Name() string {
 
 func (p S4MindEnd) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	//if (!pi.getEventInstance().isEventCleared()) {
-	script.SendPinkNotice(l, c)("COMPLETE_MISSION_BEFORE_PROCEEDING")
+	processor.SendPinkNotice(l, c)("COMPLETE_MISSION_BEFORE_PROCEEDING")
 	return false
 	//} else {
 	//	if (pi.isQuestStarted(6410)) {

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,8 +15,8 @@ func (p UndoDraco) Name() string {
 }
 
 func (p UndoDraco) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	script.CancelItem(l, c)(2210016)
-	script.PlayPortalSound(l, c)
-	script.WarpById(l, span, c)(240000110, 2)
+	processor.CancelItem(l, c)(2210016)
+	processor.PlayPortalSound(l, c)
+	processor.WarpById(l, span, c)(240000110, 2)
 	return true
 }

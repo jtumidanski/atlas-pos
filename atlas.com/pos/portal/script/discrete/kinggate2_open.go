@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"atlas-pos/reactor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
@@ -16,13 +17,13 @@ func (p KingGate2Open) Name() string {
 
 func (p KingGate2Open) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if reactor.ByName(l)(c.WorldId(), c.ChannelId(), c.MapId(), "kinggate").State() == 1 {
-		script.PlayPortalSound(l, c)
-		script.WarpById(l, span, c)(990000900, 2)
+		processor.PlayPortalSound(l, c)
+		processor.WarpById(l, span, c)(990000900, 2)
 		//if (pi.getPlayer().getEventInstance().getProperty("boss") != null && pi.getPlayer().getEventInstance().getProperty("boss") == "true") {
 		//	pi.changeMusic("Bgm10/Eregos")
 		//}
 		return true
 	}
-	script.SendPinkNotice(l, c)("KING_GATE")
+	processor.SendPinkNotice(l, c)("KING_GATE")
 	return false
 }

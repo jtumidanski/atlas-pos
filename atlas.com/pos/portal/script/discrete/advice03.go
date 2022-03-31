@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,6 +15,6 @@ func (p Advice03) Name() string {
 }
 
 func (p Advice03) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	script.ShowInstruction(l, span, c)("Press #e#b[Up]#k on the arrow key#n to climb up the ladder or rope.", 350, 5)
+	processor.ShowInstruction(l, span, c)("Press #e#b[Up]#k on the arrow key#n to climb up the ladder or rope.", 350, 5)
 	return true
 }

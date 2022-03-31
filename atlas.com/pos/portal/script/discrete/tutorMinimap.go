@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,7 +15,7 @@ func (p TutorMiniMap) Name() string {
 }
 
 func (p TutorMiniMap) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	script.GuideHint(l, c)(1)
-	script.BlockPortal(l, span, c)
+	processor.GuideHint(l, c)(1)
+	processor.BlockPortal(l, span, c)
 	return true
 }

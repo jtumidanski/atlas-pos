@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -40,6 +41,6 @@ func (p TDNeoInTree) Enter(l logrus.FieldLogger, span opentracing.Span, c script
 	//}
 	//}
 
-	script.SendPinkNotice(l, c)("MYSTERIOUS_FORCE")
+	processor.SendPinkNotice(l, c)("MYSTERIOUS_FORCE")
 	return false
 }

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -21,7 +22,7 @@ func (p Lpq2) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Contex
 	//// only let people through if the eim is ready
 	//String avail = eim.getProperty("3stageclear")
 	//if (avail == null) {
-	script.SendPinkNotice(l, c)("SEAL_BLOCKING_DOOR")
+	processor.SendPinkNotice(l, c)("SEAL_BLOCKING_DOOR")
 	return false
 	//} else {
 	//	pi.playPortalSound()

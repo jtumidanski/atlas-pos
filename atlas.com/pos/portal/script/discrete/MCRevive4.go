@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -23,7 +24,7 @@ func (p MCRevive4) Enter(l logrus.FieldLogger, span opentracing.Span, c script.C
 	//	portal = 3
 	//	break
 	//}
-	script.PlayPortalSound(l, c)
-	script.WarpById(l, span, c)(980000401, portalId)
+	processor.PlayPortalSound(l, c)
+	processor.WarpById(l, span, c)(980000401, portalId)
 	return true
 }

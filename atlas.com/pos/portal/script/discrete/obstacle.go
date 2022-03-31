@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,18 +15,18 @@ func (p Obstacle) Name() string {
 }
 
 func (p Obstacle) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if script.QuestStarted(l, c)(100202) {
-		script.PlayPortalSound(l, c)
-		script.WarpById(l, span, c)(106020400, 2)
+	if processor.QuestStarted(l, c)(100202) {
+		processor.PlayPortalSound(l, c)
+		processor.WarpById(l, span, c)(106020400, 2)
 		return true
 	}
-	if script.HasItem(l, c)(4000507) {
-		script.GainItem(l, c)(4000507, -1)
-		script.SendPinkNotice(l, c)("POISON_SPORE_USED")
-		script.PlayPortalSound(l, c)
-		script.WarpById(l, span, c)(106020400, 2)
+	if processor.HasItem(l, c)(4000507) {
+		processor.GainItem(l, c)(4000507, -1)
+		processor.SendPinkNotice(l, c)("POISON_SPORE_USED")
+		processor.PlayPortalSound(l, c)
+		processor.WarpById(l, span, c)(106020400, 2)
 		return true
 	}
-	script.SendPinkNotice(l, c)("OVERGROWN_VINES")
+	processor.SendPinkNotice(l, c)("OVERGROWN_VINES")
 	return false
 }

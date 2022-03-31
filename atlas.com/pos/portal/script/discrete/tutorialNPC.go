@@ -4,6 +4,7 @@ import (
 	"atlas-pos/character"
 	"atlas-pos/job"
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -37,6 +38,6 @@ func (p TutorialNPC) Enter(l logrus.FieldLogger, span opentracing.Span, c script
 		return false
 	}
 
-	script.OpenNPC(l, c)(npcId)
+	processor.OpenNPC(l, c)(npcId)
 	return true
 }

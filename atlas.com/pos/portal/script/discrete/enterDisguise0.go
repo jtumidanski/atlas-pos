@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,20 +15,20 @@ func (p EnterDisguise0) Name() string {
 }
 
 func (p EnterDisguise0) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if script.QuestStarted(l, c)(20301) ||
-		script.QuestStarted(l, c)(20302) ||
-		script.QuestStarted(l, c)(20303) ||
-		script.QuestStarted(l, c)(20304) ||
-		script.QuestStarted(l, c)(20305) {
-		if script.HasItem(l, c)(4032179) {
-			script.PlayPortalSound(l, c)
-			script.WarpByName(l, span, c)(130010000, "east00")
+	if processor.QuestStarted(l, c)(20301) ||
+		processor.QuestStarted(l, c)(20302) ||
+		processor.QuestStarted(l, c)(20303) ||
+		processor.QuestStarted(l, c)(20304) ||
+		processor.QuestStarted(l, c)(20305) {
+		if processor.HasItem(l, c)(4032179) {
+			processor.PlayPortalSound(l, c)
+			processor.WarpByName(l, span, c)(130010000, "east00")
 			return true
 		}
-		script.SendPinkNotice(l, c)("NEED_PERMIT")
+		processor.SendPinkNotice(l, c)("NEED_PERMIT")
 		return false
 	}
-	script.PlayPortalSound(l, c)
-	script.WarpByName(l, span, c)(130010000, "east00")
+	processor.PlayPortalSound(l, c)
+	processor.WarpByName(l, span, c)(130010000, "east00")
 	return true
 }

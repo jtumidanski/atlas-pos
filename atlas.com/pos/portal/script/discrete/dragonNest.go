@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,13 +15,13 @@ func (p DragonNest) Name() string {
 }
 
 func (p DragonNest) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if script.QuestCompleted(l, c)(3706) {
-		script.PlayPortalSound(l, c)
-		script.WarpByName(l, span, c)(240040612, "out00")
+	if processor.QuestCompleted(l, c)(3706) {
+		processor.PlayPortalSound(l, c)
+		processor.WarpByName(l, span, c)(240040612, "out00")
 		return true
 	}
 
-	if script.QuestStarted(l, c)(100203) || script.HasItem(l, c)(4001094) {
+	if processor.QuestStarted(l, c)(100203) || processor.HasItem(l, c)(4001094) {
 		//EventManager em = pi.getEventManager("NineSpirit")
 		//if (!em.startInstance(pi.getPlayer())) {
 		//	pi.sendPinkNotice("SOMEONE_IN_MAP")
@@ -29,9 +30,9 @@ func (p DragonNest) Enter(l logrus.FieldLogger, span opentracing.Span, c script.
 		//	pi.playPortalSound()
 		//	return true
 		//}
-		script.PlayPortalSound(l, c)
+		processor.PlayPortalSound(l, c)
 		return true
 	}
-	script.SendPinkNotice(l, c)("STRANGE_FORCE_2")
+	processor.SendPinkNotice(l, c)("STRANGE_FORCE_2")
 	return false
 }

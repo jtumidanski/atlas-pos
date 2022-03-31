@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,10 +15,10 @@ func (p DojangUp) Name() string {
 }
 
 func (p DojangUp) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	m := script.MonsterById(l, c)(9300216)
+	m := processor.MonsterById(l, c)(9300216)
 	if m == nil {
-		script.SendPinkNotice(l, c)("DOJO_MORE_MONSTERS")
-		script.EnableActions(l, span, c)
+		processor.SendPinkNotice(l, c)("DOJO_MORE_MONSTERS")
+		processor.EnableActions(l, span, c)
 		return true
 	}
 
@@ -28,6 +29,6 @@ func (p DojangUp) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Co
 	//{
 	//	pi.getPlayer().setVanquisherKills(pi.getPlayer().getVanquisherKills() + 1)
 	//}
-	script.EnableActions(l, span, c)
+	processor.EnableActions(l, span, c)
 	return true
 }

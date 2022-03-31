@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,12 +15,12 @@ func (p MagatiaAlc0) Name() string {
 }
 
 func (p MagatiaAlc0) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if !script.QuestStarted(l, c)(3309) || script.HasItem(l, c)(4031708) {
-		script.PlayPortalSound(l, c)
-		script.WarpByName(l, span, c)(261020700, "down00")
+	if !processor.QuestStarted(l, c)(3309) || processor.HasItem(l, c)(4031708) {
+		processor.PlayPortalSound(l, c)
+		processor.WarpByName(l, span, c)(261020700, "down00")
 	} else {
-		script.PlayPortalSound(l, c)
-		script.WarpByName(l, span, c)(926120000, "out00")
+		processor.PlayPortalSound(l, c)
+		processor.WarpByName(l, span, c)(926120000, "out00")
 	}
 	return true
 }

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -20,21 +21,21 @@ func (p OutPepeKing) Enter(l logrus.FieldLogger, span opentracing.Span, c script
 	//	eim.dispose()
 	//}
 
-	qp := script.QuestProgressInt(l, c)(2330, 3300005) + script.QuestProgressInt(l, c)(2330, 3300006) + script.QuestProgressInt(l, c)(2330, 3300007)
-	if qp != 3 || script.HasItem(l, c)(4032388) {
-		script.PlayPortalSound(l, c)
-		script.WarpById(l, span, c)(106021400, 2)
+	qp := processor.QuestProgressInt(l, c)(2330, 3300005) + processor.QuestProgressInt(l, c)(2330, 3300006) + processor.QuestProgressInt(l, c)(2330, 3300007)
+	if qp != 3 || processor.HasItem(l, c)(4032388) {
+		processor.PlayPortalSound(l, c)
+		processor.WarpById(l, span, c)(106021400, 2)
 		return true
 	}
 
-	if !script.CanHold(l, c)(4032388, 1) {
-		script.SendPinkNotice(l, c)("INVENTORY_FULL")
+	if !processor.CanHold(l, c)(4032388, 1) {
+		processor.SendPinkNotice(l, c)("INVENTORY_FULL")
 		return false
 	}
 
-	script.SendPinkNotice(l, c)("PEPE_KING_DROP")
-	script.GainItem(l, c)(4032388, 1)
-	script.PlayPortalSound(l, c)
-	script.WarpById(l, span, c)(106021400, 2)
+	processor.SendPinkNotice(l, c)("PEPE_KING_DROP")
+	processor.GainItem(l, c)(4032388, 1)
+	processor.PlayPortalSound(l, c)
+	processor.WarpById(l, span, c)(106021400, 2)
 	return true
 }

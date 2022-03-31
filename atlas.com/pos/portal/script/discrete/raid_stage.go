@@ -3,6 +3,7 @@ package discrete
 import (
 	_map "atlas-pos/map"
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 	"math"
@@ -24,11 +25,11 @@ func (p RaidStage) Enter(l logrus.FieldLogger, span opentracing.Span, c script.C
 		} else {
 			nextStage = 970030001 + uint32(math.Floor(float64(c.MapId()-970030100)/500))
 		}
-		script.PlayPortalSound(l, c)
-		script.WarpRandom(l, span, c)(nextStage)
+		processor.PlayPortalSound(l, c)
+		processor.WarpRandom(l, span, c)(nextStage)
 		return true
 	} else {
-		script.SendLightBlueNotice(l, c)("DEFEAT_ALL_MONSTERS")
+		processor.SendLightBlueNotice(l, c)("DEFEAT_ALL_MONSTERS")
 		return false
 	}
 }

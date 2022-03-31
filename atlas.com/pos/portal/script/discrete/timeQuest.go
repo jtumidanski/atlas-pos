@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 	"math"
@@ -15,45 +16,45 @@ func (p TimeQuest) Name() string {
 }
 
 func (p TimeQuest) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	script.PlayPortalSound(l, c)
+	processor.PlayPortalSound(l, c)
 	m := uint32(math.Floor(float64((c.MapId() - 270010000) / 100)))
-	if m < 5 && script.QuestCompleted(l, c)(3500+m) {
-		script.WarpByName(l, span, c)(c.MapId()+10, "out00")
+	if m < 5 && processor.QuestCompleted(l, c)(3500+m) {
+		processor.WarpByName(l, span, c)(c.MapId()+10, "out00")
 		return true
 	}
-	if m == 5 && script.QuestCompleted(l, c)(3502+m) {
-		script.WarpByName(l, span, c)(270020000, "out00")
+	if m == 5 && processor.QuestCompleted(l, c)(3502+m) {
+		processor.WarpByName(l, span, c)(270020000, "out00")
 		return true
 	}
-	if m > 100 && m < 105 && script.QuestCompleted(l, c)(3407+m) {
-		script.WarpByName(l, span, c)(c.MapId()+10, "out00")
+	if m > 100 && m < 105 && processor.QuestCompleted(l, c)(3407+m) {
+		processor.WarpByName(l, span, c)(c.MapId()+10, "out00")
 		return true
 	}
-	if m == 105 && script.QuestCompleted(l, c)(3514) {
-		script.WarpByName(l, span, c)(270030000, "out00")
+	if m == 105 && processor.QuestCompleted(l, c)(3514) {
+		processor.WarpByName(l, span, c)(270030000, "out00")
 		return true
 	}
-	if m > 200 && m < 205 && script.QuestCompleted(l, c)(3314+m) {
-		script.WarpByName(l, span, c)(c.MapId()+10, "out00")
+	if m > 200 && m < 205 && processor.QuestCompleted(l, c)(3314+m) {
+		processor.WarpByName(l, span, c)(c.MapId()+10, "out00")
 		return true
 	}
-	if m == 205 && script.QuestCompleted(l, c)(3519) {
-		script.WarpByName(l, span, c)(270040000, "out00")
+	if m == 205 && processor.QuestCompleted(l, c)(3519) {
+		processor.WarpByName(l, span, c)(270040000, "out00")
 		return true
 	}
-	if m == 300 && (script.HasItem(l, c)(4032002) || script.QuestCompleted(l, c)(3522)) {
-		script.WarpByName(l, span, c)(270040100, "out00")
+	if m == 300 && (processor.HasItem(l, c)(4032002) || processor.QuestCompleted(l, c)(3522)) {
+		processor.WarpByName(l, span, c)(270040100, "out00")
 		return true
 	}
-	script.SendPinkNotice(l, c)("TIME_QUEST")
+	processor.SendPinkNotice(l, c)("TIME_QUEST")
 	if m > 200 {
-		script.WarpByName(l, span, c)(270030000, "in00")
+		processor.WarpByName(l, span, c)(270030000, "in00")
 		return true
 	}
 	if m > 100 {
-		script.WarpByName(l, span, c)(270020000, "in00")
+		processor.WarpByName(l, span, c)(270020000, "in00")
 		return true
 	}
-	script.WarpByName(l, span, c)(270010000, "in00")
+	processor.WarpByName(l, span, c)(270010000, "in00")
 	return true
 }

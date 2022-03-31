@@ -1,6 +1,7 @@
 package portal
 
 import (
+	"atlas-pos/rest/requests"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 	"math/rand"
@@ -104,8 +105,8 @@ func marketModelProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId
 	}
 }
 
-func requestModelProvider(l logrus.FieldLogger, span opentracing.Span) func(r Request) ModelProvider {
-	return func(r Request) ModelProvider {
+func requestModelProvider(l logrus.FieldLogger, span opentracing.Span) func(r requests.Request[attributes]) ModelProvider {
+	return func(r requests.Request[attributes]) ModelProvider {
 		return func() (*Model, error) {
 			resp, err := r(l, span)
 			if err != nil {
@@ -121,8 +122,8 @@ func requestModelProvider(l logrus.FieldLogger, span opentracing.Span) func(r Re
 	}
 }
 
-func requestModelListProvider(l logrus.FieldLogger, span opentracing.Span) func(r Request) ModelListProvider {
-	return func(r Request) ModelListProvider {
+func requestModelListProvider(l logrus.FieldLogger, span opentracing.Span) func(r requests.Request[attributes]) ModelListProvider {
+	return func(r requests.Request[attributes]) ModelListProvider {
 		return func() ([]*Model, error) {
 			resp, err := r(l, span)
 			if err != nil {
@@ -160,11 +161,35 @@ func ByMapModelListProvider(l logrus.FieldLogger, span opentracing.Span) func(ma
 	}
 }
 
-func makeModel(body *dataBody) (*Model, error) {
+func makeModel(body requests.DataBody[attributes]) (*Model, error) {
 	id, err := strconv.ParseUint(body.Id, 10, 32)
 	if err != nil {
 		return nil, err
 	}
 	attr := body.Attributes
 	return NewPortalModel(uint32(id), attr.Name, attr.Target, attr.TargetMapId, attr.Type, attr.X, attr.Y, attr.ScriptName), nil
+}
+
+func WarpToPortal(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, p IdProvider) {
+	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, p IdProvider) {
+		emitChangeMap(l, span)(worldId, channelId, characterId, mapId, p())
+	}
+}
+
+func WarpRandom(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32) {
+	return func(worldId byte, channelId byte, characterId uint32, mapId uint32) {
+		WarpToPortal(l, span)(worldId, channelId, characterId, mapId, RandomPortalIdProvider(l, span)(mapId))
+	}
+}
+
+func WarpById(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
+	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
+		WarpToPortal(l, span)(worldId, channelId, characterId, mapId, FixedPortalIdProvider(portalId))
+	}
+}
+
+func WarpByName(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalName string) {
+	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalName string) {
+		WarpToPortal(l, span)(worldId, channelId, characterId, mapId, ByNamePortalIdProvider(l, span)(mapId, portalName))
+	}
 }

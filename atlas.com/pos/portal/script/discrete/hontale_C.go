@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -31,7 +32,7 @@ func (p HorntaleC) Enter(l logrus.FieldLogger, span opentracing.Span, c script.C
 	//	eim.warpEventTeam(target)
 	//	return true
 	//} else {
-	script.SendLightBlueNotice(l, c)("HORNTAIL_PARTY_LEADER")
+	processor.SendLightBlueNotice(l, c)("HORNTAIL_PARTY_LEADER")
 	return false
 	//}
 }

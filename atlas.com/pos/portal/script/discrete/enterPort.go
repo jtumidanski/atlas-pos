@@ -3,6 +3,7 @@ package discrete
 import (
 	_map "atlas-pos/map"
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -15,18 +16,18 @@ func (p EnterPort) Name() string {
 }
 
 func (p EnterPort) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if script.QuestStarted(l, c)(21301) &&
-		script.QuestProgressInt(l, c)(21301, 9001013) == 0 {
+	if processor.QuestStarted(l, c)(21301) &&
+		processor.QuestProgressInt(l, c)(21301, 9001013) == 0 {
 		if _map.CharacterCount(l)(c.WorldId(), c.ChannelId(), 108010700) != 0 {
-			script.SendPinkNotice(l, c)("SOMEONE_ALREADY_CHALLENGING_THIEF_CROW")
+			processor.SendPinkNotice(l, c)("SOMEONE_ALREADY_CHALLENGING_THIEF_CROW")
 			return false
 		}
 		_map.SpawnMonster(l)(c.WorldId(), c.ChannelId(), 108010700, 9001013, 2732, 3)
-		script.PlayPortalSound(l, c)
-		script.WarpByName(l, span, c)(108010700, "west00")
+		processor.PlayPortalSound(l, c)
+		processor.WarpByName(l, span, c)(108010700, "west00")
 		return true
 	}
-	script.PlayPortalSound(l, c)
-	script.WarpById(l, span, c)(140020300, 1)
+	processor.PlayPortalSound(l, c)
+	processor.WarpById(l, span, c)(140020300, 1)
 	return true
 }

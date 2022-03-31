@@ -3,6 +3,7 @@ package discrete
 import (
 	_map "atlas-pos/map"
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -15,27 +16,27 @@ func (p EnterDisguise1) Name() string {
 }
 
 func (p EnterDisguise1) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if script.QuestStarted(l, c)(20301) ||
-		script.QuestStarted(l, c)(20302) ||
-		script.QuestStarted(l, c)(20303) ||
-		script.QuestStarted(l, c)(20304) ||
-		script.QuestStarted(l, c)(20305) {
+	if processor.QuestStarted(l, c)(20301) ||
+		processor.QuestStarted(l, c)(20302) ||
+		processor.QuestStarted(l, c)(20303) ||
+		processor.QuestStarted(l, c)(20304) ||
+		processor.QuestStarted(l, c)(20305) {
 		if _map.CharacterCount(l)(c.WorldId(), c.ChannelId(), 108010600) > 0 {
-			script.SendPinkNotice(l, c)("SOMEONE_ALREADY_SEARCHING")
+			processor.SendPinkNotice(l, c)("SOMEONE_ALREADY_SEARCHING")
 			return false
 		}
 
-		if script.HasItem(l, c)(4032101) {
-			script.SendPinkNotice(l, c)("ALREADY_CHALLENGED_MASTER_OF_DISGUISE")
+		if processor.HasItem(l, c)(4032101) {
+			processor.SendPinkNotice(l, c)("ALREADY_CHALLENGED_MASTER_OF_DISGUISE")
 			return false
 		}
 
-		script.PlayPortalSound(l, c)
-		script.WarpByName(l, span, c)(108010600, "out00")
+		processor.PlayPortalSound(l, c)
+		processor.WarpByName(l, span, c)(108010600, "out00")
 		return true
 	}
 
-	script.PlayPortalSound(l, c)
-	script.WarpByName(l, span, c)(130010010, "out00")
+	processor.PlayPortalSound(l, c)
+	processor.WarpByName(l, span, c)(130010010, "out00")
 	return true
 }

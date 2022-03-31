@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -23,8 +24,8 @@ func (p S4SuperOut) Enter(l logrus.FieldLogger, span opentracing.Span, c script.
 	//	pi.warp(912010200)
 	//	return true
 	//} else {
-	script.PlayPortalSound(l, c)
-	script.WarpRandom(l, span, c)(120000101)
+	processor.PlayPortalSound(l, c)
+	processor.WarpRandom(l, span, c)(120000101)
 	return true
 	//}
 }

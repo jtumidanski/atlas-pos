@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,6 +15,6 @@ func (p HighPosition) Name() string {
 }
 
 func (p HighPosition) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	script.RunMapScript(l, c)
+	processor.RunMapScript(l, c)
 	return false
 }

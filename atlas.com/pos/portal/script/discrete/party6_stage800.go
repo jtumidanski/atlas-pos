@@ -3,6 +3,7 @@ package discrete
 import (
 	"atlas-pos/character"
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"atlas-pos/reactor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
@@ -24,13 +25,13 @@ func (p Party6Stage800) Enter(l logrus.FieldLogger, span opentracing.Span, c scr
 
 	r := reactor.ById(l)(c.WorldId(), c.ChannelId(), c.MapId(), 3008000)
 	if r != nil && r.State() > 0 {
-		if !script.CanHold(l, c)(4001198, 1) {
-			script.SendPinkNotice(l, c)("INVENTORY_FULL")
+		if !processor.CanHold(l, c)(4001198, 1) {
+			processor.SendPinkNotice(l, c)("INVENTORY_FULL")
 			return false
 		}
-		script.GainItem(l, c)(4001198, 1)
+		processor.GainItem(l, c)(4001198, 1)
 	}
-	script.PlayPortalSound(l, c)
-	script.WarpById(l, span, c)(300030100, 0)
+	processor.PlayPortalSound(l, c)
+	processor.WarpById(l, span, c)(300030100, 0)
 	return true
 }

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,28 +15,28 @@ func (p SecretDoor) Name() string {
 }
 
 func (p SecretDoor) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if script.QuestCompleted(l, c)(3360) {
+	if processor.QuestCompleted(l, c)(3360) {
 		return p.doorCross(l, span, c)
 	}
-	if script.QuestStarted(l, c)(3360) {
-		pw := script.QuestProgress(l, c)(3360)
+	if processor.QuestStarted(l, c)(3360) {
+		pw := processor.QuestProgress(l, c)(3360)
 		if len(pw) > 1 {
-			script.OpenNPCWithScript(l, c)(2111024, "MagatiaPassword")
+			processor.OpenNPCWithScript(l, c)(2111024, "MagatiaPassword")
 			return false
 		} else {
 			return p.doorCross(l, span, c)
 		}
 	}
-	script.SendPinkNotice(l, c)("DOOR_LOCKED_SHORT")
+	processor.SendPinkNotice(l, c)("DOOR_LOCKED_SHORT")
 	return false
 }
 
 func (p SecretDoor) doorCross(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	script.PlayPortalSound(l, c)
+	processor.PlayPortalSound(l, c)
 	portalName := "alca"
 	if c.MapId() == 261010000 {
 		portalName = "jenu"
 	}
-	script.WarpByName(l, span, c)(261030000, "sp_" + portalName)
+	processor.WarpByName(l, span, c)(261030000, "sp_" + portalName)
 	return true
 }

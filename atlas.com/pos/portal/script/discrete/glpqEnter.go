@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,11 +15,11 @@ func (p GlpqEnter) Name() string {
 }
 
 func (p GlpqEnter) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if script.HasItem(l, c)(3992041) {
-		script.PlayPortalSound(l, c)
-		script.WarpByName(l, span, c)(610030020, "out00")
+	if processor.HasItem(l, c)(3992041) {
+		processor.PlayPortalSound(l, c)
+		processor.WarpByName(l, span, c)(610030020, "out00")
 		return true
 	}
-	script.SendPinkNotice(l, c)("GIANT_GATE_NO_BUDGE")
+	processor.SendPinkNotice(l, c)("GIANT_GATE_NO_BUDGE")
 	return false
 }

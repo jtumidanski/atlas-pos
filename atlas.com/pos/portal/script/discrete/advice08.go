@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,6 +15,6 @@ func (p Advice08) Name() string {
 }
 
 func (p Advice08) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	script.ShowInstruction(l, span, c)("You can check your character's stats by pressing the #e#b[S]#k#nkey.", 350, 5)
+	processor.ShowInstruction(l, span, c)("You can check your character's stats by pressing the #e#b[S]#k#nkey.", 350, 5)
 	return true
 }

@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,11 +15,11 @@ func (p EnterBackStreet) Name() string {
 }
 
 func (p EnterBackStreet) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if script.QuestActive(l, c)(21747) || script.QuestActive(l, c)(21744) && script.QuestCompleted(l, c)(21745) {
-		script.PlayPortalSound(l, c)
-		script.WarpById(l, span, c)(925040000, 0)
+	if processor.QuestActive(l, c)(21747) || processor.QuestActive(l, c)(21744) && processor.QuestCompleted(l, c)(21745) {
+		processor.PlayPortalSound(l, c)
+		processor.WarpById(l, span, c)(925040000, 0)
 		return true
 	}
-	script.SendPinkNotice(l, c)("NO_PERMISSION_TO_ENTER")
+	processor.SendPinkNotice(l, c)("NO_PERMISSION_TO_ENTER")
 	return false
 }

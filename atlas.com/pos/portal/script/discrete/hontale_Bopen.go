@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -25,7 +26,7 @@ func (p HorntaleBOpen) Enter(l logrus.FieldLogger, span opentracing.Span, c scri
 		//avail = eim.getProperty("1stageclear")
 		//if (avail == null) {
 		//	// do nothing; send message to player
-		script.SendLightBlueNotice(l, c)("HORNTAIL_SEAL")
+		processor.SendLightBlueNotice(l, c)("HORNTAIL_SEAL")
 		return false
 		//} else {
 		//	pi.playPortalSound()
@@ -41,7 +42,7 @@ func (p HorntaleBOpen) Enter(l logrus.FieldLogger, span opentracing.Span, c scri
 		//avail = eim.getProperty("2stageclear")
 		//if avail == null {
 		//	// do nothing; send message to player
-		script.SendLightBlueNotice(l, c)("HORNTAIL_SEAL")
+		processor.SendLightBlueNotice(l, c)("HORNTAIL_SEAL")
 		return false
 		//} else {
 		//	pi.playPortalSound()
@@ -57,7 +58,7 @@ func (p HorntaleBOpen) Enter(l logrus.FieldLogger, span opentracing.Span, c scri
 		//avail = eim.getProperty("3stageclear")
 		//if avail == null {
 		// do nothing; send message to player
-		script.SendLightBlueNotice(l, c)("HORNTAIL_SEAL")
+		processor.SendLightBlueNotice(l, c)("HORNTAIL_SEAL")
 		return false
 		//} else {
 		//	pi.playPortalSound()
@@ -73,7 +74,7 @@ func (p HorntaleBOpen) Enter(l logrus.FieldLogger, span opentracing.Span, c scri
 		//avail = eim.getProperty("4stageclear")
 		//if avail == null {
 		// do nothing; send message to player
-		script.SendLightBlueNotice(l, c)("HORNTAIL_SEAL")
+		processor.SendLightBlueNotice(l, c)("HORNTAIL_SEAL")
 		return false
 		//} else {
 		//	pi.playPortalSound()
@@ -96,7 +97,7 @@ func (p HorntaleBOpen) Enter(l logrus.FieldLogger, span opentracing.Span, c scri
 		//		eim.setIntProperty("5stageclear", 1)
 		//		return true
 		//	} else {
-		script.SendLightBlueNotice(l, c)("HORNTAIL_SEAL_LONG")
+		processor.SendLightBlueNotice(l, c)("HORNTAIL_SEAL_LONG")
 		return false
 	}
 	//} else {

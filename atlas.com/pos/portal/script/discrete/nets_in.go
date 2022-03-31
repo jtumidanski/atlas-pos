@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,8 +15,8 @@ func (p NetsIn) Name() string {
 }
 
 func (p NetsIn) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	script.SaveLocation(l, c)("MIRROR")
-	script.PlayPortalSound(l, c)
-	script.WarpById(l, span, c)(926010000, 4)
+	processor.SaveLocation(l, c)("MIRROR")
+	processor.PlayPortalSound(l, c)
+	processor.WarpById(l, span, c)(926010000, 4)
 	return true
 }

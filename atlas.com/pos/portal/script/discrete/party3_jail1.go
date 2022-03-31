@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -20,7 +21,7 @@ func (p Party3Jail1) Enter(l logrus.FieldLogger, span opentracing.Span, c script
 	//	return true
 	//}
 	//else {
-	script.SendPinkNotice(l, c)("PIXIE_POWER_REMAINS")
+	processor.SendPinkNotice(l, c)("PIXIE_POWER_REMAINS")
 	return false
 	//}
 }

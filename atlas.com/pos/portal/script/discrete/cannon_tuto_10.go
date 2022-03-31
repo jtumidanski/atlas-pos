@@ -2,6 +2,7 @@ package discrete
 
 import (
 	"atlas-pos/portal/script"
+	"atlas-pos/portal/script/processor"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 )
@@ -14,6 +15,6 @@ func (p CannonTuto10) Name() string {
 }
 
 func (p CannonTuto10) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	script.UnlockUI(l, c)
+	processor.UnlockUI(l, c)
 	return true
 }
