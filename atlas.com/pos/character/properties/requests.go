@@ -13,10 +13,10 @@ const (
 	accountCharacters              = charactersService + "?accountId=%d&worldId=%d"
 )
 
-func requestAttributesById(characterId uint32) requests.Request[attributes] {
+func requestById(characterId uint32) requests.Request[attributes] {
 	return requests.MakeGetRequest[attributes](fmt.Sprintf(charactersById, characterId))
 }
 
-func requestAccountCharacters(accountId uint32, worldId byte) requests.Request[attributes] {
+func requestByAccountAndWorld(accountId uint32, worldId byte) requests.Request[attributes] {
 	return requests.MakeGetRequest[attributes](fmt.Sprintf(accountCharacters, accountId, worldId))
 }

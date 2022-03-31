@@ -11,7 +11,7 @@ type Context struct {
 	channelId   byte
 	characterId uint32
 	mapId       uint32
-	portal      *portal.Model
+	portal      portal.Model
 }
 
 func (c Context) MapId() uint32 {
@@ -30,11 +30,11 @@ func (c Context) CharacterId() uint32 {
 	return c.characterId
 }
 
-func (c Context) Portal() *portal.Model {
+func (c Context) Portal() portal.Model {
 	return c.portal
 }
 
-func NewContext(worldId byte, channelId byte, characterId uint32, mapId uint32, portal *portal.Model) Context {
+func NewContext(worldId byte, channelId byte, characterId uint32, mapId uint32, portal portal.Model) Context {
 	return Context{
 		worldId:     worldId,
 		channelId:   channelId,

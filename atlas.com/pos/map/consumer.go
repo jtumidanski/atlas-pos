@@ -38,10 +38,10 @@ func handleEnterPortal() kafka.HandlerFunc[enterPortalCommand] {
 	}
 }
 
-func enterPortal(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, model *portal.Model) {
-	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, model *portal.Model) {
+func enterPortal(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, model portal.Model) {
+	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, model portal.Model) {
 		// TODO check portal delay
-		if model == nil || blocked.GetCache().Blocked(characterId, model.ScriptName()) {
+		if blocked.GetCache().Blocked(characterId, model.ScriptName()) {
 			character.EnableActions(l, span)(worldId, channelId, characterId)
 			return
 		}

@@ -1,49 +1,41 @@
 package properties
 
 import (
+	"atlas-pos/model"
 	"atlas-pos/rest/requests"
-	"errors"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
 	"strconv"
 )
 
-func GetById(l logrus.FieldLogger, span opentracing.Span) func(characterId uint32) (*Model, error) {
-	return func(characterId uint32) (*Model, error) {
-		cs, err := requestAttributesById(characterId)(l, span)
-		if err != nil {
-			return nil, err
-		}
-		ca := makeModel(cs.Data())
-		if ca == nil {
-			return nil, errors.New("unable to make character attributes")
-		}
-		return ca, nil
+func ByIdModelProvider(l logrus.FieldLogger, span opentracing.Span) func(id uint32) model.Provider[Model] {
+	return func(id uint32) model.Provider[Model] {
+		return requests.Provider[attributes, Model](l, span)(requestById(id), makeModel)
 	}
 }
 
-func GetForAccountInWorld(l logrus.FieldLogger, span opentracing.Span) func(accountId uint32, worldId byte) ([]*Model, error) {
-	return func(accountId uint32, worldId byte) ([]*Model, error) {
-		cs, err := requestAccountCharacters(accountId, worldId)(l, span)
-		if err != nil {
-			return nil, err
-		}
-
-		var cas = make([]*Model, 0)
-		for _, v := range cs.DataList() {
-			cas = append(cas, makeModel(v))
-		}
-		if len(cas) == 0 {
-			return nil, errors.New("unable to make character attributes")
-		}
-		return cas, nil
+func GetById(l logrus.FieldLogger, span opentracing.Span) func(characterId uint32) (Model, error) {
+	return func(characterId uint32) (Model, error) {
+		return ByIdModelProvider(l, span)(characterId)()
 	}
 }
 
-func makeModel(ca requests.DataBody[attributes]) *Model {
+func ByAccountAndWorldModelListProvider(l logrus.FieldLogger, span opentracing.Span) func(accountId uint32, worldId byte) model.SliceProvider[Model] {
+	return func(accountId uint32, worldId byte) model.SliceProvider[Model] {
+		return requests.SliceProvider[attributes, Model](l, span)(requestByAccountAndWorld(accountId, worldId), makeModel)
+	}
+}
+
+func GetForAccountInWorld(l logrus.FieldLogger, span opentracing.Span) func(accountId uint32, worldId byte) ([]Model, error) {
+	return func(accountId uint32, worldId byte) ([]Model, error) {
+		return ByAccountAndWorldModelListProvider(l, span)(accountId, worldId)()
+	}
+}
+
+func makeModel(ca requests.DataBody[attributes]) (Model, error) {
 	cid, err := strconv.ParseUint(ca.Id, 10, 32)
 	if err != nil {
-		return nil
+		return Model{}, err
 	}
 	att := ca.Attributes
 	r := NewBuilder().
@@ -77,5 +69,5 @@ func makeModel(ca requests.DataBody[attributes]) *Model {
 		SetY(att.Y).
 		SetStance(att.Stance).
 		Build()
-	return &r
+	return r, nil
 }

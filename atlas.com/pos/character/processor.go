@@ -89,7 +89,7 @@ func SetQuestProgress(l logrus.FieldLogger) func(characterId uint32, questId uin
 	}
 }
 
-type PropertiesCriteria func(*properties.Model) bool
+type PropertiesCriteria func(properties.Model) bool
 
 func MeetsCriteria(l logrus.FieldLogger, span opentracing.Span) func(characterId uint32, criteria ...PropertiesCriteria) bool {
 	return func(characterId uint32, criteria ...PropertiesCriteria) bool {
@@ -114,13 +114,13 @@ func IsJob(l logrus.FieldLogger, span opentracing.Span) func(characterId uint32,
 }
 
 func IsJobCriteria(option uint16) PropertiesCriteria {
-	return func(c *properties.Model) bool {
+	return func(c properties.Model) bool {
 		return job.IsA(c.JobId(), option)
 	}
 }
 
 func IsJobNiche(option uint16) PropertiesCriteria {
-	return func(c *properties.Model) bool {
+	return func(c properties.Model) bool {
 		//TODO
 		return job.IsA(c.JobId(), option)
 	}
@@ -170,7 +170,7 @@ func AboveLevel(l logrus.FieldLogger, span opentracing.Span) func(characterId ui
 }
 
 func AboveLevelCriteria(level byte) PropertiesCriteria {
-	return func(c *properties.Model) bool {
+	return func(c properties.Model) bool {
 		return c.Level() > level
 	}
 }
