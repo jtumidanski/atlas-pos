@@ -26,8 +26,8 @@ func (p DojangNext) Enter(l logrus.FieldLogger, span opentracing.Span, c script.
 		return false
 	}
 	processor.SetNPCCooldown(l, c)(current)
-	g := processor.ReactorByName(l, c)("door")
-	if g == nil {
+	g, err := processor.ReactorByName(l, span, c)("door")
+	if err != nil {
 		return false
 	}
 

@@ -23,8 +23,8 @@ func (p Party6Stage800) Enter(l logrus.FieldLogger, span opentracing.Span, c scr
 	character.RemoveAll(l)(c.CharacterId(), 4001169)
 	character.RemoveAll(l)(c.CharacterId(), 2270004)
 
-	r := reactor.ById(l)(c.WorldId(), c.ChannelId(), c.MapId(), 3008000)
-	if r != nil && r.State() > 0 {
+	r, err := reactor.GetById(l, span)(3008000)
+	if err == nil && r.State() > 0 {
 		if !processor.CanHold(l, c)(4001198, 1) {
 			processor.SendPinkNotice(l, c)("INVENTORY_FULL")
 			return false

@@ -32,7 +32,7 @@ func (p Party6Stage) Enter(l logrus.FieldLogger, span opentracing.Span, c script
 			return false
 		}
 	case 930000200:
-		if reactor.ByName(l)(c.WorldId(), c.ChannelId(), c.MapId(), "spine").State() < 4 {
+		if r, err := reactor.ByName(l, span)(c.WorldId(), c.ChannelId(), c.MapId(), "spine"); err == nil && r.State() < 4 {
 			processor.SendPinkNotice(l, c)("SPINE_BLOCKS")
 			return false
 		} else {

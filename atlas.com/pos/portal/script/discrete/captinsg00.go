@@ -20,7 +20,7 @@ func (p CaptinsG00) Enter(l logrus.FieldLogger, span opentracing.Span, c script.
 		return false
 	}
 
-	party, ok := processor.GetParty(l, c)
+	party, ok := processor.GetParty(l, span, c)
 	if !ok {
 		processor.SendPinkNotice(l, c)("BOSS_PARTY_NEEDED")
 		return false

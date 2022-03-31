@@ -16,7 +16,7 @@ func (p SpearGateOpen) Name() string {
 }
 
 func (p SpearGateOpen) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if reactor.ByName(l)(c.WorldId(), c.ChannelId(), c.MapId(), "speargate").State() == 4 {
+	if r, err := reactor.ByName(l, span)(c.WorldId(), c.ChannelId(), c.MapId(), "speargate"); err == nil && r.State() == 4 {
 		processor.PlayPortalSound(l, c)
 		processor.WarpById(l, span, c)(990000401, 0)
 		return true

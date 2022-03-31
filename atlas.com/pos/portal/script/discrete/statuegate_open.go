@@ -16,7 +16,7 @@ func (p StatueGateOpen) Name() string {
 }
 
 func (p StatueGateOpen) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if reactor.ByName(l)(c.WorldId(), c.ChannelId(), c.MapId(), "statuegate").State() == 1 {
+	if r, err := reactor.ByName(l, span)(c.WorldId(), c.ChannelId(), c.MapId(), "statuegate"); err == nil && r.State() == 1 {
 		processor.PlayPortalSound(l, c)
 		processor.WarpById(l, span, c)(990000301, 0)
 		return true

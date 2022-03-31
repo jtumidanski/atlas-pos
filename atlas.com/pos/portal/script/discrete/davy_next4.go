@@ -15,11 +15,24 @@ func (p DavyNext4) Name() string {
 }
 
 func (p DavyNext4) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if processor.ReactorByName(l, c)("sMob1").State() >= 1 &&
-		processor.ReactorByName(l, c)("sMob2").State() >= 1 &&
-		processor.ReactorByName(l, c)("sMob3").State() >= 1 &&
-		processor.ReactorByName(l, c)("sMob4").State() >= 1 &&
-		processor.MonsterCount(l, c) == 0 {
+	r1, err := processor.ReactorByName(l, span, c)("sMob1")
+	if err != nil {
+		return false
+	}
+	r2, err := processor.ReactorByName(l, span, c)("sMob2")
+	if err != nil {
+		return false
+	}
+	r3, err := processor.ReactorByName(l, span, c)("sMob3")
+	if err != nil {
+		return false
+	}
+	r4, err := processor.ReactorByName(l, span, c)("sMob4")
+	if err != nil {
+		return false
+	}
+
+	if r1.State() >= 1 && r2.State() >= 1 && r3.State() >= 1 && r4.State() >= 1 && processor.MonsterCount(l, c) == 0 {
 
 		//if (eim.getProperty("spawnedBoss") == null) {
 		//	int level = (eim.getProperty("level")).toInteger()

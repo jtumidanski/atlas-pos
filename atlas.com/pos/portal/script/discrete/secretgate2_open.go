@@ -16,9 +16,9 @@ func (p SecretGate2Open) Name() string {
 }
 
 func (p SecretGate2Open) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if reactor.ByName(l)(c.WorldId(), c.ChannelId(), c.MapId(), "secretgate2").State() == 1 {
+	if r, err := reactor.ByName(l, span)(c.WorldId(), c.ChannelId(), c.MapId(), "secretgate2"); err == nil && r.State() == 1 {
 		processor.PlayPortalSound(l, c)
-		processor.WarpById(l, span, c)(990000631,1)
+		processor.WarpById(l, span, c)(990000631, 1)
 		return true
 	}
 	processor.SendPinkNotice(l, c)("DOOR_IS_CLOSED")

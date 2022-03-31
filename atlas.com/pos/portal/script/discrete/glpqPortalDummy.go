@@ -16,7 +16,11 @@ func (p GlpqPortalDummy) Name() string {
 }
 
 func (p GlpqPortalDummy) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	r := reactor.ByName(l)(c.WorldId(), c.ChannelId(), c.MapId(), "mob0")
+	r, err := reactor.ByName(l, span)(c.WorldId(), c.ChannelId(), c.MapId(), "mob0")
+	if err != nil {
+		return false
+	}
+
 	if r.State() >= 1 {
 		processor.SendPinkNotice(l, c)("PORTAL_MALFUNCTION")
 		return false

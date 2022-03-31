@@ -16,7 +16,7 @@ func (p Jnr3In0) Name() string {
 }
 
 func (p Jnr3In0) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if reactor.ByName(l)(c.WorldId(), c.ChannelId(), c.MapId(), "jnr3_out1").State() == 1 {
+	if r, err := reactor.ByName(l, span)(c.WorldId(), c.ChannelId(), c.MapId(), "jnr3_out1"); err == nil && r.State() == 1 {
 		processor.PlayPortalSound(l, c)
 		processor.WarpById(l, span, c)(926110201, 0)
 		return true

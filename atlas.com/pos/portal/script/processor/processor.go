@@ -285,9 +285,13 @@ func UnlockUI(l logrus.FieldLogger, c script.Context) {
 	//TODO
 }
 
-func GetParty(l logrus.FieldLogger, c script.Context) (*party.Model, bool) {
-	//TODO
-	return nil, false
+func GetParty(l logrus.FieldLogger, span opentracing.Span, c script.Context) (party.Model, bool) {
+	p, err := party.GetByMemberId(l, span)(c.CharacterId())
+	if err != nil {
+		l.WithError(err).Errorf("Unable to retrieve party for character %d.", c.CharacterId())
+		return party.Model{}, false
+	}
+	return p, false
 }
 
 func PartyLeader(l logrus.FieldLogger, c script.Context) bool {
@@ -337,9 +341,9 @@ func MonsterById(l logrus.FieldLogger, c script.Context) func(monsterId uint32) 
 	}
 }
 
-func ReactorByName(l logrus.FieldLogger, c script.Context) func(reactorName string) *reactor.Model {
-	return func(reactorName string) *reactor.Model {
-		return reactor.ByName(l)(c.WorldId(), c.ChannelId(), c.MapId(), reactorName)
+func ReactorByName(l logrus.FieldLogger, span opentracing.Span, c script.Context) func(reactorName string) (reactor.Model, error) {
+	return func(reactorName string) (reactor.Model, error) {
+		return reactor.ByName(l, span)(c.WorldId(), c.ChannelId(), c.MapId(), reactorName)
 	}
 }
 

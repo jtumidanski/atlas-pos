@@ -10,7 +10,7 @@ import (
 func EnterMiniDungeon(l logrus.FieldLogger, span opentracing.Span, c script.Context) func(baseId uint32, dungeonId uint32, count uint8) bool {
 	return func(baseId uint32, dungeonId uint32, count uint8) bool {
 		if c.MapId() == baseId {
-			_, partyExists := processor.GetParty(l, c)
+			_, partyExists := processor.GetParty(l, span, c)
 			if partyExists {
 				//if (pi.isLeader()) {
 				//	for (int i = 0; i < dungeons; i++) {

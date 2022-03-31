@@ -31,7 +31,7 @@ func (p Zakum05) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Con
 		return false
 	}
 
-	if reactor.ById(l)(c.WorldId(), c.ChannelId(), c.MapId(), 2118002).State() > 0 {
+	if r, err := reactor.GetById(l, span)(2118002); err == nil && r.State() > 0 {
 		processor.SendPinkNotice(l, c)("ENTRANCE_BLOCKED")
 		return false
 	}

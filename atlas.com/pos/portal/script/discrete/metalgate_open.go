@@ -16,7 +16,7 @@ func (p MetalGateOpen) Name() string {
 }
 
 func (p MetalGateOpen) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	if reactor.ByName(l)(c.WorldId(), c.ChannelId(), c.MapId(), "metalgate").State() == 1 {
+	if r, err := reactor.ByName(l, span)(c.WorldId(), c.ChannelId(), c.MapId(), "metalgate"); err == nil && r.State() == 1 {
 		processor.PlayPortalSound(l, c)
 		processor.WarpById(l, span, c)(990000431, 0)
 		return true
