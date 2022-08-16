@@ -6,76 +6,29 @@ import (
 	"errors"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
-	"math/rand"
 	"strconv"
 	"strings"
 )
 
-const DefaultPortalId uint32 = 0
+func getId(m Model) (uint32, error) {
+	return m.Id(), nil
+}
 
-type IdProvider func() uint32
-
-type PreciselyOneFilter func([]Model) (Model, error)
-
-func FixedPortalIdProvider(portalId uint32) IdProvider {
-	return func() uint32 {
-		return portalId
+func ByNamePortalIdProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32, name string) model.IdProvider[uint32] {
+	return func(mapId uint32, name string) model.IdProvider[uint32] {
+		return model.ProviderToIdProviderAdapter(ByNameModelProvider(l, span)(mapId, name), getId)
 	}
 }
 
-func DefaultIdProvider() uint32 {
-	return DefaultPortalId
-}
-
-func FromPortalIdProvider(p Model) IdProvider {
-	return func() uint32 {
-		return p.Id()
-	}
-}
-
-func modelProviderToIdProviderAdapter(l logrus.FieldLogger) func(mp model.Provider[Model]) IdProvider {
-	return func(mp model.Provider[Model]) IdProvider {
-		p, err := mp()
-		if err != nil {
-			l.WithError(err).Warnf("Unable to retrieve portal. Using default.")
-			return DefaultIdProvider
-		}
-		return FromPortalIdProvider(p)
-	}
-}
-
-func ByNamePortalIdProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32, name string) IdProvider {
-	return func(mapId uint32, name string) IdProvider {
-		return modelProviderToIdProviderAdapter(l)(ByNameModelProvider(l, span)(mapId, name))
-	}
-}
-
-func modelListProviderToModelProviderAdapter(provider model.SliceProvider[Model], preciselyOneFilter PreciselyOneFilter) model.Provider[Model] {
-	return func() (Model, error) {
-		ps, err := provider()
-		if err != nil {
-			return Model{}, err
-		}
-		return preciselyOneFilter(ps)
-	}
-}
-
-func RandomPreciselyOneFilter(models []Model) (Model, error) {
-	if len(models) == 0 {
-		return Model{}, errors.New("none found")
-	}
-	return models[rand.Intn(len(models))], nil
-}
-
-func RandomPortalIdProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32) IdProvider {
-	return func(mapId uint32) IdProvider {
-		return modelProviderToIdProviderAdapter(l)(randomPortalModelProvider(l, span)(mapId))
+func RandomPortalIdProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32) model.IdProvider[uint32] {
+	return func(mapId uint32) model.IdProvider[uint32] {
+		return model.ProviderToIdProviderAdapter(randomPortalModelProvider(l, span)(mapId), getId)
 	}
 }
 
 func randomPortalModelProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32) model.Provider[Model] {
 	return func(mapId uint32) model.Provider[Model] {
-		return modelListProviderToModelProviderAdapter(ByMapModelListProvider(l, span)(mapId), RandomPreciselyOneFilter)
+		return model.SliceProviderToProviderAdapter(ByMapModelListProvider(l, span)(mapId), model.RandomPreciselyOneFilter[Model])
 	}
 }
 
@@ -88,18 +41,18 @@ func MarketPreciselyOneFilter(models []Model) (Model, error) {
 			return p, nil
 		}
 	}
-	return RandomPreciselyOneFilter(models)
+	return model.RandomPreciselyOneFilter(models)
 }
 
-func MarketPortalIdProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32) IdProvider {
-	return func(mapId uint32) IdProvider {
-		return modelProviderToIdProviderAdapter(l)(marketModelProvider(l, span)(mapId))
+func MarketPortalIdProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32) model.IdProvider[uint32] {
+	return func(mapId uint32) model.IdProvider[uint32] {
+		return model.ProviderToIdProviderAdapter(marketModelProvider(l, span)(mapId), getId)
 	}
 }
 
 func marketModelProvider(l logrus.FieldLogger, span opentracing.Span) func(mapId uint32) model.Provider[Model] {
 	return func(mapId uint32) model.Provider[Model] {
-		return modelListProviderToModelProviderAdapter(ByMapModelListProvider(l, span)(mapId), MarketPreciselyOneFilter)
+		return model.SliceProviderToProviderAdapter(ByMapModelListProvider(l, span)(mapId), MarketPreciselyOneFilter)
 	}
 }
 
@@ -130,8 +83,8 @@ func makeModel(body requests.DataBody[attributes]) (Model, error) {
 	return NewPortalModel(uint32(id), attr.Name, attr.Target, attr.TargetMapId, attr.Type, attr.X, attr.Y, attr.ScriptName), nil
 }
 
-func WarpToPortal(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, p IdProvider) {
-	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, p IdProvider) {
+func WarpToPortal(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, p model.IdProvider[uint32]) {
+	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, p model.IdProvider[uint32]) {
 		emitChangeMap(l, span)(worldId, channelId, characterId, mapId, p())
 	}
 }
@@ -144,7 +97,7 @@ func WarpRandom(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, 
 
 func WarpById(l logrus.FieldLogger, span opentracing.Span) func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
 	return func(worldId byte, channelId byte, characterId uint32, mapId uint32, portalId uint32) {
-		WarpToPortal(l, span)(worldId, channelId, characterId, mapId, FixedPortalIdProvider(portalId))
+		WarpToPortal(l, span)(worldId, channelId, characterId, mapId, model.FixedIdProvider(portalId))
 	}
 }
 
