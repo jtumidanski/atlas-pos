@@ -16,11 +16,15 @@ func (p NetsOut) Name() string {
 
 func (p NetsOut) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	processor.PlayPortalSound(l, c)
-	mapId, _ := processor.GetSavedLocation(l, c)("MIRROR")
-	if mapId == 260020500 {
-		processor.WarpById(l, span, c)(mapId, 3)
+	loc, err := processor.GetSavedLocation(l, span, c)("MIRROR")
+	if err != nil {
+		l.WithError(err).Warnf("Unable to find location to warp to. Character %d may be stuck.", c.CharacterId())
+		return false
+	}
+	if loc.MapId() == 260020500 {
+		processor.WarpById(l, span, c)(loc.MapId(), 3)
 	} else {
-		processor.WarpRandom(l, span, c)(mapId)
+		processor.WarpRandom(l, span, c)(loc.MapId())
 	}
 	return true
 }

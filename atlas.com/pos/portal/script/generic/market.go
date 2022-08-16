@@ -9,7 +9,7 @@ import (
 
 func EnterMarket(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	if c.MapId() != 910000000 {
-		processor.SaveLocation(l, c)("FREE_MARKET")
+		processor.SaveLocation(l, span, c)("FREE_MARKET")
 		processor.PlayPortalSound(l, c)
 		processor.WarpByName(l, span, c)(910000000, "out00")
 		return true

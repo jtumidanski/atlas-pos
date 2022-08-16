@@ -16,6 +16,6 @@ func (p SpaceReturn) Name() string {
 
 func (p SpaceReturn) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	processor.PlayPortalSound(l, c)
-	processor.WarpById(l, span, c)(processor.GetSavedLocation(l, c)("EVENT"))
+	processor.WarpToSavedLocation(l, span, c)("EVENT")
 	return true
 }

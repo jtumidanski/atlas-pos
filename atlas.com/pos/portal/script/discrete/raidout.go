@@ -15,11 +15,16 @@ func (p RaidOut) Name() string {
 }
 
 func (p RaidOut) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	mapId, _ := processor.GetSavedLocation(l, c)("BOSS_PQ")
-	if mapId == 0 {
-		mapId = 100000000
+	loc, err := processor.GetSavedLocation(l, span, c)("BOSS_PQ")
+	if err != nil {
+		l.WithError(err).Warnf("Unable to find location to warp to. Character %d may be stuck.", c.CharacterId())
+		return false
 	}
 	processor.PlayPortalSound(l, c)
-	processor.WarpById(l, span, c)(mapId, 0)
+	if loc.MapId() == 0 {
+		processor.WarpById(l, span, c)(100000000, 0)
+	} else {
+		processor.WarpById(l, span, c)(loc.MapId(), 0)
+	}
 	return true
 }

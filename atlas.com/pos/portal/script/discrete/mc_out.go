@@ -15,11 +15,7 @@ func (p McOut) Name() string {
 }
 
 func (p McOut) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	mapId, portalId := processor.GetSavedLocation(l, c)("MONSTER_CARNIVAL")
-	if mapId == 0 {
-		mapId = 102000000
-	}
 	processor.PlayPortalSound(l, c)
-	processor.WarpById(l, span, c)(mapId, portalId)
+	processor.WarpToSavedLocationDefaultMap(l, span, c)("MONSTER_CARNIVAL", 102000000)
 	return true
 }
