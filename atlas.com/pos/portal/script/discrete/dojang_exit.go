@@ -15,11 +15,7 @@ func (p DojangExit) Name() string {
 }
 
 func (p DojangExit) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	mapId, portalId := processor.GetSavedLocation(l, c)("MIRROR")
-	if mapId == 0 {
-		mapId = 100000000
-	}
 	processor.PlayPortalSound(l, c)
-	processor.WarpById(l, span, c)(mapId, portalId)
+	processor.WarpToSavedLocationDefaultMap(l, span, c)("MIRROR", 100000000)
 	return true
 }

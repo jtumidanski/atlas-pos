@@ -16,6 +16,6 @@ func (p AMatchMove2) Name() string {
 
 func (p AMatchMove2) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	processor.PlayPortalSound(l, c)
-	processor.WarpById(l, span, c)(processor.GetSavedLocation(l, c)("MIRROR"))
+	processor.WarpToSavedLocation(l, span, c)("MIRROR")
 	return true
 }

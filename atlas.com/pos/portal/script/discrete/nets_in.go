@@ -15,7 +15,7 @@ func (p NetsIn) Name() string {
 }
 
 func (p NetsIn) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
-	processor.SaveLocation(l, c)("MIRROR")
+	processor.SaveLocation(l, span, c)("MIRROR")
 	processor.PlayPortalSound(l, c)
 	processor.WarpById(l, span, c)(926010000, 4)
 	return true

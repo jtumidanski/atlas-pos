@@ -2,6 +2,7 @@ package processor
 
 import (
 	"atlas-pos/character"
+	"atlas-pos/character/location"
 	_map "atlas-pos/map"
 	"atlas-pos/monster"
 	"atlas-pos/party"
@@ -71,24 +72,27 @@ func ShowEffect(l logrus.FieldLogger, c script.Context) func(path string) {
 	}
 }
 
-func SaveLocation(l logrus.FieldLogger, c script.Context) func(name string) {
+func SaveLocation(l logrus.FieldLogger, span opentracing.Span, c script.Context) func(name string) {
 	return func(name string) {
-
+		location.SaveLocation(l, span)(c.CharacterId(), name)
 	}
 }
 
-func GetSavedLocation(l logrus.FieldLogger, c script.Context) func(name string) (uint32, uint32) {
-	return func(name string) (uint32, uint32) {
-		l.Infof("call to unhandled GetSavedLocation for location %s.", name)
-		//TODO
-		return 0, 0
+func GetSavedLocation(l logrus.FieldLogger, span opentracing.Span, c script.Context) func(name string) (location.Model, error) {
+	return func(name string) (location.Model, error) {
+		return location.GetLocation(l, span)(c.CharacterId(), name)
 	}
 }
 
-func GetMarketPortal(l logrus.FieldLogger, span opentracing.Span, c script.Context) (uint32, uint32) {
-	mapId, _ := GetSavedLocation(l, c)("FREE_MARKET")
-	portalId := portal.MarketPortalIdProvider(l, span)(mapId)()
-	return mapId, portalId
+func WarpToMarketPortal(l logrus.FieldLogger, span opentracing.Span, c script.Context) {
+	loc, err := GetSavedLocation(l, span, c)("FREE_MARKET")
+	if err != nil {
+		l.WithError(err).Warnf("Unable to find location to warp to. Character %d may be stuck.", c.CharacterId())
+		return
+	}
+
+	portalId := portal.MarketPortalIdProvider(l, span)(loc.MapId())()
+	WarpById(l, span, c)(loc.MapId(), portalId)
 }
 
 func GetReactor(l logrus.FieldLogger, c script.Context) func(mapId uint32, reactorName string) (*reactor.Model, error) {
@@ -164,6 +168,41 @@ func GetHourOfDay(l logrus.FieldLogger) uint32 {
 func GetEventProperty(l logrus.FieldLogger, c script.Context) func(key string) string {
 	return func(key string) string {
 		return ""
+	}
+}
+
+func WarpToSavedLocation(l logrus.FieldLogger, span opentracing.Span, c script.Context) func(name string) {
+	return func(name string) {
+		loc, err := location.GetLocation(l, span)(c.CharacterId(), name)
+		if err != nil {
+			l.WithError(err).Errorf("Unable to retrieve location where character %d was. They are now stuck.", c.CharacterId())
+			return
+		}
+		WarpById(l, span, c)(loc.MapId(), loc.PortalId())
+	}
+}
+
+func WarpToSavedLocationDefaultMap(l logrus.FieldLogger, span opentracing.Span, c script.Context) func(name string, mapId uint32) {
+	return func(name string, mapId uint32) {
+		loc, err := location.GetLocation(l, span)(c.CharacterId(), name)
+		if err != nil {
+			l.WithError(err).Warnf("Unable to retrieve location where character %d was. They are now stuck.", c.CharacterId())
+			WarpRandom(l, span, c)(mapId)
+			return
+		}
+		WarpById(l, span, c)(loc.MapId(), loc.PortalId())
+	}
+}
+
+func WarpToSavedLocationDefaultPortal(l logrus.FieldLogger, span opentracing.Span, c script.Context) func(name string, mapId uint32, portalId uint32) {
+	return func(name string, mapId uint32, portalId uint32) {
+		loc, err := location.GetLocation(l, span)(c.CharacterId(), name)
+		if err != nil {
+			l.WithError(err).Warnf("Unable to retrieve location where character %d was. They are now stuck.", c.CharacterId())
+			WarpById(l, span, c)(mapId, portalId)
+			return
+		}
+		WarpById(l, span, c)(loc.MapId(), loc.PortalId())
 	}
 }
 

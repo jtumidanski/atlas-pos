@@ -16,6 +16,6 @@ func (p Market00) Name() string {
 
 func (p Market00) Enter(l logrus.FieldLogger, span opentracing.Span, c script.Context) bool {
 	processor.PlayPortalSound(l, c)
-	processor.WarpById(l, span, c)(processor.GetMarketPortal(l, span, c))
+	processor.WarpToMarketPortal(l, span, c)
 	return true
 }
